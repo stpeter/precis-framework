@@ -1,0 +1,857 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+    <!ENTITY rfc2119 PUBLIC '' 
+      'http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml'>
+]>
+
+<rfc category="std" ipr="pre5378Trust200902" docName="draft-blanchet-precis-framework-00.txt" obsoletes="3454">
+  <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+  <?rfc toc="yes" ?>
+  <?rfc symrefs="yes" ?>
+  <?rfc sortrefs="yes"?>
+  <?rfc iprnotified="no" ?>
+  <?rfc strict="yes" ?>
+  <?rfc compact="yes" ?>
+  <front>
+    <title abbrev="Precis Framework">Precis Framework: Handling Internationalized Strings in Protocols</title>
+    <author initials="M." surname="Blanchet" fullname="Marc Blanchet">
+      <organization>Viagenie</organization>
+      <address>
+    <postal>
+      <street>2600 boul. Laurier, suite 625</street>
+      <city>Quebec</city>
+      <region>QC</region>
+      <code>G1V 4W1</code>
+      <country>Canada</country>
+    </postal>
+    <email>Marc.Blanchet@viagenie.ca</email>
+    <uri>http://www.viagenie.ca</uri>
+  </address>
+    </author>
+    <date month="July" year="2010"/>
+    <abstract>
+      <t>
+Using Unicode codepoints in protocol strings requires preparation of the string. This document describes the Precis Protocol Framework that prepares various classes of strings used in protocol elements. A protocol specification chooses a class of strings and then implements the corresponding preparation steps described in this document. This document is based on the IDNAbis approach. It obsoletes the Stringprep algorithm.
+      </t>
+    </abstract>
+  </front>
+  <middle>
+    <section title="Introduction">
+      <t>[draft-ietf-blanchet-newprep-problem-statement] describes the rationale behind updating Stringprep[RFC3454] to a new framework.
+</t>
+<t>
+Current Stringprep profiles and their corresponding protocol specifications share similar class of strings. This framework is based on the assumption that the use of internationalized strings in most protocols can be grouped into a few set of string classes. By defining a few string classes and their corresponding preparation algorithms instead of specific profiles for each protocol,
+<list style="symbols">
+<t>protocols specifications do not need to have a special i18n section or implementation, since they would reference one of this document string classes and corresponding processing.</t>
+<t>protocols benefit for sharing implementation code and tables.</t>
+<t>end-users will have a better knowledge of which codepoints are allowed in various contexts (instead of a specific profile per protocol as of with Stringprep profiles</t>
+<t>versioning for future versions of the Unicode database is simpler</t>
+<t>protocols that have familiarity with others (such as username identifiers used in various authentication schemes in protocols) can use the same string class, and therefore obtain consistency for end-users and implementors.</t>
+</list>
+</t>
+<t>This framework takes heavily on the IDNAbis tables[IDNABISTABLES], therefore, could help implementors by sharing common code for all string classes, including domain labels and names.</t>
+<t>EDITOR NOTE:This current version of the document copy a lot of normative text from draft-ietf-idnabis-tables. The editor would highly prefer reference instead of copy, but at least for the purpose of discussion, copied text. Moreover, the idnabis-table draft contains references to IDN labels in many places which may make problematic for normative reference. To be looked at as we go.</t>
+</section>
+<section title="String Classes">
+<t>The following classes of strings are identified:
+<list style="symbols">
+ <t>domain U-label</t>
+ <t>domain A-label</t>
+ <t>domain name</t>
+ <t>email address</t>
+ <t>restricted identifier</t>
+ <t>less-restrictive identifier</t>
+</list>
+</t>
+</section>
+<section title="Domain U-Label, A-Label and Name">
+<t>TBD:define the class.</t>
+<t>For these string classes, implement [IDNA2008].</t>
+</section>
+<section title="Email Addresses">
+<t>TBD:define the class by instantiating and refering to the EAI, SMTP.</t>
+<t>For this classes of strings, implement [EAI]?</t>
+</section>
+<section title="Restricted Identifier">
+<t>This class of strings, named RI in this document, corresponds to an identifier which contains language-type characters, no spacing characters, no "@", no "punctuation", no display
+ characters. The normative description of this class is in the corresponding mapping tables.</t><t>In section XX below, allowed Unicode codepoints for this string class are identified as PVALID or RI_PVALID. Disallowed codepoints are identified as DISALLOWED or RI_DISALLOWED.</t>
+</section>
+<section title="Less-Restrictive Identifier">
+<t>This class of strings, named LRI in this document, corresponds to an identifier which contains language-type characters, no spacing characters, no "@", but contains various "punctuation" and display characters. The normative description of this class is in the corresponding mapping tables.</t>
+<t>In section XX below, allowed Unicode codepoints for this string class are identified as PVALID or LRI_PVALID. Disallowed codepoints are identified as DISALLOWED or LRI_DISALLOWED.</t>
+</section>
+<section title="Normalization Form and Case Folding">
+<t>TBD: discuss NFC vs NFKC, case folding",</t>
+</section>
+<section title="Codepoint Properties">
+<t>This document reviews and classifies the collections of code points
+      in the Unicode character set by examining various properties of the code
+      points. It then defines an algorithm for determining a derived property
+      value. It specifies a procedure, and not a table, of code points so that
+      the algorithm can be used to determine code point sets independent of
+      the version of Unicode that is in use.</t>
+
+<t>This document is not intended to specify precisely how these property
+      values are to be applied in protocol strings. That information should be
+defined in the protocol specification that instantiate a string class of this document.</t>
+<t>The value of the property is to be interpreted as follows.</t> 
+<t>
+ <list style="symbols">
+  <t>PROTOCOL VALID: Those that are allowed to be used in any string class. Code
+          points with this property value are permitted for general use in any string class.  The abbreviated term PVALID is used to refer to this value in the rest of this document.<vspace/></t>
+  <t>SPECIFIC CLASS PROTOCOL VALID: Those that are allowed to be used in specific string classes. Code points with this property value are permitted for use in specific string classes.  The abbreviated term *_PVALID, where * = (RI, LRI) is used to refer to this value in the rest of this document.  <vspace/></t>
+<t>CONTEXTUAL RULE REQUIRED: Some characteristics of the character,
+          such as it being invisible in certain contexts or problematic in
+          others, requires that it not be used in labels unless specific other
+          characters or properties are present. The abbreviated term CONTEXT
+          is used to refer to this value in the rest of this document. There
+          are two subdivisions of CONTEXTUAL RULE REQUIRED, one for
+          Join_controls (called CONTEXTJ) and for other characters (called
+          CONTEXTO).  <vspace/></t>
+
+<t>DISALLOWED: Those that should clearly not be included in any string class.
+          Code points with this property value are not permitted in any string class.<vspace/></t>
+<t>SPECIFIC CLASS DISALLOWED: Those that should clearly not be included in specific string classes. Code points with this property value are not permitted in any string class. The abbreviated term *_DISALLOWED, where * = (RI, LRI) is used to refer to this value in the rest of this document. <vspace/></t>
+
+<t>UNASSIGNED: Those code points that are not designated (i.e. are unassigned) in the Unicode Standard.<vspace/></t>
+</list>
+</t>
+      <t>
+	      The mechanisms described here allow determination of the value of the
+        property for future versions of Unicode (including characters added
+        after Unicode 5.2). Changes in Unicode properties that do not affect the outcome
+        of this process do not affect this framework. For example, a character can have
+        its Unicode General_Category value (see [Unicode52])
+				change from So to Sm, or from Lo to
+        Ll, without affecting the algorithm results. Moreover, even if such
+        changes were to result, the <xref target="G">BackwardCompatible
+        list</xref> can be adjusted to ensure the stability of the results.
+		  </t>
+
+      <t>Some code points need to be allowed in exceptional circumstances, but
+      should be excluded in all other cases; these rules are also described in
+      other documents. The most notable of these are the Join Control
+      characters, U+200D ZERO WIDTH JOINER and U+200C ZERO WIDTH NON-JOINER.
+      Both of them have the derived property value CONTEXTJ. A character with
+      the derived property value CONTEXTJ or CONTEXTO (CONTEXTUAL RULE
+      REQUIRED) is not to be used unless an appropriate rule has been
+      established and the context of the character is consistent with that
+      rule. It is invalid to either register a string containing these
+      characters or even to look one up unless such contextual rule is found
+      and satisfied. Please see <xref target="RulesInit"/>, The Contextual Rules Registry,
+      for more information.</t>
+
+</section>
+
+    <section anchor="Categories"
+             title="Category definitions Used to Calculate Derived Property Value">
+        <t>The derived property obtains its value based on a two-step
+        procedure. First, characters are placed in one or more character
+        categories based on either core properties defined by the Unicode Standard
+        or by treating the codepoint as an exception and addressing the codepoint
+        by its codepoint value. These categories are not mutually exclusive.</t>
+
+        <t>In the second step, set operations are used with these categories
+        to determine the values for an string class specific property. Those operations
+        are specified in <xref target="PropertyCalculation" />.</t>
+
+        <t>Unicode property names and property value names may have short
+        abbreviations, such as gc for the General_Category property, and Ll
+        for the Lowercase_Letter property value of the gc property.</t>
+
+	<t>In the following specification of categories, the operation
+	which returns the value of a particular Unicode character
+	property for a code point is designated by using the
+	formal name of that property (from PropertyAliases.txt)
+	followed by '(cp)'. For example, the value of the
+	General_Category property for a code point is indicated
+	by General_Category(cp).
+	</t>
+				
+<section anchor="A" title="LetterDigits (A)">
+          <figure>
+            <artwork>
+A: General_Category(cp) is in {Ll, Lu, Lo, Nd, Lm, Mn, Mc}
+						</artwork>
+          </figure>
+
+          <t>These rules identifies characters commonly used in mnemonics and
+          often informally described as "language characters".</t>
+
+          <t>For more information, see section
+          4.5 of [Unicode5].</t>
+
+          <t>The categories used in this rule are: <list style="symbols">
+              <t>Ll - Lowercase_Letter</t>
+              <t>Lu - Uppercase_Letter</t>
+              <t>Lo - Other_Letter</t>
+              <t>Nd - Decimal_Number</t>
+              <t>Lm - Modifier_Letter</t>
+              <t>Mn - Nonspacing_Mark</t>
+              <t>Mc - Spacing_Mark</t>
+            </list></t>
+</section>
+
+<section anchor="B" title="Unstable (B)">
+          <figure>
+            <artwork>
+B: toNFKC(toCaseFold(toNFKC(cp))) != cp
+						</artwork>
+          </figure>
+
+          <t>This category is used to group the characters that are not stable
+          under NFKC normalization and casefolding. In general, these code
+          points are not suitable for use in any string class.</t>
+
+          <t>The toCaseFold() operation is defined in Section 3.13 of
+          [Unicode5].</t>
+
+          <t>The toNFKC() operation returns the code point in normalization
+          form KC. For more information, see Section 5 of [TR15].</t>
+
+</section>
+
+<section anchor="C" title="IgnorableProperties (C)">
+          <figure>
+            <artwork>
+C: Default_Ignorable_Code_Point(cp) = True or
+   White_Space(cp) = True or
+   Noncharacter_Code_Point(cp) = True
+						</artwork>
+          </figure>
+
+          <t>This category is used to group code points that are not
+          recommended for use in identifiers. In general, these code points
+          are not suitable for identifiers.</t>
+
+          <t>The definition for Default_Ignorable_Code_Point can be found in
+          <eref
+          target="http://unicode.org/Public/UNIDATA/DerivedCoreProperties.txt">
+          DerivedCoreProperties.txt</eref> and is at the time of Unicode
+          5.2:</t>
+
+          <figure>
+            <artwork>
+Other_Default_Ignorable_Code_Point + Cf (Format characters)
++ Variation_Selector - White_Space - FFF9..FFFB (Annotation
+Characters) - 0600..0603, 06DD, 070F (exceptional Cf characters
+that should be visible)
+            </artwork>
+          </figure>
+</section>
+
+<section anchor="D" title="IgnorableBlocks (D)">
+          <figure>
+            <artwork>
+D: Block(cp) is in {Combining Diacritical Marks for Symbols,
+                    Musical Symbols, Ancient Greek Musical Notation}
+						</artwork>
+          </figure>
+
+          <t>This category is used to identifying code points that are not
+          useful in mnemonics  but may be useful for some string classes.</t>
+
+          <t>The definition of blocks can be found in
+          <eref
+          target="http://unicode.org/Public/UNIDATA/Blocks.txt">
+          Blocks.txt</eref>
+				  </t>
+
+</section>
+
+<section anchor="E" title="LDH (E)">
+          <figure>
+            <artwork>
+E: cp is in {002D, 0030..0039, 0061..007A}
+						</artwork>
+          </figure>
+
+          <t>This category is used in the second step to preserve the
+          traditional "hostname" (LDH) characters ('-', 0-9 and a-z). In
+          general, these code points are suitable for use for identifiers.
+				</t>
+</section>
+
+<section anchor="F" title="Exceptions (F)">
+          <figure>
+            <artwork>
+F: cp is in {00B7, 00DF, 0375, 03C2, 05F3, 05F4, 0640, 0660,
+             0661, 0662, 0663, 0664, 0665, 0666, 0667, 0668,
+             0669, 06F0, 06F1, 06F2, 06F3, 06F4, 06F5, 06F6,
+             06F7, 06F8, 06F9, 06FD, 06FE, 07FA, 0F0B, 3007,
+             302E, 302F, 3031, 3032, 3033, 3034, 3035, 303B,
+             30FB}
+						</artwork>
+          </figure>
+
+          <t>This category explicitly lists code points for which the category
+          cannot be assigned using only the core property values that exist in
+          the Unicode standard. The values are according to the table
+          below:</t>
+          <figure>
+            <artwork>
+PVALID -- Would otherwise have been DISALLOWED
+
+00DF; PVALID     # LATIN SMALL LETTER SHARP S
+03C2; PVALID     # GREEK SMALL LETTER FINAL SIGMA
+06FD; PVALID     # ARABIC SIGN SINDHI AMPERSAND
+06FE; PVALID     # ARABIC SIGN SINDHI POSTPOSITION MEN
+0F0B; PVALID     # TIBETAN MARK INTERSYLLABIC TSHEG
+3007; PVALID     # IDEOGRAPHIC NUMBER ZERO
+
+CONTEXTO -- Would otherwise have been DISALLOWED
+
+00B7; CONTEXTO   # MIDDLE DOT
+0375; CONTEXTO   # GREEK LOWER NUMERAL SIGN (KERAIA)
+05F3; CONTEXTO   # HEBREW PUNCTUATION GERESH
+05F4; CONTEXTO   # HEBREW PUNCTUATION GERSHAYIM
+30FB; CONTEXTO   # KATAKANA MIDDLE DOT
+
+CONTEXTO -- Would otherwise have been PVALID
+
+0660; CONTEXTO   # ARABIC-INDIC DIGIT ZERO
+0661; CONTEXTO   # ARABIC-INDIC DIGIT ONE
+0662; CONTEXTO   # ARABIC-INDIC DIGIT TWO
+0663; CONTEXTO   # ARABIC-INDIC DIGIT THREE
+0664; CONTEXTO   # ARABIC-INDIC DIGIT FOUR
+0665; CONTEXTO   # ARABIC-INDIC DIGIT FIVE
+0666; CONTEXTO   # ARABIC-INDIC DIGIT SIX
+0667; CONTEXTO   # ARABIC-INDIC DIGIT SEVEN
+0668; CONTEXTO   # ARABIC-INDIC DIGIT EIGHT
+0669; CONTEXTO   # ARABIC-INDIC DIGIT NINE
+06F0; CONTEXTO   # EXTENDED ARABIC-INDIC DIGIT ZERO
+06F1; CONTEXTO   # EXTENDED ARABIC-INDIC DIGIT ONE
+06F2; CONTEXTO   # EXTENDED ARABIC-INDIC DIGIT TWO
+06F3; CONTEXTO   # EXTENDED ARABIC-INDIC DIGIT THREE
+06F4; CONTEXTO   # EXTENDED ARABIC-INDIC DIGIT FOUR
+06F5; CONTEXTO   # EXTENDED ARABIC-INDIC DIGIT FIVE
+06F6; CONTEXTO   # EXTENDED ARABIC-INDIC DIGIT SIX
+06F7; CONTEXTO   # EXTENDED ARABIC-INDIC DIGIT SEVEN
+06F8; CONTEXTO   # EXTENDED ARABIC-INDIC DIGIT EIGHT
+06F9; CONTEXTO   # EXTENDED ARABIC-INDIC DIGIT NINE
+
+DISALLOWED -- Would otherwise have been PVALID
+
+0640; DISALLOWED # ARABIC TATWEEL
+07FA; DISALLOWED # NKO LAJANYALAN
+302E; DISALLOWED # HANGUL SINGLE DOT TONE MARK
+302F; DISALLOWED # HANGUL DOUBLE DOT TONE MARK
+3031; DISALLOWED # VERTICAL KANA REPEAT MARK
+3032; DISALLOWED # VERTICAL KANA REPEAT WITH VOICED SOUND MARK
+3033; DISALLOWED # VERTICAL KANA REPEAT MARK UPPER HALF
+3034; DISALLOWED # VERTICAL KANA REPEAT WITH VOICED SOUND MARK UPPER HA
+3035; DISALLOWED # VERTICAL KANA REPEAT MARK LOWER HALF
+303B; DISALLOWED # VERTICAL IDEOGRAPHIC ITERATION MARK
+						</artwork>
+          </figure>
+</section>
+
+<section anchor="G" title="BackwardCompatible (G)">
+          <figure>
+            <artwork>
+G: cp is in {}
+						</artwork>
+          </figure>
+
+          <t>This category includes the code points that property values in
+          versions of Unicode after 5.2 have changed in such a way that the
+          derived property value would no longer be PVALID or DISALLOWED. If
+          changes are made to future versions of Unicode so that code points
+          might change property value from PVALID or DISALLOWED, then this
+          table can be updated and keep special exception values so that the
+          property values for code points stay stable.</t>
+</section>
+
+<section anchor="H" title="JoinControl (H)">
+          <figure>
+            <artwork>
+H: Join_Control(cp) = True
+	          </artwork>
+          </figure>
+
+          <t>This category consists of Join Control characters (i.e., they are
+          not in <xref target="A">LetterDigits</xref>) but are still required
+          in strings under some circumstances.</t>
+</section>
+
+<section anchor="I" title="OldHangulJamo (I)">
+	<figure>
+	<artwork>
+I: Hangul_Syllable_Type(cp) is in {L, V, T}
+	</artwork>
+	</figure>
+	<t>
+	This category consists of all conjoining Hangul Jamo
+	(Leading Jamo, Vowel Jamo, and Trailing Jamo).
+	</t>
+	<t>
+  Elimination of conjoining Hangul Jamos from the set
+	of PVALID characters results in restricting the set
+	of Korean PVALID characters just to preformed, modern
+	Hangul syllable characters. Old Hangul syllables,
+	which must be spelled with sequences of conjoining Hangul 
+	Jamos, are not PVALID for string classes.
+	</t>
+</section>
+
+<section anchor="J" title="Unassigned (J)">
+          <figure>
+            <artwork>
+J: General_Category(cp) is in {Cn} and
+   Noncharacter_Code_Point(cp) = False
+            </artwork>
+          </figure>
+
+          <t>This category consists of code points in the Unicode character
+          set that are not (yet) assigned. It should be noted that Unicode
+          distinguishes between 'unassigned code points' and 'unassigned
+          characters'. The unassigned code points are all but (Cn -
+          Noncharacters), while the unassigned *characters* are all but (Cn +
+          Cs).</t>
+</section>
+</section>
+<section anchor="PropertyCalculation"
+             title="Calculation of the Derived Property">
+      <t>Possible values of the property are:</t>
+
+      <t>
+        <list style="symbols">
+          <t>PVALID</t>
+          <t>RI_PVALID</t>
+          <t>LRI_PVALID</t>
+          <t>CONTEXTJ</t>
+          <t>CONTEXTO</t>
+          <t>DISALLOWED</t>
+          <t>RI_DISALLOWED</t>
+          <t>LRI_DISALLOWED</t>
+          <t>UNASSIGNED</t>
+        </list>
+      </t>
+
+      <t>
+     The algorithm to calculate the value of the derived property is as
+    follows. If the names of a rule (such
+  as Exception) is used, that implies the set of codepoints that the rule define,
+  while the same name as a function
+  call (such as Exception(cp)) imply the value cp has in the Exceptions table.
+		 </t>
+		 <t>
+	 If .cp. .in. Exceptions Then Exceptions(cp);<vspace/>
+       Else If .cp. .in. BackwardCompatible Then BackwardCompatible(cp);<vspace/>
+       Else If .cp. .in. Unassigned Then UNASSIGNED;<vspace/>
+       Else If .cp. .in. LDH Then PVALID;<vspace/>
+       Else If .cp. .in. JoinControl Then CONTEXTJ;<vspace/>
+       Else If .cp. .in. Unstable Then DISALLOWED;<vspace/>
+       Else If .cp. .in. IgnorableProperties Then DISALLOWED;<vspace/>
+       Else If .cp. .in. IgnorableBlocks Then LRI_PVALID;<vspace/>
+       Else If .cp. .in. OldHangulJamo Then DISALLOWED;<vspace/>
+       Else If .cp. .in. LetterDigits Then PVALID;<vspace/>
+       Else DISALLOWED;
+		 </t>
+</section>
+
+<section anchor="codepointexplain" title="Codepoints">
+      <t>The Categories and Rules defined in <xref target="Categories" /> and
+      <xref target="PropertyCalculation" /> apply to all Unicode
+      code points. The table in <xref target="Codepoints" /> shows, for
+      illustrative purposes, the consequences of the categories and
+      classification rules, and the resulting property values.</t>
+
+      <t>The list of code points that can be found in <xref
+      target="Codepoints" /> is non-normative. <xref target="Categories" />
+      and <xref target="PropertyCalculation" /> are normative.</t>
+    </section>
+
+    <section title="IANA Considerations">
+	<section anchor="derivedregistry" title="IDNA derived property value registry">
+      <t>
+    IANA is to create a registry with the derived properties for the
+        versions of Unicode that is released after (and including) version
+        5.2. The derived property value is to be calculated in cooperation
+        with a designated expert[RFC5226] according to
+        the specifications in <xref target="Categories" /> and <xref
+        target="PropertyCalculation" /> and not by copying the non-normative
+        table found in <xref target="Codepoints" />.
+  		</t>
+			<t>
+        If during this process (creation of the table of derived property
+        values) followed by a designated expert review, either non-backward
+        compatible changes to the table of derived properties are discovered,
+        or otherwise problems during the creation of the table arises, that is
+        to be flagged to the IESG. Changes to the rules (as specified in <xref
+        target="Categories" /> and <xref target="PropertyCalculation" />),
+        including <xref target="G">BackwardCompatible</xref> (a set that is at
+        release of this document is empty), require IETF Review, as described
+        in [RFC 5226].
+	  </t>
+  		</section>
+
+     <section title="IDNA Context Registry" anchor="IANAContext">
+ <t>For characters that are defined in
+	<xref target="derivedregistry">IDNA derived property value registry</xref>
+	as CONTEXTO or CONTEXTJ and therefore requiring a contextual rule
+	IANA will create and  
+	maintain a list of approved contextual rules.  Additions
+	or changes to these rules require IETF Review, as
+	described in [RFC5226].</t>
+  <t>A table from which that registry can be initialized, and
+	some further discussion appears in <xref target="RulesInit"/>.</t>
+
+	<section title="Template for context registry">
+	<t>
+	The following information is to be given when a new rule is created.
+	<list>
+	<t>Name: Unique name of the rule</t>
+	<t>Code point: Rule should be applied when this codepoint exist in label</t>
+	<t>Overview: Description in plain english on what the rule verifies</t>
+	<t>Lookup: Should rule be applied at time of lookup?</t>
+	<t>Rule Set: The set of rules, as described in</t>
+	</list>
+	</t>
+	</section>
+   </section>
+
+ </section>
+
+  <section title="Security Considerations">
+	<t>TBD</t>
+    </section>
+
+<section title="Discussion home for this draft">
+<t>This document is discussed in the precis@ietf.org mailing list (This section to be removed when published as RFC).</t>
+</section>
+<section title="Acknowledgements">
+<t>The author of this document would like to acknowledge the comments and contributions of the following people: ...</t>
+<t>Since this document copies a lot of text and the algorithms from IDNAbis tables, therefore all authors and contributors to the idnabis work are deeply  acknowledged.</t>
+</section>
+
+    <appendix title="Contextual Rules Registry" anchor="RulesInit">
+	   <t>
+   As discussed in <xref target="IANAContext"/>, a
+       registry of rules that define the contexts in which particular
+       PROTOCOL-VALID characters, characters associated with a requirement for
+       Contextual Information, are permitted. These rules are expressed as
+       tests on the label in which the characters appear (all, or any part of,
+       the label may be tested).
+     </t>
+
+     <t>
+	The grammatical rules are expressed in pseudo code. The conventions used
+      for that pseudo code are explained here.
+ </t>
+ <t>
+   Each rule is constructed as a Boolean expression that evaluates to
+   either True or False. A simple "True;" or "False;" rule sets the
+   default result value for the rule set. Subsequent conditional rules
+   that evaluate to True or False may re-set the result value.
+ </t>
+ <t>
+   A special value "Undefined" is used to deal with any error conditions,
+    such as an attempt to test a character before the start of a label or
+      after the end of a label. If any term of a rule evaluates to Undefined,
+      further evaluation of the rule immediately terminates, as the result
+      value of the rule will itself be Undefined.
+</t><t>
+ <list style="hanging">
+    <t><vspace/>
+     cp represents the codepoint to be tested.
+   </t>
+    <t><vspace/> FirstChar is a special term which denotes the first codepoint in a string.  </t>
+    <t><vspace/>
+      LastChar is a special term which denotes the last codepoint in a string.  </t>
+       <t><vspace/> .eq. represents the equality relation. 
+    <list style="hanging">
+     <t><vspace/> A .eq. B evaluates to True if A equals B. </t>
+       </list></t>
+       <t><vspace/> .is. represents checking position in a string. 
+       <list style="hanging">
+     <t><vspace/>
+     A .is. B evaluates to True if A and B have same position in the same string.  </t>
+       </list></t>
+       <t><vspace/> .ne. represents the non-equality relation. 
+       <list style="hanging">
+     <t><vspace/> A .ne. B evaluates to True if A is not equal to B.</t>
+       </list></t>
+       <t><vspace/> .in. represents the set inclusion relation. 
+       <list style="hanging">
+    <t><vspace/> A .in. B evaluates to True if A is a member of the set B.  </t>
+       </list>
+       </t>
+     </list>
+</t>
+ <t><vspace/>
+		   A functional notation, Function_Name(cp), is used to express either
+       string positions within a string, Boolean character property tests of a
+       codepoint, or a regular expression match. When such function names
+       refer to Boolean character property tests, the function names use the
+       exact Unicode character property name for the property in question, and
+       "cp" is evaluated as the Unicode value of the codepoint to be tested,
+       rather than as its position in the string. When such function names
+       refer to string positions within a string, "cp" is evaluated as its
+       position in the string.
+		 </t>
+		 <t>
+   RegExpMatch(X) takes as its parameter X a schematic regular expression
+       consisting of a mix of Unicode character property values and literal
+       Unicode codepoints.
+		 </t>
+		 <t>
+		   Script(cp) returns the value of the Unicode Script property, as defined
+       in Scripts.txt in the Unicode Character Database.
+		 </t>
+		 <t>
+		   Canonical_Combining_Class(cp) returns the value of the Unicode
+       Canonical_Combining_Class property, as defined in UnicodeData.txt in
+       the Unicode Character Database.
+	   </t>
+		 <t>
+		   Before(cp) returns the codepoint of the character immediately preceding
+       cp in logical order in the string representing the string.
+       Before(FirstChar) evaluates to Undefined.
+		 </t>
+		 <t>
+		   After(cp) returns the codepoint of the character immediately following
+       cp in logical order in the string representing the string.
+       After(LastChar) evaluates to Undefined.
+		 </t>
+		 <t>
+			 Note that "Before" and "After" do not refer to the visual display order
+       of the character in a string, which may be reversed or otherwise
+       modified by the bidirectional algorithm for strings including characters
+       from scripts written right-to-left. Instead,
+			 'Before' and 'After' refer to the network order of the character in
+			 the string.
+		 </t>
+		 <t>
+			 The clauses "Then True" and "Then False" imply exit from the
+       pseudo-code routine with the corresponding result.
+		 </t>
+		 <t>
+		   Repeated evaluation for all characters in a string makes use of the
+       special construct:
+		 <list style="hanging">
+		   <t><vspace/>
+			   For All Characters:
+			 <list style="hanging">
+			   <t>
+				   Expression;
+				 </t>
+			 </list>
+			 </t>
+			 <t>
+			   End For;
+       </t>
+		 </list>
+                 </t>
+		 <t>
+		   This construct requires repeated evaluation of "Expression" for each
+       codepoint in the string, starting from FirstChar and proceeding to
+       LastChar.
+		 </t>
+     <t>
+       The different fields in the rules are to be interpreted as follows:
+	<list style="hanging">
+	<t hangText="Code point: "><vspace/>
+	The codepoint, or codepoints, that this rule is to be applied to.
+          Normally, this implies that if any of the codepoints in a string is
+          as defined, then the rules should be applied. If evaluated to True,
+          the codepoint is ok as used; if evaluated to False, it is not o.k.
+	</t>
+	<t hangText="Overview: "><vspace/>
+	A description of the goal with the rule, in plain English.
+	</t>
+	<t hangText="Lookup: "><vspace/>
+		True if application of this rule is recommended at lookup
+		time; False otherwise.
+	</t>
+	<t hangText="Rule Set: "><vspace/>
+	The rule set itself, as described above.
+	</t>
+	</list> </t>
+
+	   <appendix title="ZERO WIDTH NON-JOINER"><t>
+		   <list style="hanging">
+		     <t hangText="Code point: "><vspace/>U+200C</t>
+		     <t hangText="Overview: "><vspace/>
+		       This may occur in a formally cursive script (such as Arabic) in a
+           context where it breaks a cursive connection as required for
+           orthographic rules, as in the Persian language, for example. It
+           also may occur in Indic scripts in a consonant conjunct context
+           (immediately following a virama), to control required display of
+           such conjuncts.
+         </t>
+     <t hangText="Lookup: "><vspace/>True</t>
+     <t hangText="Rule Set: "/>
+	 <t>False;</t>
+	 <t>If Canonical_Combining_Class(Before(cp)) .eq. Virama Then True;</t>
+	 <t>If RegExpMatch((Joining_Type:{L,D})(Joining_Type:T)*\u200C
+           <list>
+	   <t>(Joining_Type:T)*(Joining_Type:{R,D})) Then True;</t>
+           </list>
+ 	 </t>
+      </list></t>
+		</appendix>
+
+	  <appendix title="ZERO WIDTH JOINER">
+		<t><list style="hanging">
+		   <t hangText="Code point: "><vspace/>U+200D</t>
+		   <t hangText="Overview: "><vspace/>
+			     This may occur in Indic scripts in a consonant conjunct context
+           (immediately following a virama), to control required display of
+           such conjuncts.
+			 </t>
+		   <t hangText="Lookup: "><vspace/>True</t>
+		   <t hangText="Rule Set: "/>
+         <t>False;</t>
+				 <t>If Canonical_Combining_Class(Before(cp)) .eq. Virama Then True;</t>
+		</list></t>
+	  </appendix>
+
+	 <appendix title="MIDDLE DOT">
+		<t><list style="hanging">
+		   <t hangText="Code point: "><vspace/>U+00B7</t>
+		   <t hangText="Overview: "><vspace/>Between 'l' (U+006C) characters
+			  only, used to permit the Catalan character ela geminada
+			  to be expressed
+			 </t>
+		   <t hangText="Lookup: "><vspace/>False</t>
+		   <t hangText="Rule Set: "/>
+		     <t>False;</t>
+			   <t>If Before(cp) .eq. U+006C And
+         <list>
+			     <t>After(cp) .eq. U+006C Then True;</t>
+		     </list></t>
+		</list></t>
+	</appendix>
+
+	 <appendix title="GREEK LOWER NUMERAL SIGN (KERAIA)">
+		<t><list style="hanging">
+		   <t hangText="Code point: "><vspace/>U+0375</t>
+		   <t hangText="Overview: "><vspace/>The script of the following character MUST be Greek.</t>
+		   <t hangText="Lookup: "><vspace/>False</t>
+		   <t hangText="Rule Set: "/>
+		     <t>False;</t>
+				 <t>If Script(After(cp)) .eq. Greek Then True;</t>
+	  </list></t>
+	 </appendix>
+
+	<appendix title="HEBREW PUNCTUATION GERESH">
+		<t><list style="hanging">
+		  <t hangText="Code point: "><vspace/>U+05F3</t>
+			<t hangText="Overview: "><vspace/>The script of the preceding
+			   character MUST be Hebrew.</t>
+			<t hangText="Lookup: "><vspace/>False</t>
+			<t hangText="Rule Set: "/>
+			  <t>False;</t>
+				<t>If Script(Before(cp)) .eq. Hebrew Then True;</t>
+    </list></t>
+	</appendix>
+
+	<appendix title="HEBREW PUNCTUATION GERSHAYIM">
+	<t><list style="hanging">
+			<t hangText="Code point: "><vspace/>U+05F4 </t>
+			<t hangText="Overview: "><vspace/>
+				The script of the preceding character MUST be Hebrew.
+			</t> 
+			<t hangText="Lookup: "><vspace/>False</t>
+			<t hangText="Rule Set: "/>
+			<t>False;</t>
+			<t>If Script(Before(cp)) .eq. Hebrew Then True;</t>
+		</list></t>
+	</appendix>
+
+	<appendix title="KATAKANA MIDDLE DOT">
+	<t><list style="hanging">
+			<t hangText="Code point: "><vspace/>U+30FB </t>
+			<t hangText="Overview: "><vspace/>
+				Note that the Script of Katakana Middle Dot is not any
+				of "Hiragana", "Katakana" or "Han". The effect of
+				this rule is to require at least one character in the label
+				to be in one of those scripts.
+			</t>
+			<t hangText="Lookup: "><vspace/>False</t>
+			<t hangText="Rule Set: "/>
+				<t>False;</t>
+				<t>For All Characters:
+				<list>
+					<t>If Script(cp) .in. {Hiragana, Katakana, Han} Then True;</t>
+				</list></t>
+				<t>End For;</t>
+		</list></t>
+	</appendix>
+
+	<appendix title="ARABIC-INDIC DIGITS">
+	<t>	<list style="hanging">
+			<t hangText="Code point: "><vspace/>0660..0669</t>
+			<t hangText="Overview: "><vspace/>
+				Can not be mixed with Extended Arabic-Indic Digits.
+			</t>
+			<t hangText="Lookup: "><vspace/>False</t>
+			<t hangText="Rule Set: "/>
+				<t>True;</t>
+				<t>For All Characters:
+				<list>
+					<t>If cp .in. 06F0..06F9 Then False;</t>
+				</list></t>
+				<t>End For;</t>
+		</list>
+    	</t>
+	</appendix>
+
+	<appendix title="EXTENDED ARABIC-INDIC DIGITS">
+	<t>	<list style="hanging">
+			<t hangText="Code point: "><vspace/>06F0..06F9</t>
+			<t hangText="Overview: "><vspace/>
+				Can not be mixed with Arabic-Indic Digits.
+			</t>
+			<t hangText="Lookup: "><vspace/>False</t>
+			<t hangText="Rule Set: "/>
+				<t>True;</t>
+				<t>For All Characters:
+				<list>
+					<t>If cp .in. 0660..0669 Then False;</t>
+				</list></t>
+				<t>End For;</t>
+		</list></t>
+	</appendix>
+
+  </appendix>
+
+    <appendix anchor="Codepoints" title="Codepoints 0x0000 - 0x10FFFF">
+      <t>If one applies <xref target="PropertyCalculation">the rules</xref> to
+      the code points 0x0000 to 0x10FFFF to Unicode 5.2, the result is as
+      follows.</t>
+
+      <t>This list is non-normative, and only included for illustrative
+      purposes. Specifically, what is displayed in the third column
+		  is not the formal name of the codepoint (as defined in section 4.8
+		  of [Unicode52]). The differences
+		  exists for example for the codepoints that have the codepoint value
+		  as part of the name (example: CJK UNIFIED IDEOGRAPH-4E00) and the
+		  naming of Hangul syllables. For many codepoints, what you see is the official name.
+		  </t>
+
+      <appendix title="Codepoints in Unicode Character Database (UCD) format">
+				<figure><artwork>
+0000..10FFFF; TBD! 
+        </artwork></figure>
+		  </appendix>
+    </appendix>
+  </middle>
+<back>
+ <references title="Informative References">
+  <?rfc include="reference.RFC.3454" ?>
+  <?rfc include="reference.RFC.3490" ?>
+  <?rfc include="reference.RFC.3491" ?>
+  <?rfc include="reference.RFC.3492" ?>
+  <?rfc include="reference.RFC.3722" ?>
+  <?rfc include="reference.RFC.3920" ?>
+  <?rfc include="reference.RFC.4011" ?>
+  <?rfc include="reference.RFC.4013" ?>
+  <?rfc include="reference.RFC.4505" ?>
+  <?rfc include="reference.RFC.4518" ?>
+  <?rfc include="reference.RFC.4690" ?>
+ </references>
+</back>
+</rfc>
