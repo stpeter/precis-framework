@@ -43,14 +43,14 @@
         <email>psaintan@cisco.com</email>
       </address>
     </author>
-    <date day="13" month="May" year="2011"/>
+    <date day="16" month="May" year="2011"/>
     <abstract>
       <t>Application protocols that make use of Unicode code points in protocol strings need to prepare such strings in order to perform comparison operations (e.g., for purposes of authentication or authorization).  In general, this problem has been labeled the "preparation and comparison of internationalized strings" or "PRECIS".  This document defines a framework that enables application protocols to prepare various classes of strings in a way that depends on the properties of Unicode code points.  Because this framework does not depend on large tables of Unicode code points as in stringprep (RFC 3454), it is more agile with regard to changes in the underlying Unicode database and thus provides improved flexibility to application protocols.  A specification that reuses this framework either can directly use the base string classes defined in this document or can subclass the base string classes as needed.  This framework uses an approach similar to that of the revised internationalized domain names in applications (IDNA) technology (RFC 5890, RFC 5891, RFC 5892, RFC 5893, RFC 5894) and thus adheres to the high-level design goals described in RFC 4690, albeit for non-IDNA technologies.  This document obsoletes RFC 3454.</t>
     </abstract>
   </front>
   <middle>
     <section title="Introduction" anchor='intro'>
-      <t>A number of IETF application technologies use stringprep <xref target='RFC3454'/> as the basis for comparing protocol strings that contain Unicode characters or "code points" <xref target='UNICODE'/>.  Since the publication of <xref target='RFC3454'/> in 2002, the Internet community has gained much more experience with internationalization, some of it reflected in <xref target='RFC4690'/>.  In particular, the IETF's technology for internationalized domain names (IDNs) has changed significantly: IDNA2003 <xref target='RFC3490'/>, which was based on stringprep, has been superseded by IDNA2008 (<xref target='RFC5890'/>, <xref target='RFC5891'/>, <xref target='RFC5892'/>, <xref target='RFC5893'/>, <xref target='RFC5894'/>), which does not use stringprep.  This migration away from stringprep for internationalized domain names has prompted other "customers" of stringprep to consider new approaches to the preparation and comparison of internationalized addresses ("PRECIS"), as described in <xref target='PROBLEM'/>.</t>
+      <t>A number of IETF application technologies use stringprep <xref target='RFC3454'/> as the basis for comparing protocol strings that contain Unicode characters or "code points" <xref target='UNICODE'/>.  Since the publication of <xref target='RFC3454'/> in 2002, the Internet community has gained much more experience with internationalization, some of it reflected in <xref target='RFC4690'/>.  In particular, the IETF's technology for internationalized domain names (IDNs) has changed significantly: IDNA2003 <xref target='RFC3490'/>, which was based on stringprep, has been superseded by IDNA2008 (<xref target='RFC5890'/>, <xref target='RFC5891'/>, <xref target='RFC5892'/>, <xref target='RFC5893'/>, <xref target='RFC5894'/>), which does not use stringprep.  This migration away from stringprep for internationalized domain names has prompted other "customers" of stringprep to consider new approaches to the preparation and comparison of internationalized strings ("PRECIS"), as described in <xref target='PROBLEM'/>.</t>
       <t>This document proposes a technical framework for a post-stringprep approach to the preparation and comparison of internationalized strings in application protocols.  The framework is based on several principles:</t>
       <t>
         <list style='numbers'>
@@ -65,19 +65,19 @@
         <list style="symbols">
           <t>Application protocols will be version-agile with regard to the Unicode database.</t>
           <t>Implementers will be able to share code point tables and software code across application protocols.</t>
-          <t>End users will have a better knowledge of which code points are acceptable in various contexts (instead of a specific profile per protocol as with stringprep).</t>
+          <t>End users will build more accurate expectations about the code points that are acceptable in various contexts.</t>
         </list>
       </t>
       <t>Although this framework is similar to IDNA2008, it defines additional string classes to meet the needs of common application protocols.</t>
       <t>Note: This document is discussed on the precis@ietf.org mailing list.</t>
     </section>
     <section title="String Classes" anchor='classes'>
-      <t>IDNA2008 essentially defines something that in this document we would call a base string class of "domain name".  We propose three additional base string classes for use in application protocols:</t>
+      <t>IDNA2008 essentially defines a base string class of "domain name".  We propose three additional base string classes for use in application protocols:</t>
       <t>
         <list style='hanging'>
           <t hangText="Nameything:">a word or set of words that is used to identify or address a network entity such as a user, an account, a venue (e.g., a chatroom), an information source (e.g., a data feed), or a collection of data (e.g., a file).<vspace blankLines='1'/></t>
           <t hangText="Wordything:">a sequence of letters, numbers, and symbols that is used as a secret for access to some resource on a network (e.g., a password or passphrase).<vspace blankLines='1'/></t>
-          <t hangText="Stringything:">a sequence of letters, numbers, symbols, spaces, and other code points that is used for more expressive purposes in an application protocol.</t>
+          <t hangText="Stringything:">a sequence of letters, numbers, symbols, spaces, and other code points that is used for more expressive purposes in an application protocol (e.g., a nickname in a chatroom).</t>
         </list>
       </t>
       <t>The following subsections discuss these string classes in more detail, with reference to the dimensions described in Section 3 of <xref target='PROBLEM'/>.</t>
@@ -113,19 +113,19 @@
           <t>Application protocols that use the nameything class MUST specify whether uppercase and titlecase code points are to be (a) preserved or (b) mapped to lowercase.</t>
         </section>
         <section title='Normalization' anchor='classes-nameything-normalization'>
-          <t>Application protocols that use the nameything class MUST specify which Unicode normalization form (D, KD, C, or KC) is to be applied (see <xref target='UAX15'/>.  In accordance with <xref target='RFC5198'/>, normalization form C (NFC) is RECOMMENDED.</t>
+          <t>Application protocols that use the nameything class MUST specify which Unicode normalization form (D, KD, C, or KC) is to be applied (see <xref target='UAX15'/>).  In accordance with <xref target='RFC5198'/>, normalization form C (NFC) is RECOMMENDED.</t>
         </section>
       </section>
 
       <section title="Wordything" anchor="classes-wordything">
         <t>Many application technologies need a special class of strings that can be used to communicate secrets of the kind that are typically used as passwords or passphrases.  We group such things into a bucket called "wordythings" having the following features.</t>
-        <t>Note: Although some application protocols use passwords and passphrases directly, others re-use technologies that directly process passwords (e.g., the Simple Authentication and Security Layer <xref target='RFC4422'/>).</t>
+        <t>Note: Some application protocols use passwords and passphrases directly, whereas others re-use technologies that process passwords (e.g., the Simple Authentication and Security Layer <xref target='RFC4422'/>).</t>
         <section title='Valid' anchor='classes-wordything-valid'>
           <t>
             <list style='symbols'>
               <t>Letters and numbers, i.e., the LetterDigits ("A") category first defined in <xref target='RFC5892'/> and listed here under <xref target='A'/>.</t>
               <t>Code points in the range U+0021 through U+007E, i.e., the ASCII7 ("K") rule defined under <xref target='K'/>.  These code points are valid even if they would otherwise be disallowed according to the property-based rules specified in the next section.</t>
-              <t>Any character that has a compatibility equivalent, i.e., the HasCompat ("Q") category defined under <xref target='Q'/>.  These code points are disallowed even if they would otherwise be valid according to the other property-based rules specified in this section.</t>
+              <t>Any character that has a compatibility equivalent, i.e., the HasCompat ("Q") category defined under <xref target='Q'/>.</t>
             </list>
           </t>
         </section>
@@ -138,7 +138,7 @@
               <t>Punctuation characters, i.e., the Punctuation ("P") category defined under <xref target='P'/>.</t>
             </list>
           </t>
-          <t>### OPEN ISSUE: Why not allow symbols and punctation characters in wordythings? ###</t>
+          <t>### OPEN ISSUE: Why not allow symbols and punctuation characters in wordythings? ###</t>
         </section>
         <section title='Unassigned' anchor='classes-wordything-unassigned'>
           <t>Any code points that are not yet assigned in the Unicode character set shall be considered Unassigned for purposes of PRECIS string classes.</t>
@@ -147,15 +147,15 @@
           <t>Any wordything that contains a right-to-left code point shall be considered a right-to-left string.</t>
         </section>
         <section title='Case Mapping' anchor='classes-wordything-mapping'>
-          <t>To maximize the entropy of passwords and passphrases, uppercase and titlecase code points are be protocol-valid and MUST NOT be mapped to their lowercase equivalents.</t>
+          <t>To maximize the entropy of passwords and passphrases, uppercase and titlecase code points are protocol-valid and MUST NOT be mapped to their lowercase equivalents.</t>
         </section>
         <section title='Normalization' anchor='classes-wordything-normalization'>
-          <t>Application protocols that use the wordything class MUST specify which Unicode normalization form (D, KD, C, or KC) is to be applied.  In accordance with <xref target='RFC5198'/>, normalization form C (NFC) is RECOMMENDED.</t>
+          <t>Application protocols that use the wordything class MUST specify which Unicode normalization form (D, KD, C, or KC) is to be applied (see <xref target='UAX15'/>).  In accordance with <xref target='RFC5198'/>, normalization form C (NFC) is RECOMMENDED.</t>
         </section>
       </section>
 
       <section title="Stringything" anchor="classes-stringything">
-        <t>Some application technologies need a special class of strings that can be used in a free-form way.  We group such things into a bucket called "stringythings" having the following features.</t>
+        <t>Some application technologies need a special class of strings that can be used in a free-form way (e.g., a nickname in a chatroom).  We group such things into a bucket called "stringythings" having the following features.</t>
         <section title='Valid' anchor='classes-stringything-valid'>
           <t>
             <list style='symbols'>
@@ -185,13 +185,19 @@
           <t>Application protocols that use the stringything class MUST specify whether uppercase and titlecase code points are to be (a) preserved or (b) mapped to lowercase.</t>
         </section>
         <section title='Normalization' anchor='classes-stringything-normalization'>
-          <t>Application protocols that use the stringything class MUST specify which Unicode normalization form (D, KD, C, or KC) is to be applied.  In accordance with <xref target='RFC5198'/>, normalization form C (NFC) is RECOMMENDED.</t>
+          <t>Application protocols that use the stringything class MUST specify which Unicode normalization form (D, KD, C, or KC) is to be applied (see <xref target='UAX15'/>).  In accordance with <xref target='RFC5198'/>, normalization form C (NFC) is RECOMMENDED.</t>
         </section>
       </section>
     </section>
 
     <section title="Subclassing" anchor="subclassing">
-      <t>Application protocols are allowed to subclass the base string classes specified in this document.  As the word "subclass" implies, a subclass MUST NOT add as valid any code points or code point rules that are are disallowed by the base string class.  However, a subclass MAY exclude specific code points that are included in the base string class, and MAY exclude characters matching certain Unicode properties (e.g., math symbols) that are included in the base string class.</t>
+      <t>Application protocols are allowed to subclass the base string classes specified in this document.  As the word "subclass" implies, a subclass MUST NOT add as valid any code points or code point categories that are disallowed by the base string class.  However, a subclass MAY do either of the following:</t>
+      <t>
+        <list style='numbers'>
+          <t>Exclude specific code points that are included in the base string class.</t>
+          <t>exclude characters matching certain Unicode properties (e.g., math symbols) that are included in the base string class.</t>
+        </list>
+      </t>
     </section>
 
     <section title="Code Point Properties">
@@ -209,14 +215,14 @@
         <list style="symbols">
           <t>PROTOCOL VALID: Those that are allowed to be used in any PRECIS string class (nameything, wordything, and stringything).  Code points with this property value are permitted for general use in any string class.  The abbreviated term PVALID is used to refer to this value in the rest of this document.<vspace/></t>
           <t>SPECIFIC CLASS PROTOCOL VALID: Those that are allowed to be used in specific string classes. Code points with this property value are permitted for use in specific string classes.  In the rest of this document, the abbreviated term *_PVALID is used, where * = (NAMEY, WORDY, STRINGY).<vspace/></t>
-          <t>CONTEXTUAL RULE REQUIRED: Some characteristics of the character, such as it being invisible in certain contexts or problematic in others, requires that it not be used in labels unless specific other characters or properties are present.  The abbreviated term CONTEXT is used to refer to this value in the rest of this document.  There are two subdivisions of CONTEXTUAL RULE REQUIRED, one for Join_controls (called CONTEXTJ) and for other characters (called CONTEXTO).<vspace/></t>
+          <t>CONTEXTUAL RULE REQUIRED: Some characteristics of the character, such as it being invisible in certain contexts or problematic in others, requires that it not be used in labels unless specific other characters or properties are present.  The abbreviated term CONTEXT is used to refer to this value in the rest of this document.  There are two subdivisions of CONTEXTUAL RULE REQUIRED, the first for Join_controls (called CONTEXTJ) and the second for other characters (called CONTEXTO).<vspace/></t>
           <t>DISALLOWED: Those that must not be included in any string class.  Code points with this property value are not permitted in any string class.<vspace/></t>
           <t>SPECIFIC CLASS DISALLOWED: Those that are not to be included in a specific string class.  Code points with this property value are not permitted in one of the string classes but might be permitted in others.  In the rest of this document, the abbreviated term *_DISALLOWED is used, where * = (NAMEY, WORDY, STRINGY).<vspace/></t>
           <t>UNASSIGNED: Those code points that are not designated (i.e. are unassigned) in the Unicode Standard.<vspace/></t>
         </list>
       </t>
-      <t>The mechanisms described here allow determination of the value of the property for future versions of Unicode (including characters added after Unicode 5.2 or 6.0 depending on the category, since some categories are re-used here from IDNA2008).  Changes in Unicode properties that do not affect the outcome of this process do not affect this framework.  For example, a character can have its Unicode General_Category value <xref target='UNICODE'/> change from So to Sm, or from Lo to Ll, without affecting the algorithm results.  Moreover, even if such changes were to result, the <xref target="G">BackwardCompatible list</xref> can be adjusted to ensure the stability of the results.</t>
-      <t>Some code points need to be allowed in exceptional circumstances, but should be excluded in all other cases; these rules are also described in other documents.  The most notable of these are the Join Control characters, U+200D ZERO WIDTH JOINER and U+200C ZERO WIDTH NON-JOINER.  Both of them have the derived property value CONTEXTJ.  A character with the derived property value CONTEXTJ or CONTEXTO (CONTEXTUAL RULE REQUIRED) is not to be used unless an appropriate rule has been established and the context of the character is consistent with that rule.  It is invalid to either generate a string containing these characters unless such a contextual rule is found and satisfied.  Please see Appendix A of <xref target='RFC5892'/> for more information.</t>
+      <t>The mechanisms described here allow determination of the value of the property for future versions of Unicode (including characters added after Unicode 5.2 or 6.0 depending on the category, since some categories in this document are re-used from IDNA2008).  Changes in Unicode properties that do not affect the outcome of this process do not affect this framework.  For example, a character can have its Unicode General_Category value <xref target='UNICODE'/> change from So to Sm, or from Lo to Ll, without affecting the algorithm results.  Moreover, even if such changes were to result, the <xref target="G">BackwardCompatible list</xref> can be adjusted to ensure the stability of the results.</t>
+      <t>Some code points need to be allowed in exceptional circumstances, but should be excluded in all other cases; these rules are also described in other documents.  The most notable of these are the Join Control characters, U+200D ZERO WIDTH JOINER and U+200C ZERO WIDTH NON-JOINER.  Both of them have the derived property value CONTEXTJ.  A character with the derived property value CONTEXTJ or CONTEXTO (CONTEXTUAL RULE REQUIRED) is not to be used unless an appropriate rule has been established and the context of the character is consistent with that rule.  It is invalid to generate a string containing these characters unless such a contextual rule is found and satisfied.  Please see Appendix A of <xref target='RFC5892'/> for more information.</t>
     </section>
 
     <section anchor="Categories" title="Category Definitions Used to Calculate Derived Property Value">
@@ -224,7 +230,7 @@
       <t>
         <list style='numbers'>
           <t>Characters are placed in one or more character categories based on either core properties defined by the Unicode Standard or by treating the code point as an exception and addressing the code point by its code point value.  These categories are not mutually exclusive.</t>
-          <t>Set operations are used with these categories to determine the values for an string class specific property. Those operations are specified under <xref target="PropertyCalculation" />.</t>
+          <t>Set operations are used with these categories to determine the values for an string class specific property. These operations are specified under <xref target="PropertyCalculation" />.</t>
         </list>
       </t>
       <t>(Note: Unicode property names and property value names might have short abbreviations, such as gc for the General_Category property, and Ll for the Lowercase_Letter property value of the gc property.)</t>
@@ -304,7 +310,7 @@ D: Block(cp) is in {Combining Diacritical Marks for Symbols,
           -->
         </section>
         <section anchor="E" title="LDH (E)">
-          <t>NOTE: This category is defined in <xref target='RFC5892'/> but not used in PRECIS.  See the "ASCII7 (K)" category below for a slightly more inclusive category used in non-IDN identifiers.</t>
+          <t>NOTE: This category is defined in <xref target='RFC5892'/> but not used in PRECIS.  See the "ASCII7 (K)" category below for a more inclusive category used in non-IDN identifiers.</t>
           <!--
           <figure>
             <artwork>
@@ -424,7 +430,7 @@ J: General_Category(cp) is in {Cn} and
           <t>This category consists of code points in the Unicode character set that are not (yet) assigned. It should be noted that Unicode distinguishes between 'unassigned code points' and 'unassigned characters'. The unassigned code points are all but (Cn - Noncharacters), while the unassigned *characters* are all but (Cn + Cs).</t>
         </section>
         <section anchor="K" title="ASCII7 (K)">
-          <t>This category exempts most "ASCII7" characters from other rules that might be applied during PRECIS processing, on the assumption that they are in such wide use that disallowing them would be counter-productive.</t>
+          <t>This category exempts most "ASCII7" characters from other rules that might be applied during PRECIS processing, on the assumption that these code points are in such wide use that disallowing them would be counter-productive.</t>
           <figure>
             <artwork>
 K: cp is in {0021..007E}
@@ -547,7 +553,7 @@ Else DISALLOWED;
     <section title="IANA Considerations">
       <section anchor="derivedregistry" title="PRECIS Derived Property Value Registry">
         <t>IANA is to create a PRECIS-specific registry with the Derived Properties for the versions of Unicode that are released after (and including) version 6.0.  The derived property value is to be calculated in cooperation with a designated expert <xref target='RFC5226'/> according to the specifications in <xref target="Categories" /> and <xref target="PropertyCalculation" />, and not by copying the non-normative table found in <xref target="Codepoints" />.</t>
-        <t>If during this process (creation of the table of derived property values) followed by a designated expert review, either non-backward compatible changes to the table of derived properties are discovered, or otherwise problems during the creation of the table arises, that is to be flagged to the IESG. Changes to the rules (as specified in <xref target="Categories" /> and <xref target="PropertyCalculation" />), including <xref target="G">BackwardCompatible</xref> (a set that is at release of this document is empty), require IETF Review, as described in <xref target='RFC5226'/>.</t>
+        <t>If during this process (creation of the table of derived property values) followed by a designated expert review, either non-backward compatible changes to the table of derived properties are discovered, or otherwise problems during the creation of the table arises, that is to be flagged to the IESG. Changes to the rules (as specified in <xref target="Categories" /> and <xref target="PropertyCalculation" />) require IETF Review, as described in <xref target='RFC5226'/>.</t>
       </section>
       <section anchor="contextregistry" title="PRECIS Contextual Rules Registry">
         <t>For characters that are defined in the IDNA derived property value registry as CONTEXTO or CONTEXTJ and that therefore require a contextual rule, IANA will create and maintain a list of approved contextual rules.  Additions or changes to these rules require IETF Review, as described in <xref target='RFC5226'/>.</t>
