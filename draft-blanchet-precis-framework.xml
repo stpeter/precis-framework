@@ -45,10 +45,10 @@
       </address>
     </author>
 
-    <date day="8" month="July" year="2011"/>
+    <date day="11" month="July" year="2011"/>
 
     <abstract>
-      <t>Application protocols that make use of Unicode code points in protocol strings need to prepare such strings in order to perform comparison operations (e.g., for purposes of authentication or authorization).  In general, this problem has been labeled the "preparation and comparison of internationalized strings" or "PRECIS".  This document defines a framework that enables application protocols to prepare various classes of strings in a way that depends on the properties of Unicode code points.  Because this framework does not depend on large tables of Unicode code points as in stringprep (RFC 3454), it is more agile with regard to changes in the underlying Unicode database and thus provides improved flexibility to application protocols.  A specification that reuses this framework either can directly use the base string classes defined in this document or can subclass the base string classes as needed.  This framework uses an approach similar to that of the revised internationalized domain names in applications (IDNA) technology (RFC 5890, RFC 5891, RFC 5892, RFC 5893, RFC 5894) and thus adheres to the high-level design goals described in RFC 4690, albeit for PRECISA technologies.  This document obsoletes RFC 3454.</t>
+      <t>Application protocols that make use of Unicode code points in protocol strings need to prepare such strings in order to perform comparison operations (e.g., for purposes of authentication or authorization).  In general, this problem has been labeled the "preparation and comparison of internationalized strings" or "PRECIS".  This document defines a framework that enables application protocols to prepare various classes of strings in a way that depends on the properties of Unicode code points.  Because this framework does not depend on large tables of Unicode code points as in stringprep (RFC 3454), it is more agile with regard to changes in the underlying Unicode database and thus provides improved flexibility to application protocols.  A specification that uses this framework either can directly use the base string classes defined in this document or can subclass the base string classes as needed.  This framework uses an approach similar to that of the revised internationalized domain names in applications (IDNA) technology (RFC 5890, RFC 5891, RFC 5892, RFC 5893, RFC 5894) and thus adheres to the high-level design goals described in RFC 4690, albeit for PRECIS technologies.  This document obsoletes RFC 3454.</t>
     </abstract>
 
   </front>
@@ -104,7 +104,7 @@
           <t hangText='Normalization:'>defines which Unicode normalization form (D, KD, C, or KC) is to be applied (see <xref target='UAX15'/>).</t>
         </list>
       </t>
-      <t>This document defines the valid, disallowed, and unassigned rules.  Application protocols that use the PRECIS string classes MUST define the directionality, casemapping, and normalization rules, as further described under <xref target='reuse'/>.</t>
+      <t>This document defines the valid, disallowed, and unassigned rules.  Application protocols that use the PRECIS string classes MUST define the directionality, casemapping, and normalization rules, as further described under <xref target='iana-usage'/>.</t>
 
       <section title="NameClass" anchor="classes-name">
         <t>Most application technologies need a special class of strings that can be used to refer to, include, or communicate things like usernames, chatroom names, file names, and data feed names.  We group such things into a bucket called "NameClass" having the following features.</t>
@@ -218,8 +218,8 @@
       </section>
     </section>
 
-    <section title="Reuse of PRECIS String Classes" anchor="reuse">
-      <section title="Principles" anchor="reuse-principles">
+    <section title="Use of PRECIS String Classes" anchor="use">
+      <section title="Principles" anchor="use-principles">
         <t>This document defines the valid, disallowed, and unassigned rules.  Application protocols that use the PRECIS string classes MUST define the directionality, casemapping, and normalization rules.  Such definitions MUST at a minimum specify the following:</t>
         <t>
           <list style='hanging'>
@@ -229,7 +229,7 @@
           </list>
         </t>
       </section>
-      <section title="Subclassing" anchor="reuse-subclassing">
+      <section title="Subclassing" anchor="use-subclassing">
         <t>Application protocols are allowed to subclass the base string classes specified in this document.  As the word "subclass" implies, a subclass MUST NOT add as valid any code points or character categories that are disallowed by the base string class.  However, a subclass MAY do either of the following:</t>
         <t>
           <list style='numbers'>
@@ -238,20 +238,8 @@
           </list>
         </t>
       </section>
-      <section title="Template" anchor="reuse-template">
-        <t>The following template can be used by application protocols that reuse the PRECIS string classes.</t>
-        <t>
-          <list style='hanging'>
-            <t hangText='Base Class:'>[which base class is being reused]</t>
-            <t hangText='Subclassing:'>[whether the base class is being subclassed]</t>
-            <t hangText='Directionality:'>[the behavioral rule for handling of right-to-left code points]</t>
-            <t hangText='Casemapping:'>[the behavioral rule for handling of case]</t>
-            <t hangText='Normalization:'>[which Unicode normalization form is applied]</t>
-          </list>
-        </t>
-      </section>
-      <section title="Registration" anchor="reuse-registration">
-        <t>### OPEN ISSUE: Perhaps define an IANA registry for application protocols that reuse the PRECIS string classes. ###</t>
+      <section title="Registration" anchor="use-registration">
+        <t>Application protocols that use the PRECIS string classes MUST register with the IANA as described under <xref target='iana-usage'/>.  This is especially important for protocols that subclass the PRECIS string classes.</t>
       </section>
     </section>
 
@@ -606,24 +594,58 @@ Else DISALLOWED;
         <t>The list of code points that can be found in <xref target="codepoints" /> is non-normative.  Instead, the rules defined by <xref target="categories"/> and <xref target="PropertyCalculation"/> are normative, and any tables are derived from the rules.</t>
     </section>
 
-    <section title="IANA Considerations">
-      <section anchor="derivedregistry" title="PRECIS Derived Property Value Registry">
-        <t>IANA is to create a PRECIS-specific registry with the Derived Properties for the versions of Unicode that are released after (and including) version 6.0.  The derived property value is to be calculated in cooperation with a designated expert <xref target='RFC5226'/> according to the specifications in <xref target="categories" /> and <xref target="PropertyCalculation" />, and not by copying the non-normative table found in <xref target="codepoints" />.</t>
+    <section title="IANA Considerations" anchor='iana'>
+      <section anchor="iana-derived" title="PRECIS Derived Property Value Registry">
+        <t>IANA is requested to create a PRECIS-specific registry with the Derived Properties for the versions of Unicode that are released after (and including) version 6.0.  The derived property value is to be calculated in cooperation with a designated expert <xref target='RFC5226'/> according to the specifications in <xref target="categories" /> and <xref target="PropertyCalculation" />, and not by copying the non-normative table found in <xref target="codepoints" />.</t>
         <t>If during this process (creation of the table of derived property values) followed by a designated expert review, either non-backward compatible changes to the table of derived properties are discovered, or otherwise problems during the creation of the table arises, that is to be flagged to the IESG. Changes to the rules (as specified in <xref target="categories" /> and <xref target="PropertyCalculation" />) require IETF Review, as described in <xref target='RFC5226'/>.</t>
       </section>
-      <section anchor="contextregistry" title="PRECIS Contextual Rules Registry">
+      <section anchor="iana-context" title="PRECIS Contextual Rules Registry">
         <t>For characters that are defined in the IDNA derived property value registry as CONTEXTO or CONTEXTJ and that therefore require a contextual rule, IANA will create and maintain a list of approved contextual rules.  Additions or changes to these rules require IETF Review, as described in <xref target='RFC5226'/>.</t>
         <t>Appendix A (TBD) contains further discussion and a table from which that registry can be initialized.</t>
       </section>
+      <section anchor="iana-usage" title="PRECIS Usage Registry">
+        <t>IANA is requested to create a registry of application protocols that use the base string classes.  The registry shall include one entry for each use (e.g., if a protocol uses both the NameClass and the FreeClass then the specification for that protocol would submit two registrations).</t>
+        <t>The registration template is as follows:</t>
+        <t>
+          <list style='hanging'>
+            <t hangText='Base Class:'>[which base class is being used]</t>
+            <t hangText='Subclassing:'>[whether the base class is being subclassed and, if so, where documentation of the subclassing can be found]</t>
+            <t hangText='Directionality:'>[the behavioral rule for handling of right-to-left code points]</t>
+            <t hangText='Casemapping:'>[the behavioral rule for handling of case]</t>
+            <t hangText='Normalization:'>[which Unicode normalization form is applied]</t>
+          </list>
+        </t>
+      </section>
     </section>
 
-    <section title="Security Considerations">
-      <t>This section has yet to be defined. However, the security considerations provided in <xref target='RFC5890'/> provide a good starting point.</t>
+    <section title="Security Considerations" anchor='security'>
+      <section title="General Issues" anchor='security-gen'>
+        <t>The security of applications that use this framework can depend in part on the proper preparation and comparison of internationalized strings.  For example, such strings can be used to make authentication and authorization decisions; the security of an application could be compromised if an entity providing a given string is connected to the wrong account or online resource based on different interpretations of the string.</t>
+        <t>Specifications for application protocols that use this framework MUST describe how internationalized strings are used in the protocol, including the security implications of any false positives and false negatives that might result from various comparison operations (for some helpful guidelines, refer to <xref target='IDENTIFIER'/>).</t>
+        <t>(However, the security considerations in <xref target='RFC5890'/> and <xref target='UTR36'/> provide a good starting point.)</t>
+      </section>
+      <section title="Local Character Set Issues" anchor='security-charset'>
+        <t>When systems use local character sets other than ASCII and Unicode, these specifications leave the problem of converting between the local character set and Unicode up to the application or local system.  If different applications (or different versions of one application) implement different rules for conversions among coded character sets, they could interpret the same name differently and contact different servers.  This problem is not solved by security protocols, such as Transport Layer Security (TLS) <xref target='RFC5246'/> and the Simple Authentication and Security Layer (SASL) <xref target='RFC4422'/>, that do not take local character sets into account.</t>
+      </section>
+      <section title="Visually Similar Characters" anchor='security-confusables'>
+        <t>Some characters are visually similar and thus can cause confusion among humans.  Such characters are often called "confusable characters" or "confusables".</t>
+        <t>The problem of confusable characters is not necessarily caused by the use of Unicode code points outside the US-ASCII range.  For example, in some presentations and to some individuals the string "ju1iet" (spelled with the Arabic numeral one as the third character) might appear to be the same as "juliet" (spelled with the lowercase version of the letter "L"), especially on casual visual inspection.  This phenomenon is sometimes called "typejacking".</t>
+        <t>However, the problem is made more serious by introducing the full range of Unicode code points into protocol strings.  For example, the characters U+13DA U+13A2 U+13B5 U+13AC U+13A2 U+13AC U+13D2 from the Cherokee block look similar to the US-ASCII characters "STPETER" as they might look when presented in a "creative" font.</t>
+        <t>In some examples of confusable characters, it is unlikely that the average human could tell the difference between the real string and the fake string.  (Indeed, there is no programmatic way to distinguish with full certainty which is the fake string and which is the real string; in some contexts, the string formed of Cherokee characters might be the real string and the string formed of US-ASCII characters might be the fake string.)  Because PRECIS-compliant strings can contain almost any properly encoded Unicode code point, it can be relatively easy to fake or mimic some strings in systems that use the PRECIS framework.  The fact that some strings are easily confused introduces security vulnerabilities of the kind that have also plagued the World Wide Web, specifically the phenomenon known as phishing.</t>
+        <t>Despite the fact that some specific suggestions about identification and handling of confusable characters appear in the Unicode Security Considerations <xref target='UTR36'/>, it is also true (as noted in <xref target='RFC5890'/>) that "there are no comprehensive technical solutions to the problems of confusable characters".  Because it is impossible to map visually similar characters without a great deal of context (such as knowing the fonts used), the PRECIS framework does nothing to map similar-looking characters together, nor does it prohibit some characters because they look like others.</t>
+        <t>However, specifications for application protocols that use this framework MUST describe how confusable characters can be used to compromise the security of systems that use the protocol in question, and any protocol-specific suggestions for overcoming those threats.  The following recommendations are appropriate:</t>
+        <t>
+          <list style='numbers'>
+            <t>An application service SHOULD define a policy that specifies the scripts or blocks of characters that the service will allow to be registered (e.g., in an account name) or stored (e.g., in a file name).  Such a policy SHOULD be informed by the languages and scripts that are used to write registered account names; in particular, to reduce confusion, the service SHOULD forbid registration or storage of stings that contain characters from more than one script and to restrict registrations to characters drawn from a very small number of scripts (e.g., scripts that are well-understood by the administrators of the service, to improve manageability).<vspace blankLines='1'/></t>
+            <t>User-oriented application software SHOULD define a policy that specifies how internationalized strings will be presented to a human user.  Because every human user of such software has a preferred language or a small set of preferred languages, the software SHOULD gather that information either explicitly from the user or implicitly via the operating system of the user's device.  Furthermore, because most languages are typically represented by a single script or a small set of scripts, and because and most scripts are typically contained in one or more blocks of characters, the software SHOULD warn the user when presenting a string that mixes characters from more than one script or block, or that uses characters outside the normal range of the user's preferred language(s).  (Such a recommendation is not intended to discourage communication across different communities of language users; instead, it recognizes the existence of such communities and encourages due caution when presenting unfamiliar scripts or characters to human users.)</t>
+          </list>
+        </t>
+      </section>
     </section>
 
     <section title="Acknowledgements">
       <t>The authors would like to acknowledge the comments and contributions of the following people: David Black, Mark Davis, Alan DeKok, Martin Duerst, Patrik Faltstrom, Ted Hardie, Joe Hildebrand, Paul Hoffman, Jeffrey Hutzelman, Simon Josefsson, John Klensin, Alexey Melnikov, Pete Resnick, Andrew Sullivan, and Dave Thaler.</t>
-      <t>Some algorithms and textual descriptions have been borrowed from <xref target='RFC5892'/>.</t>
+      <t>Some algorithms and textual descriptions have been borrowed from <xref target='RFC5892'/>.  Some text regarding security has been borrowed from <xref target='RFC5890'/> and <xref target='XMPP-ADDR'/>.</t>
     </section>
 
 <!--
@@ -922,13 +944,19 @@ Else DISALLOWED;
 -->
 
     <section anchor="codepoints" title="Codepoints 0x0000 - 0x10FFFF">
+      <t>To follow.</t>
+      <!--
       <t>If one applies <xref target="PropertyCalculation">the rules</xref> to the code points 0x0000 to 0x10FFFF to Unicode 6.0, the result is as follows.</t>
       <t>NOTE: This list is non-normative, and only included for illustrative purposes.  Specifically, what is displayed in the third column is not the formal name of the code point (as defined in <xref target='UNICODE'/>).  There are differences, for example with regard to the code points that have the code point value as part of the name (example: CJK UNIFIED IDEOGRAPH-4E00) and the naming of Hangul syllables.  However, for many code points, what you see is the official name.</t>
+      -->
 
       <section title="Codepoints in Unicode Character Database (UCD) format">
+        <t>To follow.</t>
+        <!--
         <figure><artwork>
 0000..10FFFF; TBD! 
         </artwork></figure>
+        -->
       </section>
     </section>
   </middle>
@@ -1013,12 +1041,26 @@ Else DISALLOWED;
 <author initials='J' surname='Klensin' fullname='John Klensin'>
     <organization />
 </author>
-<date month='April' day='21' year='2011' />
+<date month='July' day='9' year='2011' />
 <abstract><t>This document provides a glossary of terms used in the IETF when discussing internationalization.  The purpose is to help frame discussions of internationalization in the various areas of the IETF and to help introduce the main concepts to IETF participants.</t></abstract>
 </front>
-<seriesInfo name='Internet-Draft' value='draft-hoffman-rfc3536bis-02' />
+<seriesInfo name='Internet-Draft' value='draft-hoffman-rfc3536bis-06' />
 <format type='TXT'
-        target='http://www.ietf.org/internet-drafts/draft-hoffman-rfc3536bis-02.txt' />
+        target='http://www.ietf.org/internet-drafts/draft-hoffman-rfc3536bis-06.txt' />
+</reference>
+
+<reference anchor='IDENTIFIER'>
+<front>
+<title>Issues in Identifier Comparison for Security Purposes</title>
+<author initials='D' surname='Thaler' fullname='Dave Thaler'>
+    <organization />
+</author>
+<date month='July' day='2' year='2011' />
+<abstract><t>Identifiers such as hostnames, URIs/IRIs, and email addresses are often used in security contexts to identify security principals and resources.  In such contexts, an identifier supplied via some protocol is often compared against some policy to make security decisions such as whether the principal may access the resource, what level of authentication or encryption is required, etc.  If the parties involved in a security decision use different algorithms to compare identifiers, then failure scenarios ranging from denial of service to elevation of privilege can result.</t></abstract>
+</front>
+<seriesInfo name='Internet-Draft' value='draft-iab-identifier-comparison-00' />
+<format type='TXT'
+        target='http://www.ietf.org/internet-drafts/draft-iab-identifier-comparison-00.txt' />
 </reference>
 
 <reference anchor='PROBLEM'>
@@ -1115,6 +1157,20 @@ Else DISALLOWED;
 <format type='TXT' octets='66160' target='http://www.rfc-editor.org/rfc/rfc5226.txt' />
 </reference>
 
+<reference anchor='RFC5246'>
+<front>
+<title>The Transport Layer Security (TLS) Protocol Version 1.2</title>
+<author initials='T.' surname='Dierks' fullname='T. Dierks'>
+<organization /></author>
+<author initials='E.' surname='Rescorla' fullname='E. Rescorla'>
+<organization /></author>
+<date year='2008' month='August' />
+<abstract>
+<t>This document specifies Version 1.2 of the Transport Layer Security (TLS) protocol.  The TLS protocol provides communications security over the Internet.  The protocol allows client/server applications to communicate in a way that is designed to prevent eavesdropping, tampering, or message forgery. [STANDARDS-TRACK]</t></abstract></front>
+<seriesInfo name='RFC' value='5246' />
+<format type='TXT' octets='222395' target='http://www.rfc-editor.org/rfc/rfc5246.txt' />
+</reference>
+
 <reference anchor='RFC5890'>
 <front>
 <title>Internationalized Domain Names for Applications (IDNA): Definitions and Document Framework</title>
@@ -1209,6 +1265,31 @@ Else DISALLOWED;
     </author>
     <date month="September" year="2010" />
   </front>
+</reference>
+
+<reference anchor="UTR36" target='http://unicode.org/reports/tr36/'>
+  <front>
+    <title>Unicode Technical Report #36: Unicode Security Considerations</title>
+    <author>
+      <organization>The Unicode Consortium</organization>
+    </author>
+    <date month="August" year="2010" />
+  </front>
+</reference>
+
+<reference anchor='XMPP-ADDR'>
+<front>
+<title>Extensible Messaging and Presence Protocol (XMPP): Address Format</title>
+<author initials='P' surname='Saint-Andre' fullname='Peter Saint-Andre'>
+    <organization />
+</author>
+<date month='July' day='11' year='2011' />
+<abstract><t>This document defines the format for addresses used in the Extensible Messaging and Presence Protocol (XMPP), including support for Unicode characters outside the US-ASCII range.  This document obsoletes RFC 6122.</t>
+</abstract>
+</front>
+<seriesInfo name='Internet-Draft' value='draft-saintandre-xmpp-6122bis-00' />
+<format type='TXT'
+        target='http://www.ietf.org/internet-drafts/draft-saintandre-xmpp-6122bis-00.txt' />
 </reference>
 
     </references>
