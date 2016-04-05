@@ -1,0 +1,1239 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+<?rfc sortrefs="yes"?>
+<?rfc strict="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc toc="yes"?>
+<?rfc tocdepth="4"?>
+
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7613bis-00" obsoletes="7613">
+
+  <front>
+
+    <title abbrev="PRECIS: Usernames and Passwords">Preparation, Enforcement, and Comparison of Internationalized Strings Representing Usernames and Passwords</title>
+
+    <author initials="P." surname="Saint-Andre" fullname="Peter Saint-Andre">
+      <organization>Filament</organization>
+      <address>
+        <email>peter@filament.com</email>
+        <uri>https://filament.com/</uri>
+      </address>
+    </author>
+
+    <author initials="A." surname="Melnikov" fullname="Alexey Melnikov">
+      <organization>Isode Ltd</organization>
+      <address>
+        <postal>
+          <street>5 Castle Business Village</street>
+          <street>36 Station Road</street>
+          <city>Hampton</city>
+          <region>Middlesex</region>
+          <code>TW12 2BX</code>
+          <country>United Kingdom</country>
+        </postal>
+        <email>Alexey.Melnikov@isode.com</email>
+      </address>
+    </author>
+
+    <date/>
+
+    <keyword>Username</keyword>
+    <keyword>Password</keyword>
+    <keyword>Unicode</keyword>
+    <keyword>Internationalization</keyword>
+    <keyword>i18n</keyword>
+    <keyword>Authentication</keyword>
+    <keyword>SASLprep</keyword>
+
+    <abstract>
+      <t>This document describes updated methods for handling Unicode strings
+      representing usernames and passwords.  The previous approach was known
+      as SASLprep (RFC 4013) and was based on stringprep (RFC 3454).  The
+      methods specified in this document provide a more sustainable approach
+      to the handling of internationalized usernames and passwords. The
+      preparation, enforcement, and comparison of internationalized strings
+      (PRECIS) framework, RFC 7564, obsoletes RFC 3454, and this document
+      obsoletes RFC 7613.</t>
+    </abstract>
+
+  </front>
+
+  <middle>
+
+  <section title="Introduction" anchor="intro">
+
+    <t>Usernames and passwords are widely used for authentication and
+    authorization on the Internet, either directly when provided in plaintext
+    (as in the PLAIN Simple Authentication and Security Layer (SASL)
+    mechanism <xref target='RFC4616'/> and the HTTP Basic scheme
+    <xref target='HTTP-BASIC-AUTH'/>) or indirectly
+    when provided as the input to a cryptographic algorithm such as a hash
+    function (as in the Salted Challenge Response Authentication Mechanism
+    (SCRAM) SASL mechanism <xref target='RFC5802'/> and the
+    HTTP Digest scheme <xref target='HTTP-DIGEST-AUTH'/>).</t>
+
+    <t>To increase the likelihood that the input and comparison of usernames
+    and passwords will work in ways that make sense for typical users
+    throughout the world, this document defines rules for preparing,
+    enforcing, and comparing internationalized strings that represent
+    usernames and passwords.  Such strings consist of characters from the
+    Unicode character set <xref target="Unicode"/>, with special attention to
+    characters outside the ASCII range <xref target='RFC20'/>.  The rules for
+    handling such strings are specified through profiles of the string classes
+    defined in the preparation, enforcement, and comparison of
+    internationalized strings (PRECIS) framework specification <xref
+    target='RFC7564'/>.</t>
+
+    <t>Profiles of the PRECIS framework enable software to handle Unicode
+    characters outside the ASCII range in an automated way, so that such
+    characters are treated carefully and consistently in application
+    protocols.  In large measure, these profiles are designed to protect
+    application developers from the potentially negative consequences of
+    supporting the full range of Unicode characters.  For instance, in almost
+    all application protocols it would be dangerous to treat the Unicode
+    character SUPERSCRIPT ONE (U+00B9) as equivalent to DIGIT ONE (U+0031),
+    because that would result in false positives during comparison,
+    authentication, and authorization (e.g., an attacker could easy spoof an
+    account "user1@example.com").</t>
+
+    <t>Whereas a naive use of Unicode would make such attacks trivially easy,
+    the PRECIS profile defined here for usernames generally protects
+    applications from inadvertently causing such problems.  (Similar
+    considerations apply to passwords, although here it is desirable to
+    support a wider range of characters so as to maximize entropy for purposes
+    of authentication.)</t>
+
+    <t>The methods defined here might be applicable wherever usernames or
+    passwords are used.  However, the methods are not intended for use in
+    preparing strings that are not usernames (e.g., Lightweight Directory
+    Access Protocol (LDAP) distinguished names), nor in cases where
+    identifiers or secrets are not strings (e.g., keys and
+    certificates) or require specialized handling.</t>
+
+    <t>This document obsoletes RFC 4013 (the SASLprep profile of stringprep
+    <xref target='RFC3454'/>) but can be used by technologies other than
+    SASL <xref target='RFC4422'/>, such as HTTP authentication as
+    specified in <xref target='HTTP-BASIC-AUTH'/> and <xref
+    target='HTTP-DIGEST-AUTH'/>.</t>
+
+    <t>This document does not modify the handling of internationalized strings
+    in usernames and passwords as prescribed by existing application protocols
+    that use SASLprep.  If the community that uses such an application
+    protocol wishes to modernize its handling of internationalized strings to
+    use PRECIS instead of stringprep, it needs to explicitly update the
+    existing application protocol definition (one example is <xref
+    target='XMPP-ADDR'/>, which is
+    intended to obsolete <xref target='RFC6122'/>).
+    Non-coordinated updates to protocol implementations are discouraged
+    because they can have a negative impact on interoperability and
+    security.</t>
+
+  </section>
+
+  <section title="Terminology" anchor="terms">
+    <t>Many important terms used in this document are defined in <xref
+    target='RFC5890'/>, <xref target='RFC6365'/>, <xref target='RFC7564'/>,
+    and <xref target='Unicode'/>.  The term "non-ASCII space" refers to any
+    Unicode code point having a Unicode general category of "Zs", with the
+    exception of U+0020 (here called "ASCII space").</t>
+
+    <t>As used here, the term "password" is not literally limited to a word;
+    i.e., a password could be a passphrase consisting of more than one word,
+    perhaps separated by spaces, punctuation, or other non-alphanumeric
+    characters.</t>
+
+    <t>Some SASL mechanisms (e.g., CRAM-MD5, DIGEST-MD5, and SCRAM) specify
+    that the authentication identity used in the context of such mechanisms is
+    a "simple user name" (see Section 2 of <xref target='RFC4422'/> as well as
+    <xref target='RFC4013'/>).  Various application technologies also assume
+    that the identity of a user or account takes the form of a username (e.g.,
+    authentication for the Hypertext Transfer Protocol as specified in <xref
+    target='HTTP-BASIC-AUTH'/> and <xref
+    target='HTTP-DIGEST-AUTH'/>), whether or not they use SASL.  Note
+    well that the exact form of a username in any particular SASL mechanism or
+    application technology is a matter for implementation and deployment, and
+    that a username does not necessarily map to any particular application
+    identifier (such as the localpart of an email address).</t>
+
+    <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+    "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+    "OPTIONAL" in this document are to be interpreted as described in <xref
+    target='RFC2119'/>.</t>
+
+  </section>
+
+  <section title='Usernames' anchor='username'>
+
+    <section title='Definition' anchor='username-definition'>
+      <t>This document specifies that a username is a string of Unicode code
+      points <xref target='Unicode'/>, encoded using UTF-8 <xref
+      target='RFC3629'/>, and structured as an ordered sequence of
+      "userparts". A userpart is allowed to contain only code points that
+      are in turn allowed by the PRECIS IdentifierClass defined in
+      Section 4.2 of <xref target="RFC7564"/>, and thus consists almost
+      exclusively of letters and digits. A username can consist of a
+      single userpart or a space-separated sequence of userparts.</t>
+
+      <t>The syntax for a username is defined as follows, using the Augmented
+      Backus-Naur Form (ABNF) <xref target="RFC5234"/>.</t>
+
+      <figure>
+        <artwork><![CDATA[
+   username   = userpart *(1*SP userpart)
+   userpart   = 1*(idbyte)
+                ;
+                ; an "idbyte" is a byte used to represent a 
+                ; UTF-8 encoded Unicode code point that can be
+                ; contained in a string that conforms to the 
+                ; PRECIS IdentifierClass
+                ;
+        ]]></artwork>
+      </figure>
+
+      <t>All code points and blocks not explicitly allowed in the PRECIS
+      IdentifierClass are disallowed; this includes private use characters,
+      surrogate code points, and the other code points and blocks that were
+      defined as "Prohibited Output" in <xref target='RFC4013'/>.  In
+      addition, common constructions such as "user@example.com" (e.g., the
+      Network Access Identifier from <xref target='RFC7542'/>) are allowed as
+      usernames under this specification, as they were under <xref
+      target='RFC4013'/>.</t>
+
+      <t><list style='empty'><t>Implementation Note: The username construct
+      defined in this document does not necessarily match what all deployed
+      applications might refer to as a "username" or "userid" but instead
+      provides a relatively safe subset of Unicode characters that can be
+      used in existing SASL mechanisms and in application protocols that use
+      SASL, and even in most application protocols that do not currently use
+      SASL.</t></list></t>
+
+      <t>A username MUST NOT be zero bytes in length.  This rule is to be
+      enforced after any normalization and mapping of code points.</t>
+
+      <t>In protocols that provide usernames as input to a cryptographic
+      algorithm such as a hash function, the client will need to perform
+      enforcement of the rules for the UsernameCaseMapped or
+      UsernameCasePreserved profile before applying the algorithm.</t>
+
+      <t>This specification defines two profiles for usernames: one that
+      performs case mapping and one that performs case preservation (see
+      further discussion under <xref target='username-case'/>).</t>
+
+    </section>
+
+    <section title='UsernameCaseMapped Profile' anchor='usernamecasemapped'>
+      <t>The definition of the UsernameCaseMapped profile of the
+      IdentifierClass is provided in the following sections, including
+      detailed information about preparation, enforcement, and comparison
+      (for details on the distinction between these actions,
+      refer to <xref target='RFC7564'/>).</t>
+
+      <section title="Preparation" anchor="usernamecasemapped-preparation">
+        <t>
+        An entity that prepares a string according to this profile MUST first
+        map fullwidth and halfwidth characters to their decomposition mappings
+	(see Unicode Standard Annex #11 <xref target='UAX11'/>).  This is
+        necessary because the PRECIS "HasCompat" category specified in
+        Section 9.17 of <xref target='RFC7564'/> would otherwise forbid
+        fullwidth and halfwidth characters.  After applying this
+        width-mapping rule, the entity then MUST ensure that the string
+        consists only of Unicode code points that conform to the
+        PRECIS IdentifierClass defined in
+        Section 4.2 of <xref target='RFC7564'/>.  In addition, the entity
+        then MUST encode the string as UTF-8 <xref target='RFC3629'/>.</t>
+
+      </section>
+      <section title="Enforcement" anchor="usernamecasemapped-enforcement">
+        <t>An entity that performs enforcement according to this profile
+        MUST prepare a string as described in
+        <xref target="usernamecasemapped-preparation"/> and
+        MUST also apply the rules specified below for the UsernameCaseMapped
+        profile (these rules MUST be applied in the order shown):</t>
+
+        <t>
+          <list style='numbers'>
+            <t>Width-Mapping Rule: Applied as part of preparation (see above).
+            </t>
+
+            <t>Additional Mapping Rule: There is no additional mapping
+            rule.</t>
+
+            <t>Case-Mapping Rule: Uppercase and titlecase characters MUST be
+            mapped to their lowercase equivalents, preferably using Unicode
+            Default Case Folding as defined in the Unicode Standard <xref
+            target='Unicode'/> (at the time of this writing, the algorithm is
+            specified in Chapter 3 of <xref target='Unicode7.0'/>, but the
+            chapter number might change in a future version of the Unicode
+            Standard); see further discussion in <xref
+            target='username-case'/>.</t>
+
+            <t>Normalization Rule: Unicode Normalization Form C (NFC) MUST be
+            applied to all characters.</t>
+
+            <t>Directionality Rule: Applications MUST apply the "Bidi Rule"
+            defined in <xref target='RFC5893'/> to strings that contain
+            right-to-left characters (i.e., each of the six conditions of the
+            Bidi Rule must be satisfied).</t>
+
+          </list>
+        </t>
+      </section>
+      <section title="Comparison" anchor="usernamecasemapped-comparison">
+        <t>An entity that performs comparison of two strings according to this
+        profile MUST prepare each string as specified in
+        <xref target="usernamecasemapped-preparation"/> and then
+        enforce the rules specified in
+        <xref target="usernamecasemapped-enforcement"/>.
+        The two strings are to be considered equivalent if they are an exact
+        octet-for-octet match (sometimes called "bit-string identity").</t> 
+
+      </section>
+    </section>
+
+    <section title='UsernameCasePreserved Profile' anchor='usernamecasepreserved'>
+      <t>The definition of the UsernameCasePreserved profile of the
+      IdentifierClass is provided in the following sections, including
+      detailed information about preparation, enforcement, and comparison
+      (for details on the distinction between these actions,
+      refer to <xref target='RFC7564'/>).</t>
+
+      <section title="Preparation" anchor="usernamecasepreserved-preparation">
+        <t>
+        An entity that prepares a string according to this profile MUST first
+        map fullwidth and halfwidth characters to their decomposition
+        mappings (see Unicode Standard Annex #11 <xref target='UAX11'/>).
+        This is necessary because the PRECIS "HasCompat" category specified in
+        Section 9.17 of <xref target='RFC7564'/> would otherwise forbid
+        fullwidth and halfwidth characters.  After applying this
+        width-mapping rule, the entity then MUST ensure that the string
+        consists only of Unicode code points that conform to the
+        PRECIS IdentifierClass defined in
+        Section 4.2 of <xref target='RFC7564'/>.  In addition, the entity
+        then MUST encode the string as UTF-8 <xref target='RFC3629'/>.</t>
+
+      </section>
+
+      <section title="Enforcement" anchor="usernamecasepreserved-enforcement">
+        <t>An entity that performs enforcement according to this profile MUST
+        prepare a string as described in
+        <xref target="usernamecasepreserved-preparation"/> and MUST also
+        apply the rules specified below for the UsernameCasePreserved profile
+        (these rules MUST be applied in the order shown):</t>
+
+        <t>
+          <list style='numbers'>
+            <t>Width-Mapping Rule: Applied as part of preparation (see above).
+            </t>
+
+            <t>Additional Mapping Rule: There is no additional mapping
+            rule.</t>
+
+            <t>Case-Mapping Rule: Uppercase and titlecase characters MUST NOT
+            be mapped to their lowercase equivalents; see further discussion
+            in <xref target='username-case'/>.</t>
+
+            <t>Normalization Rule: Unicode Normalization Form C (NFC) MUST be
+            applied to all characters.</t>
+
+            <t>Directionality Rule: Applications MUST apply the "Bidi Rule"
+            defined in <xref target='RFC5893'/> to strings that contain
+            right-to-left characters (i.e., each of the six conditions of the
+            Bidi Rule must be satisfied).</t>
+
+          </list>
+        </t>
+      </section>
+      <section title="Comparison" anchor="usernamecasepreserved-comparison">
+        <t>An entity that performs comparison of two strings according to this
+        profile MUST prepare each string as specified in
+        <xref target="usernamecasepreserved-preparation"/> and then
+        enforce the rules specified in
+        <xref target="usernamecasepreserved-enforcement"/>.
+        The two strings are to be considered equivalent if they are an exact
+        octet-for-octet match (sometimes called "bit-string identity").</t>
+
+      </section>
+    </section>
+
+    <section title='Case Mapping vs. Case Preservation' anchor='username-case'>
+      <t>In order to accommodate the widest range of username constructs in
+      applications, this document defines two username profiles:
+      UsernameCaseMapped and UsernameCasePreserved.  These two profiles differ
+      only in the Case-Mapping Rule and are otherwise identical.</t>
+
+      <t>Case mapping is a matter for the application protocol, protocol
+      implementation, or end deployment.  In general, this document suggests
+      that it is preferable to apply the UsernameCaseMapped profile and
+      therefore perform case mapping, because not doing so can lead to false
+      positives during authentication and authorization (as described in <xref
+      target='RFC6943'/>) and can result in confusion among end users,
+      given the prevalence of case mapping in many existing protocols and
+      applications.  However, there can be good reasons to apply the
+      UsernameCasePreserved profile and thus not perform case mapping, such as
+      backward compatibility with deployed infrastructure.</t>
+
+      <t>In particular:</t>
+      <t>
+        <list style='symbols'>
+          <t>SASL mechanisms that follow the recommendations in this document
+          MUST specify whether and when case mapping is to be applied to
+          authentication identifiers.  SASL mechanisms SHOULD delay any
+          case mapping to the last possible moment, such as when doing a
+          lookup by username, performing username comparisons, or generating a
+          cryptographic salt from a username (if the last possible moment
+          happens on the server, then decisions about case mapping can be a
+          matter of deployment policy).  In keeping with
+          <xref target='RFC4422'/>, SASL mechanisms are not to apply this or
+          any other profile to authorization identifiers, only to
+          authentication identifiers.</t>
+
+          <t>Application protocols that use SASL (such as IMAP <xref
+          target='RFC3501'/> and the Extensible Messaging and Presence
+          Protocol (XMPP) <xref target='RFC6120'/>) and that
+          directly reuse this profile MUST specify whether or not
+          case mapping is to be applied to authorization identifiers.
+          Such "SASL application protocols" SHOULD delay any case-mapping
+          of authorization identifiers to the last possible moment, which
+          happens to necessarily be on the server side (this enables
+          decisions about case mapping to be a matter of deployment
+          policy).  In keeping with <xref target='RFC4422'/>, SASL
+          application protocols are not to apply this or any other
+          profile to authentication identifiers, only to authorization
+          identifiers.</t>
+
+          <t>Application protocols that do not use SASL (such as HTTP
+          authentication with the HTTP Basic and Digest schemes as specified
+          in <xref target='HTTP-BASIC-AUTH'/> and <xref
+          target='HTTP-DIGEST-AUTH'/>) but that directly reuse this
+          profile MUST specify whether and when case mapping is to be applied
+          to authentication identifiers or authorization identifiers, or both.
+          Such "non-SASL application protocols" SHOULD delay any
+          case mapping to the last possible moment, such as when doing a
+          lookup by username, performing username comparisons, or
+          generating a cryptographic salt from a username (if the
+          last possible moment happens on the server, then decisions
+          about case mapping can be a matter of deployment policy).</t>
+
+        </list>
+      </t>
+      <t>If the specification for a SASL mechanism, SASL application protocol,
+      or non-SASL application protocol uses the UsernameCaseMapped profile, it
+      MUST clearly describe whether case mapping is to be applied at the level
+      of the protocol itself, implementations thereof, or service deployments
+      (each of these approaches can be legitimate, depending on the
+      application in question).</t> 
+
+    </section>
+
+    <section title="Application-Layer Constructs" anchor="username-app">
+      <t>Both the UsernameCaseMapped and UsernameCasePreserved profiles enable
+      an application protocol, implementation, or deployment to create
+      application-layer constructs such as a username that is a
+      space-separated set of userparts like "Firstname Middlename Lastname".
+      Although such a construct is not a profile of the PRECIS IdentifierClass
+      (because U+0020 SPACE is not allowed in the IdentifierClass), it can be
+      created at the application layer because U+0020 SPACE can be used as a
+      separator between instances of the PRECIS IdentifierClass (e.g.,
+      userparts as defined in this specification).</t>
+
+    </section>
+
+    <section title="Examples" anchor="username-examples">
+      <t>The following examples illustrate a small number of userparts (not
+      usernames) that are consistent with the format defined above (note that
+      the characters &quot;&lt;&quot; and &quot;&gt;&quot; are used here to
+      delineate the actual userparts and are not part of the userpart
+      strings).</t>
+
+      <figure align="center">
+        <artwork align="center"><![CDATA[
++--------------------------+---------------------------------+
+| # | Userpart             | Notes                           |
++--------------------------+---------------------------------+
+| 1 | <juliet@example.com> | The at-sign is allowed in the   |
+|   |                      | PRECIS IdentifierClass          |
++--------------------------+---------------------------------+
+| 2 | <fussball>           |                                 |
++--------------------------+---------------------------------+
+| 3 | <fu&#xDF;ball>       | The third character is LATIN    |
+|   |                      | SMALL LETTER SHARP S (U+00DF)   |
++--------------------------+---------------------------------+
+| 4 | <&#x3C0;>            | A userpart of GREEK SMALL       |
+|   |                      | LETTER PI (U+03C0)              |
++--------------------------+---------------------------------+
+| 5 | <&#x3A3;>            | A userpart of GREEK CAPITAL     |
+|   |                      | LETTER SIGMA (U+03A3)           |
++--------------------------+---------------------------------+
+| 6 | <&#x3C3;>            | A userpart of GREEK SMALL       |
+|   |                      | LETTER SIGMA (U+03C3)           |
++--------------------------+---------------------------------+
+| 7 | <&#x3C2;>            | A userpart of GREEK SMALL       |
+|   |                      | LETTER FINAL SIGMA (U+03C2)     |
++--------------------------+---------------------------------+
+        ]]></artwork>
+        <postamble>Table 1: A Sample of Legal Userparts</postamble>
+      </figure>
+
+      <t>Several points are worth noting.  Regarding examples 2 and 3:
+      although in German the character eszett (LATIN SMALL LETTER SHARP S
+      (U+00DF)) can mostly be used interchangeably with the two characters
+      "ss", the userparts in these examples are different and (if desired) a
+      server would need to enforce a registration policy that disallows one
+      of them if the other is registered.  Regarding examples 5, 6, and 7:
+      optional case-mapping of GREEK CAPITAL LETTER SIGMA (U+03A3) to
+      lowercase (i.e., to GREEK SMALL LETTER SIGMA (U+03C3)) during
+      comparison would result in matching the userparts in examples 5
+      and 6; however, because the PRECIS mapping rules do not account for
+      the special status of GREEK SMALL LETTER FINAL SIGMA (U+03C2), the
+      userparts in examples 5 and 7 or examples 6 and 7 would not be
+      matched during comparison.</t>
+
+      <t>The following examples illustrate strings that are not valid
+      userparts (not usernames) because they violate the format defined
+      above.</t>
+
+      <figure align="center">
+        <artwork align="center"><![CDATA[
++--------------------------+---------------------------------+
+| # | Non-Userpart String  | Notes                           |
++--------------------------+---------------------------------+
+| 8 | <foo bar>            | Space (U+0020) is disallowed in |
+|   |                      | the userpart                    |
++--------------------------+---------------------------------+
+| 9 | <>                   | Zero-length userpart            |
++--------------------------+---------------------------------+
+| 10| <henry&#x2163;>      | The sixth character is ROMAN    |
+|   |                      | NUMERAL FOUR (U+2163)           |
++--------------------------+---------------------------------+
+| 11| <&#x265A;>           | A localpart of BLACK CHESS KING | 
+|   |                      | (U+265A)                        |
++--------------------------+---------------------------------+
+        ]]></artwork>
+        <postamble>Table 2: A Sample of Strings That Violate the Userpart Rule</postamble>
+      </figure>
+
+      <t>Here again, several points are worth noting.  Regarding example 8:
+      although this is not a valid userpart, it is a valid username because
+      it is a space-separated sequence of userparts.  Regarding example 10:
+      the Unicode character ROMAN NUMERAL FOUR (U+2163) has a compatibility
+      equivalent of the string formed of LATIN CAPITAL LETTER I (U+0049) and
+      LATIN CAPITAL LETTER V (U+0056), but characters with compatibility
+      equivalents are not allowed in the PRECIS IdentifierClass.  Regarding
+      example 11: symbol characters such as BLACK CHESS KING (U+265A) are not
+      allowed in the PRECIS IdentifierClass.</t>
+
+    </section>
+
+  </section>
+
+  <section title='Passwords' anchor='password'>
+
+    <section title='Definition' anchor='password-definition'>
+      <t>This document specifies that a password is a string of Unicode code
+      points <xref target='Unicode'/>, encoded using UTF-8 <xref
+      target='RFC3629'/>, and conformant to the OpaqueString profile
+      (specified below) of the PRECIS FreeformClass defined in
+      Section 4.3 of <xref target="RFC7564"/>.</t>
+
+      <t>The syntax for a password is defined as follows, using the Augmented
+      Backus-Naur Form (ABNF) <xref target="RFC5234"/>.</t>
+
+      <figure>
+        <artwork><![CDATA[
+   password   = 1*(freebyte)
+                ;
+                ; a "freebyte" is a byte used to represent a 
+                ; UTF-8 encoded Unicode code point that can be
+                ; contained in a string that conforms to the 
+                ; PRECIS FreeformClass
+                ;
+        ]]></artwork>
+      </figure>
+      <t>All code points and blocks not explicitly allowed in the PRECIS
+      FreeformClass are disallowed; this includes private use characters,
+      surrogate code points, and the other code points and blocks defined as
+      "Prohibited Output" in Section 2.3 of RFC 4013 (when corrected per
+      <xref target="Err1812" />).</t>
+
+      <t>A password MUST NOT be zero bytes in length.  This rule is to be
+      enforced after any normalization and mapping of code points.</t>
+
+      <t><list style='empty'><t>Note: Some existing systems allow an empty
+      string in places where a password would be expected (e.g., command-line
+      tools that might be called from an automated script, or servers that
+      might need to be restarted without human intervention).  From the
+      perspective of this document (and RFC 4013 before it), these empty
+      strings are not passwords but are workarounds for the practical
+      difficulty of using passwords in certain scenarios.  The prohibition of
+      zero-length passwords is not a recommendation regarding password
+      strength (because a password of only one byte is highly insecure) but is
+      meant to prevent applications from mistakenly omitting a password
+      entirely; such an outcome is possible when internationalized
+      characters are accepted, because a non-empty sequence of
+      characters can result in a zero-length password after
+      canonicalization.</t></list></t>
+
+      <t>In protocols that provide passwords as input to a cryptographic
+      algorithm such as a hash function, the client will need to perform
+      enforcement of the rules for the OpaqueString profile before
+      applying the algorithm, because the password is not available to
+      the server in plaintext form.</t>
+
+    </section>
+
+    <section title='OpaqueString Profile' anchor='opaquestring-profile'>
+      <t>The definition of the OpaqueString profile is provided in the
+      following sections, including detailed information about preparation,
+      enforcement, and comparison (for details on the distinction
+      between these actions, refer to <xref target='RFC7564'/>).</t>
+
+      <section title="Preparation" anchor="opaquestring-profile-preparation">
+        <t>An entity that prepares a string according to this profile MUST
+        ensure that the string consists only of Unicode code points that
+        conform to the FreeformClass base string class defined in <xref
+        target='RFC7564'/>.  In addition, the entity MUST encode the string
+        as UTF-8 <xref target='RFC3629'/>.</t>
+
+      </section>
+      <section title="Enforcement" anchor="opaquestring-profile-enforcement">
+        <t>An entity that performs enforcement according to this profile MUST
+        prepare a string as described in
+        <xref target="opaquestring-profile-preparation"/> and MUST also
+        apply the rules specified below for the OpaqueString profile
+        (these rules MUST be applied in the order shown):</t>
+
+        <t>
+          <list style='numbers'>
+            <t>Width-Mapping Rule: Fullwidth and halfwidth characters MUST NOT
+            be mapped to their decomposition mappings (see Unicode Standard
+            Annex #11 <xref target='UAX11'/>).</t>
+
+            <t>Additional Mapping Rule: Any instances of non-ASCII space MUST
+            be mapped to ASCII space (U+0020); a non-ASCII space is any
+            Unicode code point having a Unicode general category of "Zs"
+            (with the exception of U+0020).</t>
+
+            <t>Case-Mapping Rule: Uppercase and titlecase characters MUST NOT
+            be mapped to their lowercase equivalents.</t>
+
+            <t>Normalization Rule: Unicode Normalization Form C (NFC) MUST be
+            applied to all characters.</t>
+
+            <t>Directionality Rule: There is no directionality rule. The "Bidi
+            Rule" (defined in <xref target='RFC5893'/>) and similar rules are
+            unnecessary and inapplicable to passwords, because they can reduce
+            the range of characters that are allowed in a string and therefore
+            reduce the amount of entropy that is possible in a password.  Such
+            rules are intended to minimize the possibility that the same
+            string will be displayed differently on a layout system set for
+            right-to-left display and a layout system set for left-to-right
+            display; however, passwords are typically not displayed at all and
+            are rarely meant to be interoperable across different layout
+            systems in the way that non-secret strings like domain names and
+            usernames are.  Furthermore, it is perfectly acceptable for opaque
+            strings other than passwords to be presented differently in
+            different layout systems, as long as the presentation is
+            consistent in any given layout system.</t>
+
+          </list>
+        </t>
+      </section>
+      <section title="Comparison" anchor="opaquestring-profile-comparison">
+        <t>An entity that performs comparison of two strings according to this
+        profile MUST prepare each string as specified in
+        <xref target="opaquestring-profile-preparation"/> and then
+        enforce the rules specified in
+        <xref target="opaquestring-profile-enforcement"/>.
+        The two strings are to be considered equivalent if they are an exact
+        octet-for-octet match (sometimes called "bit-string identity").</t> 
+
+      </section>
+    </section>
+
+    <section title="Examples" anchor="password-examples">
+      <t>The following examples illustrate a small number of passwords that
+      are consistent with the format defined above (note that the characters
+      &quot;&lt;&quot; and &quot;&gt;&quot; are used here to delineate the
+      actual passwords and are not part of the password strings).</t>
+
+      <figure align="center">
+        <artwork align="center"><![CDATA[
++------------------------------------+------------------------------+
+| # | Password                       | Notes                        |
++------------------------------------+------------------------------+
+| 12| <correct horse battery staple> | ASCII space is allowed       |
++------------------------------------+------------------------------+
+| 13| <Correct Horse Battery Staple> | Differs by case from         |
+|   |                                | example 12                   |
++------------------------------------+------------------------------+
+| 14| <&#x3C0;&#xDF;&#xE5;>          | Non-ASCII letters are OK     |
+|   |                                | (e.g., GREEK SMALL LETTER    |
+|   |                                | PI (U+03C0))                 |
++------------------------------------+------------------------------+
+| 15| <Jack of &#x2666;s>            | Symbols are OK (e.g., BLACK  |
+|   |                                | DIAMOND SUIT (U+2666))       |
++------------------------------------+------------------------------+
+| 16| <foo&#x1680;bar>               | OGHAM SPACE MARK (U+1680) is |
+|   |                                | mapped to U+0020, and thus   |
+|   |                                | the full string is mapped to |
+|   |                                | <foo bar>                    |
++------------------------------------+------------------------------+
+        ]]></artwork>
+        <postamble>Table 3: A Sample of Legal Passwords</postamble>
+      </figure>
+
+      <t>The following example illustrates a string that is not a valid
+      password because it violates the format defined above.</t>
+
+      <figure align="center">
+        <artwork align="center"><![CDATA[
++------------------------------------+------------------------------+
+| # | Password                       | Notes                        |
++------------------------------------+------------------------------+
+| 17| <my cat is a &#x9;by>          | Controls are disallowed      |
++------------------------------------+------------------------------+
+        ]]></artwork>
+      <postamble>Table 4: A String That Violates the Password Rules</postamble>
+     </figure>
+    </section>
+
+  </section>
+
+  <section title="Use in Application Protocols" anchor="use">
+    <t>This specification defines only the PRECIS-based rules for the handling
+    of strings conforming to the UsernameCaseMapped and UsernameCasePreserved
+    profiles of the PRECIS IdentifierClass, and strings conforming to the
+    OpaqueString profile of the PRECIS FreeformClass.  It is the
+    responsibility of an application protocol to specify the protocol slots in
+    which such strings can appear, the entities that are expected to enforce
+    the rules governing such strings, and at what points during
+    protocol processing or interface handling the rules need to be enforced.
+    See Section 6 of <xref target='RFC7564'/> for guidelines on using
+    PRECIS profiles in applications.</t>
+
+    <t>Above and beyond the PRECIS-based rules specified here, application
+    protocols can also define application-specific rules governing such
+    strings (rules regarding minimum or maximum length, further restrictions
+    on allowable characters or character ranges, safeguards to mitigate the
+    effects of visually similar characters, etc.), application-layer
+    constructs (see <xref target='username-app'/>), and related matters.</t>
+
+    <t>Some PRECIS profile definitions encourage entities that enforce the
+    rules to be liberal in what they accept.  However, for usernames and
+    passwords such a policy can be problematic, because it can lead to false
+    positives.  An in-depth discussion can be found in
+    <xref target='RFC6943'/>.</t>
+
+  </section>
+
+  <section title="Migration" anchor='migration'>
+
+      <t>The rules defined in this specification differ slightly from those
+      defined by the SASLprep specification <xref target='RFC4013'/>.  The
+      following sections describe these differences, along with their
+      implications for migration, in more detail.</t>
+
+    <section title='Usernames' anchor='migration-usernames'>
+      <t>Deployments that currently use SASLprep for handling usernames might
+      need to scrub existing data when they migrate to the rules defined
+      in this specification.  In particular:</t>
+
+      <t>
+        <list style='symbols'>
+          <t>SASLprep specified the use of Unicode Normalization Form KC
+          (NFKC), whereas the UsernameCaseMapped and UsernameCasePreserved
+          profiles employ Unicode Normalization Form C (NFC).  In practice,
+          this change is unlikely to cause significant problems, because NFKC
+          provides methods for mapping Unicode code points with compatibility
+          equivalents to those equivalents, whereas the PRECIS IdentifierClass
+          entirely disallows Unicode code points with compatibility
+          equivalents (i.e., during comparison, NFKC is more "aggressive" about
+          finding matches than NFC).  A few examples might suffice to indicate
+          the nature of the problem:
+
+          <list style='numbers'>
+            <t>LATIN SMALL LETTER LONG S (U+017F) is compatibility equivalent
+            to LATIN SMALL LETTER S (U+0073).</t>
+
+            <t>ROMAN NUMERAL FOUR (U+2163) is compatibility equivalent
+            to LATIN CAPITAL LETTER I (U+0049) and LATIN CAPITAL LETTER V
+            (U+0056).</t>
+
+            <t>LATIN SMALL LIGATURE FI (U+FB01) is compatibility equivalent
+            to LATIN SMALL LETTER F (U+0066) and LATIN SMALL LETTER I
+            (U+0069).</t>
+
+          </list>
+          Under SASLprep, the use of NFKC also handled the mapping of
+          fullwidth and halfwidth code points to their decomposition mappings.
+
+          <vspace blankLines='1'/>
+          For migration purposes, operators might want to search their database
+          of usernames for names containing Unicode code points with
+          compatibility equivalents and, where there is no conflict, map those
+          code points to their equivalents.  Naturally, it is possible that
+          during this process the operator will discover conflicting usernames
+          (e.g., HENRYIV with the last two characters being LATIN CAPITAL
+          LETTER I (U+0049) and LATIN CAPITAL LETTER V (U+0056)
+          vs.&nbsp;"HENRYIV" with the last character being ROMAN NUMERAL FOUR
+          (U+2163), which is compatibility equivalent to U+0049 and U+0056);
+          in these cases, the operator will need to determine how to proceed --
+          for instance, by disabling the account whose name contains a
+          Unicode code point with a compatibility equivalent.  Such cases
+          are probably rare, but it is important for operators to be aware
+          of them.</t>
+
+          <t>SASLprep mapped the "characters commonly mapped to nothing" from
+          Appendix B.1 of <xref target='RFC3454'/>) to nothing, whereas the
+          PRECIS IdentifierClass entirely disallows most of these characters,
+          which correspond to the code points from the PRECIS  "M" category
+          defined under Section 9.13 of <xref target='RFC7564'/> (with
+          the exception of MONGOLIAN TODO SOFT HYPHEN (U+1806), which was
+          "commonly mapped to nothing" in Unicode 3.2 but at the time of
+          this writing does not have a derived property of
+          Default_Ignorable_Code_Point in Unicode 7.0).  For migration
+          purposes, the operator might want to remove from usernames any
+          code points contained in the PRECIS "M" category (e.g.,
+          SOFT HYPHEN (U+00AD)).  Because these code points would have
+          been "mapped to nothing" in stringprep, in practice a user would not
+          notice the difference if, upon migration to PRECIS, the code points
+          are removed.</t>
+
+          <t>SASLprep allowed uppercase and titlecase characters, whereas the
+          UsernameCaseMapped profile maps uppercase and titlecase characters
+          to their lowercase equivalents (by contrast, the
+          UsernameCasePreserved profile matches SASLprep in this regard).  For
+          migration purposes, the operator can use either the
+          UsernameCaseMapped profile (thus losing the case information) or the
+          UsernameCasePreserved profile (thus ignoring case difference when
+          comparing usernames).</t>
+
+        </list>
+      </t>
+    </section>
+
+    <section title='Passwords' anchor='migration-passwords'>
+      <t>Depending on local service policy, migration from RFC 4013 to this
+      specification might not involve any scrubbing of data (because passwords
+      might not be stored in the clear anyway); however, service providers
+      need to be aware of possible issues that might arise during migration.
+      In particular:</t>
+
+      <t>
+        <list style='symbols'>
+          <t>SASLprep specified the use of Unicode Normalization Form KC
+          (NFKC), whereas the OpaqueString profile employs Unicode
+          Normalization Form C (NFC).  Because NFKC is more aggressive about
+          finding matches than NFC, in practice this change is unlikely to
+          cause significant problems and indeed has the security benefit of
+          probably resulting in fewer false positives when comparing
+          passwords.  A few examples might suffice to indicate the nature of
+          the problem:
+
+          <list style='numbers'>
+            <t>LATIN SMALL LETTER LONG S (U+017F) is compatibility equivalent
+            to LATIN SMALL LETTER S (U+0073).</t>
+
+            <t>ROMAN NUMERAL FOUR (U+2163) is compatibility equivalent to
+            LATIN CAPITAL LETTER I (U+0049) and LATIN CAPITAL LETTER V
+            (U+0056).</t>
+
+            <t>LATIN SMALL LIGATURE FI (U+FB01) is compatibility equivalent
+            to LATIN SMALL LETTER F (U+0066) and LATIN SMALL LETTER I
+            (U+0069).</t>
+
+          </list>
+          Under SASLprep, the use of NFKC also handled the mapping of
+          fullwidth and halfwidth code points to their decomposition mappings.
+          Although it is expected that code points with compatibility
+          equivalents are rare in existing passwords, some passwords that
+          matched when SASLprep was used might no longer work when the rules
+          in this specification are applied.</t>
+
+          <t>SASLprep mapped the "characters commonly mapped to nothing" from
+          Appendix B.1 of <xref target='RFC3454'/>) to nothing, whereas the
+          PRECIS FreeformClass entirely disallows such characters, which
+          correspond to the code points from the PRECIS "M" category defined
+          under Section 9.13 of <xref target='RFC7564'/> (with the exception
+          of MONGOLIAN TODO SOFT HYPHEN (U+1806), which was commonly mapped to
+          nothing in Unicode 3.2 but at the time of this writing is allowed by
+          Unicode 7.0).  In practice, this change will probably have no effect
+          on comparison, but user-oriented software might reject such code
+          points instead of ignoring them during password preparation.</t>
+
+        </list>
+      </t>
+    </section>
+
+  </section>
+
+  <section title="IANA Considerations" anchor="iana">
+
+    <t>IANA has made the updates described below. </t>
+
+    <section title="UsernameCaseMapped Profile" anchor="iana-usernamecasemapped">
+      <t>
+IANA has added the following entry to the "PRECIS Profiles"
+   registry.
+        <list style='hanging'>
+          <t hangText='Name:'>UsernameCaseMapped.</t>
+          <t hangText='Base Class:'>IdentifierClass.</t>
+          <t hangText='Applicability:'>Usernames in security and application
+          protocols.</t>
+
+          <t hangText='Replaces:'>The SASLprep profile of stringprep.</t>
+          <t hangText='Width-Mapping Rule:'>Map fullwidth and halfwidth
+          characters to their decomposition mappings.</t>
+
+          <t hangText='Additional Mapping Rule:'>None.</t>
+          <t hangText='Case-Mapping Rule:'>Map uppercase and titlecase
+          characters to lowercase.</t>
+
+          <t hangText='Normalization Rule:'>NFC.</t>
+          <t hangText='Directionality Rule:'>The "Bidi Rule" defined in RFC
+          5893 applies.</t>
+
+          <t hangText='Enforcement:'>To be defined by security or application
+          protocols that use this profile.</t>
+
+          <t hangText='Specification:'>RFC 7613 (this document), Section 3.2.</t>
+
+        </list>
+      </t>
+    </section>
+
+    <section title="UsernameCasePreserved Profile" anchor="iana-usernamecasepreserved">
+      <t>
+IANA has added the following entry to the "PRECIS Profiles"
+   registry.
+
+        <list style='hanging'>
+          <t hangText='Name:'>UsernameCasePreserved.</t>
+          <t hangText='Base Class:'>IdentifierClass.</t>
+          <t hangText='Applicability:'>Usernames in security and application
+          protocols.</t>
+
+          <t hangText='Replaces:'>The SASLprep profile of stringprep.</t>
+          <t hangText='Width-Mapping Rule:'>Map fullwidth and halfwidth
+          characters to their decomposition mappings.</t>
+
+          <t hangText='Additional Mapping Rule:'>None.</t>
+          <t hangText='Case-Mapping Rule:'>None.</t>
+          <t hangText='Normalization Rule:'>NFC.</t>
+          <t hangText='Directionality Rule:'>The "Bidi Rule" defined in RFC
+          5893 applies.</t>
+
+          <t hangText='Enforcement:'>To be defined by security or application
+          protocols that use this profile.</t>
+
+          <t hangText='Specification:'>RFC 7613 (this document), Section 3.3.</t>
+
+        </list>
+      </t>
+    </section>
+
+    <section title="OpaqueString Profile" anchor="iana-password">
+      <t>
+
+IANA has added the following entry to the "PRECIS Profiles"
+   registry.
+
+        <list style='hanging'>
+          <t hangText='Name:'>OpaqueString.</t>
+          <t hangText='Base Class:'>FreeformClass.</t>
+          <t hangText='Applicability:'>Passwords and other opaque strings in
+          security and application protocols.</t>
+
+          <t hangText='Replaces:'>The SASLprep profile of stringprep.</t>
+          <t hangText='Width-Mapping Rule:'>None.</t>
+          <t hangText='Additional Mapping Rule:'>Map non-ASCII space
+          characters to ASCII space.</t>
+
+          <t hangText='Case-Mapping Rule:'>None.</t>
+          <t hangText='Normalization Rule:'>NFC.</t>
+          <t hangText='Directionality Rule:'>None.</t>
+          <t hangText='Enforcement:'>To be defined by security or application
+          protocols that use this profile.</t>
+
+          <t hangText='Specification:'>RFC 7613 (this document), Section 4.2.</t>
+
+        </list>
+      </t>
+    </section>
+
+    <section title="Stringprep Profile">
+      <t>
+      The stringprep specification <xref target="RFC3454"/> did not
+      provide for entries in the "Stringprep Profiles" registry to have
+      any state except "Current" or "Not Current".  Because this document
+      obsoletes RFC 4013, which registered the SASLprep profile of
+      stringprep, IANA has marked that profile as "Not Current"
+      and cited this document as an additional reference.
+      </t>
+    </section>
+
+  </section>
+
+  <section title="Security Considerations" anchor="security">
+    <section title="Password/Passphrase Strength" anchor="security-passwords">
+      <t>The ability to include a wide range of characters in passwords and
+      passphrases can increase the potential for creating a strong password
+      with high entropy.  However, in practice, the ability to include such
+      characters ought to be weighed against the possible need to reproduce
+      them on various devices using various input methods.</t>
+
+    </section>
+    <section title="Identifier Comparison" anchor="security-id">
+      <t>The process of comparing identifiers (such as SASL simple user names,
+      authentication identifiers, and authorization identifiers) can lead to
+      either false negatives or false positives, both of which have security
+      implications.  A more detailed discussion can be found in <xref
+      target='RFC6943'/>.</t>
+
+    </section>
+    <section title="Reuse of PRECIS" anchor="security-precis">
+      <t>The security considerations described in <xref target="RFC7564"/>
+      apply to the IdentifierClass and FreeformClass base string classes
+      used in this document for usernames and passwords, respectively.</t>
+
+    </section>
+    <section title="Reuse of Unicode" anchor="security-unicode">
+      <t>The security considerations described in <xref target='UTS39'/> apply
+      to the use of Unicode characters in usernames and passwords.</t>
+
+    </section>
+  </section>
+
+  </middle>
+
+  <back>
+
+    <references title="Normative References">
+
+<?rfc include="reference.RFC.2119" ?>
+
+<?rfc include="reference.RFC.3629" ?>
+
+<?rfc include="reference.RFC.5234" ?>
+
+<?rfc include="reference.RFC.5890" ?>
+
+<?rfc include="reference.RFC.6365" ?>
+
+<?rfc include="reference.RFC.7564" ?>
+
+<reference anchor="UAX11" target='http://unicode.org/reports/tr11/'>
+  <front>
+    <title>East Asian Width</title>
+    <author>
+      <organization>Unicode Standard Annex #11</organization>
+    </author>
+<!--    <date month="June" year="2015" /> -->
+  <date/>
+  </front>
+ <seriesInfo name='edited by Ken Lunde. ' value='An integral part of The
+   Unicode Standard'/>
+</reference>
+
+<reference anchor="Unicode" target="http://www.unicode.org/versions/latest/">
+  <front>
+    <title>The Unicode Standard</title>
+    <author>
+      <organization>The Unicode Consortium</organization>
+    </author>
+    <date/>
+<!--    <date year="2015-present" /> -->
+  </front>
+</reference>
+
+<reference anchor="Unicode7.0" target="http://www.unicode.org/versions/Unicode7.0.0/">
+  <front>
+    <title>The Unicode Standard, Version 7.0.0</title>
+    <author>
+      <organization>The Unicode Consortium</organization>
+    </author>
+    <date/>
+<!--    <date year="2014" /> -->
+  </front>
+    <seriesInfo name="(Mountain View, CA: The Unicode Consortium, 2014"
+      value="ISBN 978-1-936213-09-2)"/>
+</reference>
+
+    </references>
+
+    <references title="Informative References">
+
+<!-- draft-ietf-httpauth-basicauth-update (REF) -->
+<reference anchor='HTTP-BASIC-AUTH'>
+<front>
+<title>The 'Basic' HTTP Authentication Scheme</title>
+<author initials='J' surname='Reschke' fullname='Julian Reschke'>
+    <organization />
+</author>
+<date month='February' year='2015' />
+</front>
+<seriesInfo name='Work in Progress,' value='draft-ietf-httpauth-basicauth-update-07' />
+</reference>
+
+<!-- draft-ietf-httpauth-digest (REF) -->
+<reference anchor='HTTP-DIGEST-AUTH'>
+<front>
+<title>HTTP Digest Access Authentication</title>
+<author initials='R' surname='Shekh-Yusef' fullname='Rifaat Shekh-Yusef' role="editor">
+    <organization />
+</author>
+<author initials='D' surname='Ahrens' fullname='David Ahrens'>
+    <organization />
+</author>
+<author initials='S' surname='Bremer' fullname='Sophie Bremer'>
+    <organization />
+</author>
+<date month='April' year='2015' />
+</front>
+<seriesInfo name='Work in Progress,' value='draft-ietf-httpauth-digest-19' />
+</reference>
+
+<!-- draft-ietf-xmpp-6122bis (EDIT) -->
+<reference anchor='XMPP-ADDR'>
+<front>
+<title>Extensible Messaging and Presence Protocol (XMPP): Address Format</title>
+<author initials='P' surname='Saint-Andre' fullname='Peter Saint-Andre'>
+    <organization />
+</author>
+<date month='June' year='2015' />
+</front>
+<seriesInfo name='Work in Progress,' value='draft-ietf-xmpp-6122bis-24' />
+</reference>
+
+<reference  anchor='RFC20' target='http://www.rfc-editor.org/info/rfc20'>
+<front>
+<title>ASCII format for network interchange</title>
+<author initials='V.G.' surname='Cerf' fullname='V.G. Cerf'><organization /></author>
+<date year='1969' month='October' />
+</front>
+<seriesInfo name='STD' value='80'/>
+<seriesInfo name='RFC' value='20'/>
+<seriesInfo name='DOI' value='10.17487/RFC0020'/>
+</reference>
+
+<?rfc include="reference.RFC.3454" ?>
+
+<?rfc include="reference.RFC.3501" ?>
+
+<?rfc include="reference.RFC.4013" ?>
+
+<?rfc include="reference.RFC.4422" ?>
+
+<?rfc include="reference.RFC.4616" ?>
+
+<?rfc include="reference.RFC.5802" ?>
+
+<?rfc include="reference.RFC.5891" ?>
+
+<?rfc include="reference.RFC.5893" ?>
+
+<?rfc include="reference.RFC.5894" ?>
+
+<?rfc include="reference.RFC.6120" ?>
+
+<?rfc include="reference.RFC.6122" ?>
+
+<?rfc include="reference.RFC.6943" ?>
+
+<?rfc include="reference.RFC.7542" ?>
+
+<reference anchor="UTS39" target='http://unicode.org/reports/tr39/'>
+  <front>
+    <title>Unicode Security Mechanisms</title>
+    <author>
+      <organization>Unicode Technical Standard #39</organization>
+    </author>
+<!--    <date month="June" year="2015" /> -->
+  <date/>
+  </front>
+ <seriesInfo name='edited by Mark Davis' value='and Michel Suignard'/>
+</reference>
+
+<reference anchor="Err1812" target="http://www.rfc-editor.org">
+     <front>
+       <title>Erratum ID 1812</title>
+       <author>
+         <organization>RFC Errata</organization>
+       </author>
+       <date month="" year="" />
+     </front>
+     <seriesInfo name="RFC" value="4013" />
+   </reference>
+
+    </references>
+
+    <section title="Differences from RFC 4013" anchor="diffs">
+      <t>This document builds upon the PRECIS framework defined in <xref
+      target='RFC7564'/>, which differs fundamentally from the stringprep
+      technology <xref target='RFC3454'/> used in SASLprep <xref
+      target='RFC4013'/>.  The primary difference is that stringprep profiles
+      allowed all characters except those characters that were explicitly
+      disallowed, whereas PRECIS profiles disallow all characters except
+      those characters that are explicitly allowed (this "inclusion model"
+      was originally used for internationalized domain names
+      in <xref target='RFC5891'/>; see <xref target='RFC5894'/> for further
+      discussion).  It is important to keep this distinction in mind when
+      comparing the technology defined in this document to
+      SASLprep <xref target='RFC4013'/>.</t>
+
+      <t>The following substantive modifications were made from RFC 4013.</t>
+      <t>
+        <list style='symbols'>
+          <t>A single SASLprep algorithm was replaced by three separate
+          algorithms: one for usernames with case mapping, one for usernames
+          with case preservation, and one for passwords.</t>
+
+          <t>The new preparation algorithms use PRECIS instead of a stringprep
+          profile.  The new algorithms work independently of Unicode
+          versions.</t>
+
+          <t>As recommended in the PRECIS framework, changed the Unicode
+          normalization form from NFKC to NFC.</t>
+
+          <t>Some Unicode code points that were mapped to nothing in RFC 4013
+          are simply disallowed by PRECIS.</t>
+
+        </list>
+      </t>
+    </section>
+
+    <section title="Acknowledgements" anchor="acks">
+      
+      <t>This document borrows some text from <xref target='RFC4013'/> and
+      <xref target='RFC6120'/>.</t>
+
+      <t>The following individuals provided helpful feedback on this document:
+      Marc Blanchet, Ben Campbell, Alan DeKok, Joe Hildebrand, Jeffrey
+      Hutzelman, Simon Josefsson, Jonathan Lennox, James Manger, Matt Miller,
+      Chris Newman, Yutaka OIWA, Pete Resnick, Andrew Sullivan, Nico Williams,
+      and Yoshiro YONEYA.  Nico Williams in particular deserves special
+      recognition for providing text that was used in <xref
+      target='username-case'/>.  Thanks also to Takahiro NEMOTO and Yoshiro
+      YONEYA for implementation feedback.</t>
+
+      <t>Robert Sparks and Derek Atkins reviewed the document on behalf of the
+      General Area Review Team and the Security Directorate, respectively.</t>
+
+      <t>Benoit Claise and Stephen Farrell provided helpful input during IESG
+      review.</t>
+
+      <t>Thanks to Matt Miller as document shepherd, Marc Blanchet and Yoshiro
+      YONEYA as working group chairs, and Pete Resnick and Barry Leiba as area
+      directors.</t>
+
+      <t>Peter Saint-Andre wishes to acknowledge Cisco Systems, Inc., for
+      employing him during his work on earlier draft versions of this
+      document.</t>
+      
+    </section>
+
+  </back>
+
+</rfc>
