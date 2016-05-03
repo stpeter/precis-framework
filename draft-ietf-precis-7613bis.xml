@@ -8,7 +8,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7613bis-00" obsoletes="7613">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7613bis-01" obsoletes="7613">
 
   <front>
 
@@ -68,11 +68,11 @@
     authorization on the Internet, either directly when provided in plaintext
     (as in the PLAIN Simple Authentication and Security Layer (SASL)
     mechanism <xref target='RFC4616'/> and the HTTP Basic scheme
-    <xref target='HTTP-BASIC-AUTH'/>) or indirectly
+    <xref target='RFC7617'/>) or indirectly
     when provided as the input to a cryptographic algorithm such as a hash
     function (as in the Salted Challenge Response Authentication Mechanism
     (SCRAM) SASL mechanism <xref target='RFC5802'/> and the
-    HTTP Digest scheme <xref target='HTTP-DIGEST-AUTH'/>).</t>
+    HTTP Digest scheme <xref target='RFC7616'/>).</t>
 
     <t>To increase the likelihood that the input and comparison of usernames
     and passwords will work in ways that make sense for typical users
@@ -115,8 +115,8 @@
     <t>This document obsoletes RFC 4013 (the SASLprep profile of stringprep
     <xref target='RFC3454'/>) but can be used by technologies other than
     SASL <xref target='RFC4422'/>, such as HTTP authentication as
-    specified in <xref target='HTTP-BASIC-AUTH'/> and <xref
-    target='HTTP-DIGEST-AUTH'/>.</t>
+    specified in <xref target='RFC7617'/> and <xref
+    target='RFC7616'/>.</t>
 
     <t>This document does not modify the handling of internationalized strings
     in usernames and passwords as prescribed by existing application protocols
@@ -124,8 +124,7 @@
     protocol wishes to modernize its handling of internationalized strings to
     use PRECIS instead of stringprep, it needs to explicitly update the
     existing application protocol definition (one example is <xref
-    target='XMPP-ADDR'/>, which is
-    intended to obsolete <xref target='RFC6122'/>).
+    target='RFC7622'/>.
     Non-coordinated updates to protocol implementations are discouraged
     because they can have a negative impact on interoperability and
     security.</t>
@@ -150,8 +149,8 @@
     <xref target='RFC4013'/>).  Various application technologies also assume
     that the identity of a user or account takes the form of a username (e.g.,
     authentication for the Hypertext Transfer Protocol as specified in <xref
-    target='HTTP-BASIC-AUTH'/> and <xref
-    target='HTTP-DIGEST-AUTH'/>), whether or not they use SASL.  Note
+    target='RFC7617'/> and <xref
+    target='RFC7616'/>), whether or not they use SASL.  Note
     well that the exact form of a username in any particular SASL mechanism or
     application technology is a matter for implementation and deployment, and
     that a username does not necessarily map to any particular application
@@ -224,61 +223,38 @@
     </section>
 
     <section title='UsernameCaseMapped Profile' anchor='usernamecasemapped'>
-      <t>The definition of the UsernameCaseMapped profile of the
-      IdentifierClass is provided in the following sections, including
-      detailed information about preparation, enforcement, and comparison
-      (for details on the distinction between these actions,
-      refer to <xref target='RFC7564'/>).</t>
-
-      <section title="Preparation" anchor="usernamecasemapped-preparation">
-        <t>
-        An entity that prepares a string according to this profile MUST first
-        map fullwidth and halfwidth characters to their decomposition mappings
-	(see Unicode Standard Annex #11 <xref target='UAX11'/>).  This is
-        necessary because the PRECIS "HasCompat" category specified in
-        Section 9.17 of <xref target='RFC7564'/> would otherwise forbid
-        fullwidth and halfwidth characters.  After applying this
-        width-mapping rule, the entity then MUST ensure that the string
-        consists only of Unicode code points that conform to the
-        PRECIS IdentifierClass defined in
-        Section 4.2 of <xref target='RFC7564'/>.  In addition, the entity
-        then MUST encode the string as UTF-8 <xref target='RFC3629'/>.</t>
-
-      </section>
-      <section title="Enforcement" anchor="usernamecasemapped-enforcement">
-        <t>An entity that performs enforcement according to this profile
-        MUST prepare a string as described in
-        <xref target="usernamecasemapped-preparation"/> and
-        MUST also apply the rules specified below for the UsernameCaseMapped
-        profile (these rules MUST be applied in the order shown):</t>
-
+      <section title="Rules" anchor="usernamecasemapped-rules">
+        <t>The following rules apply within the UsernameCaseMapped profile of the PRECIS IdentifierClass.</t>
         <t>
           <list style='numbers'>
-            <t>Width-Mapping Rule: Applied as part of preparation (see above).
-            </t>
-
-            <t>Additional Mapping Rule: There is no additional mapping
-            rule.</t>
-
-            <t>Case-Mapping Rule: Uppercase and titlecase characters MUST be
-            mapped to their lowercase equivalents, preferably using Unicode
-            Default Case Folding as defined in the Unicode Standard <xref
-            target='Unicode'/> (at the time of this writing, the algorithm is
-            specified in Chapter 3 of <xref target='Unicode7.0'/>, but the
-            chapter number might change in a future version of the Unicode
-            Standard); see further discussion in <xref
-            target='username-case'/>.</t>
-
-            <t>Normalization Rule: Unicode Normalization Form C (NFC) MUST be
-            applied to all characters.</t>
-
-            <t>Directionality Rule: Applications MUST apply the "Bidi Rule"
-            defined in <xref target='RFC5893'/> to strings that contain
-            right-to-left characters (i.e., each of the six conditions of the
-            Bidi Rule must be satisfied).</t>
-
+            <t>Width-Mapping Rule: An entity that processes a string according to this profile MUST first map fullwidth and halfwidth characters to their decomposition mappings (see Unicode Standard Annex #11 <xref target='UAX11'/>).  This is necessary because the PRECIS "HasCompat" category specified in Section 9.17 of <xref target='RFC7564'/> would otherwise forbid fullwidth and halfwidth characters.</t>
+            <t>Additional Mapping Rule: There is no additional mapping rule.</t>
+            <t>Case-Mapping Rule: An entity MUST map uppercase and titlecase characters to their lowercase equivalents, preferably using Unicode Default Case Folding as defined in the Unicode Standard <xref target='Unicode'/> (at the time of this writing, the algorithm is specified in Chapter 3 of <xref target='Unicode7.0'/>, but the chapter number might change in a future version of the Unicode Standard); see further discussion in <xref target='username-case'/>.</t>
+            <t>Normalization Rule: An entity MUST apply Unicode Normalization Form C (NFC) to all characters.</t>
+            <t>Directionality Rule: An entity MUST apply the "Bidi Rule" defined in <xref target='RFC5893'/> to strings that contain right-to-left characters (i.e., each of the six conditions of the Bidi Rule must be satisfied); for strings that do not contain right-to-left characters, an entity MUST NOT apply any special processing for directionality.</t>
           </list>
         </t>
+      </section>
+      <section title="Preparation" anchor="usernamecasemapped-preparation">
+        <t>An entity that prepares a string for subsequent enforcement according to this profile MUST proceed as follows (applying the steps in the order shown).</t>
+        <t>
+          <list style='numbers'>
+            <t>Apply the width-mapping rule specified in <xref target='usernamecasemapped-rules'/>.</t>
+            <t>Ensure that the string consists only of Unicode code points that conform to the PRECIS IdentifierClass defined in Section 4.2 of <xref target='RFC7564'/>.</t>
+            <t>Encode the string as UTF-8 <xref target='RFC3629'/>.</t>
+          </list>
+        </t>
+      </section>
+      <section title="Enforcement" anchor="usernamecasemapped-enforcement">
+        <t>An entity that performs enforcement according to this profile MUST prepare a string as described in <xref target='usernamecasemapped-preparation'/> and MUST also apply the following rules specified in <xref target='usernamecasemapped-rules'/> in the order shown:</t>
+        <t>
+          <list style="numbers">
+            <t>Normalization Rule</t>
+            <t>Directionality Rule</t>
+            <t>Case-Mapping Rule</t>
+          </list>
+        </t>
+        <t>After all of the foregoing rules have been enforced, the entity MUST ensure that the username is not zero bytes in length (this is done after enforcing the rules to prevent applications from mistakenly omitting a username entirely, because when internationalized characters are accepted, a non-empty sequence of characters can result in a zero-length username after canonicalization).</t>
       </section>
       <section title="Comparison" anchor="usernamecasemapped-comparison">
         <t>An entity that performs comparison of two strings according to this
@@ -288,63 +264,46 @@
         <xref target="usernamecasemapped-enforcement"/>.
         The two strings are to be considered equivalent if they are an exact
         octet-for-octet match (sometimes called "bit-string identity").</t> 
-
       </section>
     </section>
 
     <section title='UsernameCasePreserved Profile' anchor='usernamecasepreserved'>
-      <t>The definition of the UsernameCasePreserved profile of the
-      IdentifierClass is provided in the following sections, including
-      detailed information about preparation, enforcement, and comparison
-      (for details on the distinction between these actions,
-      refer to <xref target='RFC7564'/>).</t>
-
-      <section title="Preparation" anchor="usernamecasepreserved-preparation">
-        <t>
-        An entity that prepares a string according to this profile MUST first
-        map fullwidth and halfwidth characters to their decomposition
-        mappings (see Unicode Standard Annex #11 <xref target='UAX11'/>).
-        This is necessary because the PRECIS "HasCompat" category specified in
-        Section 9.17 of <xref target='RFC7564'/> would otherwise forbid
-        fullwidth and halfwidth characters.  After applying this
-        width-mapping rule, the entity then MUST ensure that the string
-        consists only of Unicode code points that conform to the
-        PRECIS IdentifierClass defined in
-        Section 4.2 of <xref target='RFC7564'/>.  In addition, the entity
-        then MUST encode the string as UTF-8 <xref target='RFC3629'/>.</t>
-
-      </section>
-
-      <section title="Enforcement" anchor="usernamecasepreserved-enforcement">
-        <t>An entity that performs enforcement according to this profile MUST
-        prepare a string as described in
-        <xref target="usernamecasepreserved-preparation"/> and MUST also
-        apply the rules specified below for the UsernameCasePreserved profile
-        (these rules MUST be applied in the order shown):</t>
-
+      <section title="Rules" anchor="usernamecasepreserved-rules">
+        <t>The following rules apply within the UsernameCasePreserved profile of the PRECIS IdentifierClass.</t>
         <t>
           <list style='numbers'>
-            <t>Width-Mapping Rule: Applied as part of preparation (see above).
-            </t>
-
-            <t>Additional Mapping Rule: There is no additional mapping
-            rule.</t>
-
-            <t>Case-Mapping Rule: Uppercase and titlecase characters MUST NOT
-            be mapped to their lowercase equivalents; see further discussion
-            in <xref target='username-case'/>.</t>
-
-            <t>Normalization Rule: Unicode Normalization Form C (NFC) MUST be
-            applied to all characters.</t>
-
-            <t>Directionality Rule: Applications MUST apply the "Bidi Rule"
-            defined in <xref target='RFC5893'/> to strings that contain
-            right-to-left characters (i.e., each of the six conditions of the
-            Bidi Rule must be satisfied).</t>
-
+            <t>Width-Mapping Rule: An entity that processes a string according to this profile MUST first map fullwidth and halfwidth characters to their decomposition mappings (see Unicode Standard Annex #11 <xref target='UAX11'/>).  This is necessary because the PRECIS "HasCompat" category specified in Section 9.17 of <xref target='RFC7564'/> would otherwise forbid fullwidth and halfwidth characters.</t>
+            <t>Additional Mapping Rule: There is no additional mapping rule.</t>
+            <t>Case-Mapping Rule: Uppercase and titlecase characters MUST NOT be mapped to their lowercase equivalents; see further discussion in <xref target='username-case'/>.</t>
+            <t>Normalization Rule: An entity MUST apply Unicode Normalization Form C (NFC) to all characters.</t>
+            <t>Directionality Rule: An entity MUST apply the "Bidi Rule" defined in <xref target='RFC5893'/> to strings that contain right-to-left characters (i.e., each of the six conditions of the Bidi Rule must be satisfied); for strings that do not contain right-to-left characters, an entity MUST NOT apply any special processing for directionality.</t>
           </list>
         </t>
       </section>
+
+      <section title="Preparation" anchor="usernamecasepreserved-preparation">
+        <t>An entity that prepares a string for subsequent enforcement according to this profile MUST proceed as follows (applying the steps in the order shown).</t>
+        <t>
+          <list style='numbers'>
+            <t>Apply the width-mapping rule specified in <xref target='usernamecasepreserved-rules'/>.</t>
+            <t>Ensure that the string consists only of Unicode code points that conform to the PRECIS IdentifierClass defined in Section 4.2 of <xref target='RFC7564'/>.</t>
+            <t>Encode the string as UTF-8 <xref target='RFC3629'/>.</t>
+          </list>
+        </t>
+      </section>
+
+      <section title="Enforcement" anchor="usernamecasepreserved-enforcement">
+        <t>An entity that performs enforcement according to this profile MUST prepare a string as described in <xref target='usernamecasepreserved-preparation'/> and MUST also apply the following rules specified in <xref target='usernamecasepreserved-rules'/> in the order shown:</t>
+        <t>
+          <list style="numbers">
+            <t>Normalization Rule</t>
+            <t>Directionality Rule</t>
+            <t>Case-Mapping Rule</t>
+          </list>
+        </t>
+        <t>After all of the foregoing rules have been enforced, the entity MUST ensure that the username is not zero bytes in length (this is done after enforcing the rules to prevent applications from mistakenly omitting a username entirely, because when internationalized characters are accepted, a non-empty sequence of characters can result in a zero-length username after canonicalization).</t>
+      </section>
+
       <section title="Comparison" anchor="usernamecasepreserved-comparison">
         <t>An entity that performs comparison of two strings according to this
         profile MUST prepare each string as specified in
@@ -353,7 +312,6 @@
         <xref target="usernamecasepreserved-enforcement"/>.
         The two strings are to be considered equivalent if they are an exact
         octet-for-octet match (sometimes called "bit-string identity").</t>
-
       </section>
     </section>
 
@@ -405,8 +363,8 @@
 
           <t>Application protocols that do not use SASL (such as HTTP
           authentication with the HTTP Basic and Digest schemes as specified
-          in <xref target='HTTP-BASIC-AUTH'/> and <xref
-          target='HTTP-DIGEST-AUTH'/>) but that directly reuse this
+          in <xref target='RFC7617'/> and <xref
+          target='RFC7616'/>) but that directly reuse this
           profile MUST specify whether and when case mapping is to be applied
           to authentication identifiers or authorization identifiers, or both.
           Such "non-SASL application protocols" SHOULD delay any
@@ -1065,48 +1023,6 @@ IANA has added the following entry to the "PRECIS Profiles"
 
     <references title="Informative References">
 
-<!-- draft-ietf-httpauth-basicauth-update (REF) -->
-<reference anchor='HTTP-BASIC-AUTH'>
-<front>
-<title>The 'Basic' HTTP Authentication Scheme</title>
-<author initials='J' surname='Reschke' fullname='Julian Reschke'>
-    <organization />
-</author>
-<date month='February' year='2015' />
-</front>
-<seriesInfo name='Work in Progress,' value='draft-ietf-httpauth-basicauth-update-07' />
-</reference>
-
-<!-- draft-ietf-httpauth-digest (REF) -->
-<reference anchor='HTTP-DIGEST-AUTH'>
-<front>
-<title>HTTP Digest Access Authentication</title>
-<author initials='R' surname='Shekh-Yusef' fullname='Rifaat Shekh-Yusef' role="editor">
-    <organization />
-</author>
-<author initials='D' surname='Ahrens' fullname='David Ahrens'>
-    <organization />
-</author>
-<author initials='S' surname='Bremer' fullname='Sophie Bremer'>
-    <organization />
-</author>
-<date month='April' year='2015' />
-</front>
-<seriesInfo name='Work in Progress,' value='draft-ietf-httpauth-digest-19' />
-</reference>
-
-<!-- draft-ietf-xmpp-6122bis (EDIT) -->
-<reference anchor='XMPP-ADDR'>
-<front>
-<title>Extensible Messaging and Presence Protocol (XMPP): Address Format</title>
-<author initials='P' surname='Saint-Andre' fullname='Peter Saint-Andre'>
-    <organization />
-</author>
-<date month='June' year='2015' />
-</front>
-<seriesInfo name='Work in Progress,' value='draft-ietf-xmpp-6122bis-24' />
-</reference>
-
 <reference  anchor='RFC20' target='http://www.rfc-editor.org/info/rfc20'>
 <front>
 <title>ASCII format for network interchange</title>
@@ -1138,11 +1054,56 @@ IANA has added the following entry to the "PRECIS Profiles"
 
 <?rfc include="reference.RFC.6120" ?>
 
-<?rfc include="reference.RFC.6122" ?>
-
 <?rfc include="reference.RFC.6943" ?>
 
 <?rfc include="reference.RFC.7542" ?>
+
+<reference  anchor='RFC7613' target='http://www.rfc-editor.org/info/rfc7613'>
+<front>
+<title>Preparation, Enforcement, and Comparison of Internationalized Strings Representing Usernames and Passwords</title>
+<author initials='P.' surname='Saint-Andre' fullname='P. Saint-Andre'><organization /></author>
+<author initials='A.' surname='Melnikov' fullname='A. Melnikov'><organization /></author>
+<date year='2015' month='August' />
+<abstract><t>This document describes updated methods for handling Unicode strings representing usernames and passwords.  The previous approach was known as SASLprep (RFC 4013) and was based on stringprep (RFC 3454). The methods specified in this document provide a more sustainable approach to the handling of internationalized usernames and passwords.  The preparation, enforcement, and comparison of internationalized strings (PRECIS) framework, RFC 7564, obsoletes RFC 3454, and this document obsoletes RFC 4013.</t></abstract>
+</front>
+<seriesInfo name='RFC' value='7613'/>
+<seriesInfo name='DOI' value='10.17487/RFC7613'/>
+</reference>
+
+<reference  anchor='RFC7616' target='http://www.rfc-editor.org/info/rfc7616'>
+<front>
+<title>HTTP Digest Access Authentication</title>
+<author initials='R.' surname='Shekh-Yusef' fullname='R. Shekh-Yusef' role='editor'><organization /></author>
+<author initials='D.' surname='Ahrens' fullname='D. Ahrens'><organization /></author>
+<author initials='S.' surname='Bremer' fullname='S. Bremer'><organization /></author>
+<date year='2015' month='September' />
+<abstract><t>The Hypertext Transfer Protocol (HTTP) provides a simple challenge- response authentication mechanism that may be used by a server to challenge a client request and by a client to provide authentication information.  This document defines the HTTP Digest Authentication scheme that can be used with the HTTP authentication mechanism.</t></abstract>
+</front>
+<seriesInfo name='RFC' value='7616'/>
+<seriesInfo name='DOI' value='10.17487/RFC7616'/>
+</reference>
+
+<reference  anchor='RFC7617' target='http://www.rfc-editor.org/info/rfc7617'>
+<front>
+<title>The 'Basic' HTTP Authentication Scheme</title>
+<author initials='J.' surname='Reschke' fullname='J. Reschke'><organization /></author>
+<date year='2015' month='September' />
+<abstract><t>This document defines the &quot;Basic&quot; Hypertext Transfer Protocol (HTTP) authentication scheme, which transmits credentials as user-id/ password pairs, encoded using Base64.</t></abstract>
+</front>
+<seriesInfo name='RFC' value='7617'/>
+<seriesInfo name='DOI' value='10.17487/RFC7617'/>
+</reference>
+
+<reference  anchor='RFC7622' target='http://www.rfc-editor.org/info/rfc7622'>
+<front>
+<title>Extensible Messaging and Presence Protocol (XMPP): Address Format</title>
+<author initials='P.' surname='Saint-Andre' fullname='P. Saint-Andre'><organization /></author>
+<date year='2015' month='September' />
+<abstract><t>This document defines the address format for the Extensible Messaging and Presence Protocol (XMPP), including support for code points outside the ASCII range.  This document obsoletes RFC 6122.</t></abstract>
+</front>
+<seriesInfo name='RFC' value='7622'/>
+<seriesInfo name='DOI' value='10.17487/RFC7622'/>
+</reference>
 
 <reference anchor="UTS39" target='http://unicode.org/reports/tr39/'>
   <front>
@@ -1169,39 +1130,14 @@ IANA has added the following entry to the "PRECIS Profiles"
 
     </references>
 
-    <section title="Differences from RFC 4013" anchor="diffs">
-      <t>This document builds upon the PRECIS framework defined in <xref
-      target='RFC7564'/>, which differs fundamentally from the stringprep
-      technology <xref target='RFC3454'/> used in SASLprep <xref
-      target='RFC4013'/>.  The primary difference is that stringprep profiles
-      allowed all characters except those characters that were explicitly
-      disallowed, whereas PRECIS profiles disallow all characters except
-      those characters that are explicitly allowed (this "inclusion model"
-      was originally used for internationalized domain names
-      in <xref target='RFC5891'/>; see <xref target='RFC5894'/> for further
-      discussion).  It is important to keep this distinction in mind when
-      comparing the technology defined in this document to
-      SASLprep <xref target='RFC4013'/>.</t>
-
-      <t>The following substantive modifications were made from RFC 4013.</t>
+    <section title="Differences from RFC 7613" anchor="diffs">
+      <t>The following modifications were made from <xref target='RFC7613'/>.</t>
       <t>
         <list style='symbols'>
-          <t>A single SASLprep algorithm was replaced by three separate
-          algorithms: one for usernames with case mapping, one for usernames
-          with case preservation, and one for passwords.</t>
-
-          <t>The new preparation algorithms use PRECIS instead of a stringprep
-          profile.  The new algorithms work independently of Unicode
-          versions.</t>
-
-          <t>As recommended in the PRECIS framework, changed the Unicode
-          normalization form from NFKC to NFC.</t>
-
-          <t>Some Unicode code points that were mapped to nothing in RFC 4013
-          are simply disallowed by PRECIS.</t>
-
+          <t>Modified the presentation (but not the content) of the rules.</t>
         </list>
       </t>
+      <t>See <xref target='RFC7613'/> for a description of the differences from <xref target='RFC4013'/>.</t>
     </section>
 
     <section title="Acknowledgements" anchor="acks">
