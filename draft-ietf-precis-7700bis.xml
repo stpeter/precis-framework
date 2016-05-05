@@ -8,7 +8,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7700bis-00" obsoletes="7700">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7700bis-01" obsoletes="7700">
 
   <front>
 
@@ -71,23 +71,13 @@
           <t>Width Mapping Rule: There is no width-mapping rule (such a rule is not necessary because width mapping is performed as part of normalization using Normalization Form KC (NFKC) as specified below).</t>
           <t>Additional Mapping Rule: The additional mapping rule consists of the following sub-rules.
             <list>
-              <t>Any instances of non-ASCII space MUST be mapped to ASCII space (U+0020); a non-ASCII space is any Unicode code point having a general category of "Zs", naturally with the exception of U+0020.</t>
-              <t>Any instances of the ASCII space character at the beginning or end of a nickname MUST be removed (e.g., "stpeter&#160;" is mapped to "stpeter").</t>
-              <t>Interior sequences of more than one ASCII space character MUST be mapped to a single ASCII space character (e.g., "St&#160;&#160;Peter" is mapped to "St&#160;Peter").</t>
+              <t>May any instances of non-ASCII space be mapped to ASCII space (U+0020); a non-ASCII space is any Unicode code point having a general category of "Zs", naturally with the exception of U+0020.</t>
+              <t>Remove any instances of the ASCII space character at the beginning or end of a nickname (e.g., "stpeter&#160;" is mapped to "stpeter").</t>
+              <t>Map interior sequences of more than one ASCII space character to a single ASCII space character (e.g., "St&#160;&#160;Peter" is mapped to "St&#160;Peter").</t>
             </list>
           </t>
-
-          <t>Case Mapping Rule: Unicode Default Case Folding MUST be applied,
-      as defined in the Unicode Standard
-          <xref target='Unicode'/> (at the time of this writing, the
-          algorithm is specified in Chapter 3 of <xref
-          target='Unicode7.0'/>).  In applications
-      that prohibit conflicting nicknames, this rule helps to reduce
-      the possibility of confusion by ensuring that nicknames
-      differing only by case (e.g., "stpeter" vs. "StPeter") would not
-      be presented to a human user at the same time.</t>
-
-          <t>Normalization Rule: The string MUST be normalized using Unicode NFKC.  Because NFKC is more "aggressive" in finding matches than other normalization forms (in the terminology of Unicode, it performs both canonical and compatibility decomposition before recomposing code points), this rule helps to reduce the possibility of confusion by increasing the number of characters that would match (e.g., U+2163 ROMAN NUMERAL FOUR would match the combination of U+0049 LATIN CAPITAL LETTER I and U+0056 LATIN CAPITAL LETTER V).</t>
+          <t>Case Mapping Rule: Apply Unicode Default Case Folding, as defined in the Unicode Standard <xref target='Unicode'/> (at the time of this writing, the algorithm is specified in Chapter 3 of <xref target='Unicode7.0'/>).  In applications that prohibit conflicting nicknames, this rule helps to reduce the possibility of confusion by ensuring that nicknames differing only by case (e.g., "stpeter" vs. "StPeter") would not be presented to a human user at the same time.</t>
+          <t>Normalization Rule: Apply Unicode Normalization Form KC.  Because NFKC is more "aggressive" in finding matches than other normalization forms (in the terminology of Unicode, it performs both canonical and compatibility decomposition before recomposing code points), this rule helps to reduce the possibility of confusion by increasing the number of characters that would match (e.g., U+2163 ROMAN NUMERAL FOUR would match the combination of U+0049 LATIN CAPITAL LETTER I and U+0056 LATIN CAPITAL LETTER V).</t>
           <t>Directionality Rule: There is no directionality rule. The "Bidi Rule" (defined in <xref target='RFC5893'/>) and similar rules are unnecessary and inapplicable to nicknames, because it is perfectly acceptable for a given nickname to be presented differently in different layout systems (e.g., a user interface that is configured to handle primarily a right-to-left script versus an interface that is configured to handle primarily a left-to-right script), as long as the presentation is consistent in any given layout system.</t>
         </list>
       </t>
@@ -106,7 +96,7 @@
 <?rfc subcompact="yes"?>
 <t>Additional Mapping Rule</t>
 <t>Normalization Rule</t>
-<t>Directionality Rule</t>
+<t>Normalization Rule</t>
 </list></t>
 <?rfc subcompact="no"?>
 
@@ -128,7 +118,6 @@
 <t>Additional Mapping Rule</t>
 <t>Case Mapping Rule</t>
 <t>Normalization Rule</t>
-<t>Directionality Rule</t>
 </list></t>
 <?rfc subcompact="no"?>
 <t>  The two strings are to be considered equivalent if they are an exact
@@ -235,7 +224,6 @@
 
     <references title="Normative References">
 
-
 <?rfc include="reference.RFC.2119.xml"?>
 <?rfc include="reference.RFC.3629.xml"?>
 <?rfc include="reference.RFC.5893.xml"?>
@@ -276,8 +264,6 @@
 
     <references title="Informative References">
 
-
-
 <reference  anchor='RFC20' target='http://www.rfc-editor.org/info/rfc20'>
 <front>
 <title>ASCII format for network interchange</title>
@@ -294,9 +280,9 @@
 <?rfc include="reference.RFC.5239.xml"?>
 <?rfc include="reference.RFC.5322.xml"?>
 <?rfc include="reference.RFC.6120.xml"?>
+<?rfc include="reference.RFC.7700.xml"?>
+<?rfc include="reference.RFC.7701.xml"?>
 
-
-<!--I-D.boulton-xcon-session-chat: Expired -->
 <reference anchor='XCON-SYSTEM'>
 <front>
 <title>Chatrooms within a Centralized Conferencing (XCON) System</title>
@@ -313,31 +299,7 @@
 <abstract><t>The document "A Framework for Centralized Conferencing" defines a centralized conference as both signaling and protocol agnostic.  The primary examples within this framework focus on audio and video as the media types for the session.  This document provides an overview of the mechanisms defined in the centralized conferencing framework that can be used to support multi-user chat.  In addition, the document describes additional functionality and requirements necessary to provide feature rich functionality.</t></abstract>
 </front>
 <seriesInfo name='Work in Progress,' value='draft-boulton-xcon-session-chat-08' />
-
 </reference>
-
-<!--I-D.ietf-simple-chat:  Companion document, RFC 7701 -->
-
-<reference anchor='RFC7701' target="http://www.rfc-editor.org/info/rfc7701">
-<front>
-<title>Multi-party Chat Using the Message Session Relay Protocol (MSRP)</title>
-<author initials='A' surname='Niemi' fullname='Aki Niemi'>
-    <organization />
-</author>
-<author initials='M' surname='Garcia-Martin' fullname='Miguel Garcia-Martin'>
-    <organization />
-</author>
-<author initials='G' surname='Sandbakken' fullname='Geir Sandbakken'>
-    <organization />
-</author>
-<date month='December' year='2015' />
-<abstract><t>The Message Session Relay Protocol (MSRP) defines a mechanism for sending instant messages within a peer-to-peer session, negotiated using the Session Initiation Protocol (SIP) and the Session Description Protocol (SDP).  This document defines the necessary tools for establishing multi-party chat sessions, or chat rooms, using MSRP.</t></abstract>
-</front>
-<seriesInfo name='RFC' value='7701'/>
-<seriesInfo name="DOI" value="10.17487/RFC7701"/>
-</reference>
-
-
 
 <reference anchor="XEP-0045" target="http://xmpp.org/extensions/xep-0045.html">
   <front>
@@ -374,7 +336,6 @@
   <seriesInfo name="XSF XEP" value="0172"/>
 </reference>
 
-
 <reference anchor="PETNAME-SYSTEMS" target="http://www.skyhunter.com/marcs/petnames/IntroPetNames.html">
   <front>
     <title>An Introduction to Petname Systems</title>
@@ -389,14 +350,33 @@
   <seriesInfo name="updated June" value="2012"/>
 </reference>
 
-    </references>
+<reference anchor="Err4570" target="http://www.rfc-editor.org">
+     <front>
+       <title>Erratum ID 4570</title>
+       <author>
+         <organization>RFC Errata</organization>
+       </author>
+       <date month="" year="" />
+     </front>
+     <seriesInfo name="RFC" value="7700" />
+   </reference>
+
+  </references>
+
+  <section title="Differences from RFC 7700" anchor="diffs">
+    <t>The following modifications were made from <xref target='RFC7700'/>.</t>
+    <t>
+      <list style='symbols'>
+        <t>Addressed <xref target="Err4570"/> by removing the directionality rule and adding the normalization rule to Section 2.3.</t>
+        <t>Clarified several editorial matters.</t>
+        <t>Updated references.</t>
+      </list>
+    </t>
+  </section>
 
   <section title="Acknowledgements" anchor="acks">
-    <t>Thanks to Kim Alvefur, Mary Barnes, Ben Campbell, Dave Cridland, Miguel Garcia, Salvatore Loreto, Enrico Marocco, Matt Miller, and Yoshiro YONEYA for their reviews and comments.</t>
-    <t>Paul Kyzivat and Melinda Shore reviewed the document for the General Area Review Team and Operations Directorate, respectively.</t>
-    <t>During IESG review, Ben Campbell and Kathleen Moriarty provided comments that led to further improvements.</t>
-    <t>Thanks to Matt Miller as Document Shepherd, Pete Resnick and Andrew Sullivan as IANA Designated Experts, Marc Blanchet and Alexey Melnikov as working group Chairs, and Barry Leiba as Area Director.</t>
-    <t>The author wishes to acknowledge Cisco Systems, Inc., for employing him during his work on earlier draft versions of this document.</t>
+    <t>Thanks to Sam Whited for submitting <xref target="Err4570"/>.</t>
+    <t>See <xref target='RFC7700'/> for acknowledgements related to the specification that this document supersedes.</t>
   </section>
 
   </back>

@@ -11,7 +11,7 @@
 <?rfc tocdepth="3"?>
 <?rfc rfcedstyle="yes"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7564bis-00" obsoletes="7564">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7564bis-01" obsoletes="7564">
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -156,9 +156,9 @@
       <t>Whereas the string classes define the "baseline" code points for a
       range of applications, profiling enables application protocols to apply
       the string classes in ways that are appropriate for common constructs
-      such as usernames <xref target='PRECIS-Users-Pwds'/>, opaque
-      strings such as passwords <xref target='PRECIS-Users-Pwds'/>,
-      and nicknames <xref target='PRECIS-Nickname'/>.  Profiles are
+      such as usernames <xref target='RFC7613'/>, opaque
+      strings such as passwords <xref target='RFC7613'/>,
+      and nicknames <xref target='RFC7700'/>.  Profiles are
       responsible for defining the handling of right-to-left characters as
       well as various mapping operations of the kind also discussed for IDNs
       in <xref target='RFC5895'/>, such as case preservation or lowercasing,
@@ -248,9 +248,26 @@
         particular string class or profile thereof to two separate strings,
         for the purpose of determining if the two strings are equivalent.</t>
 
-        <t>Preparation entails only ensuring that the characters in an
+        <t>Preparation primarily entails ensuring that the characters in an
         individual string are allowed by the underlying PRECIS string
-        class.</t>
+        class, and sometimes also entails applying one or more of the rules 
+        specified for a particular string class or profile thereof.
+        Preparation can be appropriate for constrained devices that can
+        to some extent restrict the characters in a string to a limited
+        repertoire but that do not have the processing power or onboard 
+        memory to perform operations such as Unicode normalization. 
+        However, preparation does not ensure that an input string conforms
+        to all of the rules for a string class or profile thereof.
+
+        <list style='empty'><t>Note: The term "preparation" as used in
+        this specification and related documents has a much more limited 
+        scope than it did in Stringprep; it essentially refers to a kind
+        of preprocessing of an input string, not the actual operations 
+        that apply internationalization rules to produce an output string
+        (here termed "enforcement") or to compare two output strings (here
+        termed "comparison").</t></list>
+
+        </t>
 
       </list>
     </t>
@@ -444,7 +461,7 @@
           classes do not handle all issues related to string preparation and
           comparison (such as case mapping); instead, such issues are handled
           at the level of profiles.  Examples for profiles of the
-          IdentifierClass can be found in <xref target='PRECIS-Users-Pwds'/>
+          IdentifierClass can be found in <xref target='RFC7613'/>
           (the UsernameCaseMapped and UsernameCasePreserved profiles).</t>
 
         </section>
@@ -453,8 +470,8 @@
       <section title="FreeformClass" anchor="classes-free">
         <t>Some application technologies need strings that can be used in a
         free-form way, e.g., as a password in an authentication exchange (see
-        <xref target='PRECIS-Users-Pwds'/>) or a nickname in a
-        chatroom (see <xref target='PRECIS-Nickname'/>).  We group
+        <xref target='RFC7613'/>) or a nickname in a
+        chatroom (see <xref target='RFC7700'/>).  We group
         such things into a class called "FreeformClass" having the following
         features.</t>
 
@@ -539,8 +556,8 @@
           classes do not handle all issues related to string preparation and
           comparison (such as case mapping); instead, such issues are handled
           at the level of profiles.  Examples for profiles of the
-          FreeformClass can be found in <xref target='PRECIS-Users-Pwds'/>
-          (the OpaqueString profile) and <xref target='PRECIS-Nickname'/>
+          FreeformClass can be found in <xref target='RFC7613'/>
+          (the OpaqueString profile) and <xref target='RFC7700'/>
           (the Nickname profile).</t>
 
         </section>
@@ -566,7 +583,7 @@
         "BaseClass" is the name of the PRECIS string class being profiled; for
         example, the profile of the FreeformClass used for opaque strings
         such as passwords is the OpaqueString profile <xref
-        target='PRECIS-Users-Pwds'/>.</t>
+        target='RFC7613'/>.</t>
 
 
       <section title="Profiles Must Not Be Multiplied beyond Necessity" anchor="profiles-proliferation">
@@ -642,7 +659,7 @@
             </list>
           </t>
           <t>The PRECIS mappings document <xref
-          target='PRECIS-Mappings'/> describes such mappings in more
+          target='RFC7790'/> describes such mappings in more
           detail.</t>
 
         </section>
@@ -662,10 +679,21 @@
           <t><list style='empty'><t>Note: Unicode Default Case Folding is not
           designed to handle various localization issues (such as so-called
           "dotless i" in several Turkic languages).  The PRECIS mappings
-          document <xref target='PRECIS-Mappings'/> describes these
+          document <xref target='RFC7790'/> describes these
           issues in greater detail and defines a "local case mapping" method
           that handles some locale-dependent and context-dependent
           mappings.</t></list></t>
+
+          <t>The Unicode toCaseFold() operation defined by the Unicode Default
+          Case Folding algorithm is most appropriate when an application needs
+          to compare two strings.  When an application merely wishes to convert
+          uppercase and titlecase code points to the lowercase equivalents while
+          preserving lowercase code points, the Unicode toLower() operation is
+          more appropriate and is less likely to violate the "Principle of Least
+          Astonishment".  Therefore, application developers are advised to 
+          carefully consider whether they truly need to use the toCaseFold()
+          operation in a given situation, or whether the toLower() operation
+          would be more appropriate than the toCaseFold() operation.</t>
 
           <t>In order to maximize entropy and minimize the potential for false
           positives, it is NOT RECOMMENDED for application protocols to map
@@ -675,7 +703,7 @@
           case of all code points contained in such strings and then perform
           case-sensitive comparison.  See also the related discussion
           in <xref target="security-passwords"/> and
-          in <xref target='PRECIS-Users-Pwds'/>.</t>
+          in <xref target='RFC7613'/>.</t>
 
         </section>
 
@@ -820,14 +848,14 @@
                 <t>Exactly which protocol slots need to be checked against
                 which profiles (e.g., checking the address of a message's
                 intended recipient against the UsernameCaseMapped profile
-                <xref target='PRECIS-Users-Pwds'/> of the
+                <xref target='RFC7613'/> of the
                 IdentifierClass, or checking the password of a user against
                 the OpaqueString profile <xref
-                target='PRECIS-Users-Pwds'/> of the
+                target='RFC7613'/> of the
                 FreeformClass).</t>
 
               </list>
-            See <xref target='PRECIS-Users-Pwds'/> and <xref target='XMPP-Addr-Format'/> for definitions of these matters for several applications.</t>
+            See <xref target='RFC7613'/> and <xref target='RFC7622'/> for definitions of these matters for several applications.</t>
           </list>
         </t>
       </section>
@@ -876,7 +904,7 @@
         allowed in the IdentifierClass; however, it could be defined using a
         space-separated sequence of IdentifierClass instances, as in the
         following ABNF <xref target='RFC5234'/> from <xref
-        target='PRECIS-Users-Pwds'/>:</t>
+        target='RFC7613'/>:</t>
 
         <figure>
           <artwork><![CDATA[
@@ -917,7 +945,7 @@
       profile, whereas the behavioral rules are specified for each string
       class.  Some of the logic behind this order is provided under <xref
       target='profiles-principles-width'/> (see also the PRECIS mappings
-      document <xref target='PRECIS-Mappings'/>).</t>
+      document <xref target='RFC7790'/>).</t>
 
     </section>
 
@@ -1672,7 +1700,7 @@ Specification: Section 4.2 of RFC 7564.
         form.</t>
 
         <t>Further discussion of password handling can be found in <xref
-        target='PRECIS-Users-Pwds'/>.</t>
+        target='RFC7613'/>.</t>
 
       </section>
     </section>
@@ -1865,60 +1893,62 @@ Specification: Section 4.2 of RFC 7564.
   </front>
 </reference>
 
-<!-- draft-ietf-precis-mappings (ID exists) -->
-<reference anchor='PRECIS-Mappings'>
+<reference  anchor='RFC7564' target='http://www.rfc-editor.org/info/rfc7564'>
 <front>
-<title>Mapping characters for PRECIS classes</title>
-<author initials='Y' surname='Yoneya' fullname='Yoshiro Yoneya'>
-    <organization />
-</author>
-<author initials='T' surname='Nemoto' fullname='Takahiro Nemoto'>
-    <organization />
-</author>
-<date month='May' year='2015' />
+<title>PRECIS Framework: Preparation, Enforcement, and Comparison of Internationalized Strings in Application Protocols</title>
+<author initials='P.' surname='Saint-Andre' fullname='P. Saint-Andre'><organization /></author>
+<author initials='M.' surname='Blanchet' fullname='M. Blanchet'><organization /></author>
+<date year='2015' month='May' />
+<abstract><t>Application protocols using Unicode characters in protocol strings need to properly handle such strings in order to enforce internationalization rules for strings placed in various protocol slots (such as addresses and identifiers) and to perform valid comparison operations (e.g., for purposes of authentication or authorization).  This document defines a framework enabling application protocols to perform the preparation, enforcement, and comparison of internationalized strings (&quot;PRECIS&quot;) in a way that depends on the properties of Unicode characters and thus is agile with respect to versions of Unicode.  As a result, this framework provides a more sustainable approach to the handling of internationalized strings than the previous framework, known as Stringprep (RFC 3454).  This document obsoletes RFC 3454.</t></abstract>
 </front>
-<seriesInfo name='Work in Progress,' value='draft-ietf-precis-mappings-10' />
+<seriesInfo name='RFC' value='7564'/>
+<seriesInfo name='DOI' value='10.17487/RFC7564'/>
 </reference>
 
-<!-- draft-ietf-precis-nickname (AD Evaluation::Point Raised) -->
-<reference anchor='PRECIS-Nickname'>
+<reference  anchor='RFC7613' target='http://www.rfc-editor.org/info/rfc7613'>
 <front>
-<title>Preparation, Enforcement, and Comparison of Internationalized Strings
-Representing Nicknames</title>
-<author initials='P' surname='Saint-Andre' fullname='Peter Saint-Andre'>
-    <organization />
-</author>
-<date month='April' year='2015' />
+<title>Preparation, Enforcement, and Comparison of Internationalized Strings Representing Usernames and Passwords</title>
+<author initials='P.' surname='Saint-Andre' fullname='P. Saint-Andre'><organization /></author>
+<author initials='A.' surname='Melnikov' fullname='A. Melnikov'><organization /></author>
+<date year='2015' month='August' />
+<abstract><t>This document describes updated methods for handling Unicode strings representing usernames and passwords.  The previous approach was known as SASLprep (RFC 4013) and was based on stringprep (RFC 3454). The methods specified in this document provide a more sustainable approach to the handling of internationalized usernames and passwords.  The preparation, enforcement, and comparison of internationalized strings (PRECIS) framework, RFC 7564, obsoletes RFC 3454, and this document obsoletes RFC 4013.</t></abstract>
 </front>
-<seriesInfo name='Work in Progress,' value='draft-ietf-precis-nickname-17' />
+<seriesInfo name='RFC' value='7613'/>
+<seriesInfo name='DOI' value='10.17487/RFC7613'/>
 </reference>
 
-<!-- draft-ietf-precis-saslprepbis (IESG eval) -->
-<reference anchor='PRECIS-Users-Pwds'>
-<front>
-<title>Preparation, Enforcement, and Comparison of Internationalized Strings
-Representing Usernames and Passwords</title>
-<author initials='P' surname='Saint-Andre' fullname='Peter Saint-Andre'>
-    <organization />
-</author>
-<author initials='A' surname='Melnikov' fullname='Alexey Melnikov'>
-    <organization />
-</author>
-<date month='April' year='2015' />
-</front>
-<seriesInfo name='Work in Progress,' value='draft-ietf-precis-saslprepbis-16'/>
-</reference>
-
-<!-- draft-ietf-xmpp-6122bis (pub requested) -->
-<reference anchor='XMPP-Addr-Format'>
+<reference  anchor='RFC7622' target='http://www.rfc-editor.org/info/rfc7622'>
 <front>
 <title>Extensible Messaging and Presence Protocol (XMPP): Address Format</title>
-<author initials='P' surname='Saint-Andre' fullname='Peter Saint-Andre'>
-    <organization />
-</author>
-<date month='May' year='2015' />
+<author initials='P.' surname='Saint-Andre' fullname='P. Saint-Andre'><organization /></author>
+<date year='2015' month='September' />
+<abstract><t>This document defines the address format for the Extensible Messaging and Presence Protocol (XMPP), including support for code points outside the ASCII range.  This document obsoletes RFC 6122.</t></abstract>
 </front>
-<seriesInfo name='Work in Progress,' value='draft&nbhy;ietf-xmpp-6122bis-22' />
+<seriesInfo name='RFC' value='7622'/>
+<seriesInfo name='DOI' value='10.17487/RFC7622'/>
+</reference>
+
+<reference  anchor='RFC7700' target='http://www.rfc-editor.org/info/rfc7700'>
+<front>
+<title>Preparation, Enforcement, and Comparison of Internationalized Strings Representing Nicknames</title>
+<author initials='P.' surname='Saint-Andre' fullname='P. Saint-Andre'><organization /></author>
+<date year='2015' month='December' />
+<abstract><t>This document describes methods for handling Unicode strings representing memorable, human-friendly names (called &quot;nicknames&quot;, &quot;display names&quot;, or &quot;petnames&quot;) for people, devices, accounts, websites, and other entities.</t></abstract>
+</front>
+<seriesInfo name='RFC' value='7700'/>
+<seriesInfo name='DOI' value='10.17487/RFC7700'/>
+</reference>
+
+<reference  anchor='RFC7790' target='http://www.rfc-editor.org/info/rfc7790'>
+<front>
+<title>Mapping Characters for Classes of the Preparation, Enforcement, and Comparison of Internationalized Strings (PRECIS)</title>
+<author initials='Y.' surname='Yoneya' fullname='Y. Yoneya'><organization /></author>
+<author initials='T.' surname='Nemoto' fullname='T. Nemoto'><organization /></author>
+<date year='2016' month='February' />
+<abstract><t>The framework for the preparation, enforcement, and comparison of internationalized strings (PRECIS) defines several classes of strings for use in application protocols.  Because many protocols perform case-sensitive or case-insensitive string comparison, it is necessary to define methods for case mapping.  In addition, both the Internationalized Domain Names in Applications (IDNA) and the PRECIS problem statement describe mappings for internationalized strings that are not limited to case, but include width mapping and mapping of delimiters and other special characters that can be taken into consideration.  This document provides guidelines for designers of PRECIS profiles and describes several mappings that can be applied between receiving user input and passing permitted code points to internationalized protocols.  In particular, this document describes both locale-dependent and context-depending case mappings as well as additional mappings for delimiters and special characters.</t></abstract>
+</front>
+<seriesInfo name='RFC' value='7790'/>
+<seriesInfo name='DOI' value='10.17487/RFC7790'/>
 </reference>
 
 <!-- draft-klensin-idna-5892upd-unicode70 (I-D Exists) -->
@@ -2239,35 +2269,38 @@ integral part of The Unicode Standard'/>
  <seriesInfo name='edited by Mark Davis' value='and Michel Suignard'/>
 </reference>
 
+<reference anchor="Err4568" target="http://www.rfc-editor.org">
+     <front>
+       <title>Erratum ID 4568</title>
+       <author>
+         <organization>RFC Errata</organization>
+       </author>
+       <date month="" year="" />
+     </front>
+     <seriesInfo name="RFC" value="7564" />
+   </reference>
+
     </references>
 
+    <section title="Differences from RFC 7564" anchor="diffs">
+      <t>The following modifications were made from <xref target='RFC7564'/>.</t>
+      <t>
+        <list style='symbols'>
+          <t>Described the circumstances under which the Unicode toLower() operation can be preferable to the Unicode toCaseFold() operation.</t>
+          <t>Clarified the meaning of "preparation".</t>
+        </list>
+      </t>
+      <t>See <xref target='RFC7613'/> for a description of the differences from <xref target='RFC3454'/>.</t>
+    </section>
+
     <section title="Acknowledgements">
-      <t>The authors would like to acknowledge the comments and contributions
-      of the following individuals during working group discussion: David
-      Black, Edward Burns, Dan Chiba, Mark Davis, Alan DeKok, Martin Duerst,
-      Patrik Faltstrom, Ted Hardie, Joe Hildebrand, Bjoern Hoehrmann, Paul
-      Hoffman, Jeffrey Hutzelman, Simon Josefsson, John Klensin, Alexey
-      Melnikov, Takahiro Nemoto, Yoav Nir, Mike Parker, Pete Resnick, Andrew
-      Sullivan, Dave Thaler, Yoshiro Yoneya, and Florian Zeitz.</t>
-
-      <t>Special thanks are due to John Klensin and Patrik Faltstrom for their
-      challenging feedback and detailed reviews.</t>
-
-      <t>Charlie Kaufman, Tom Taylor, and Tim Wicinski reviewed the document
-      on behalf of the Security Directorate, the General Area Review Team, and
-      the Operations and Management Directorate, respectively.</t>
-
-      <t>During IESG review, Alissa Cooper, Stephen Farrell, and Barry Leiba
-      provided comments that led to further improvements.</t>
+      <t>Thanks to Sam Whited for submitting <xref target="Err4568"/>.</t>
+      <t>See <xref target='RFC7564'/> for acknowledgements related to the specification that this document supersedes.</t>
 
       <t>Some algorithms and textual descriptions have been borrowed from
       <xref target='RFC5892'/>.  Some text regarding security has been
-      borrowed from <xref target='RFC5890'/>, <xref
-      target='PRECIS-Users-Pwds'/>, and <xref
-      target='XMPP-Addr-Format'/>.</t>
-
-      <t>Peter Saint-Andre wishes to acknowledge Cisco Systems, Inc., for
-      employing him during his work on earlier draft versions of this document.</t>
+      borrowed from <xref target='RFC5890'/>, <xref target='RFC7613'/>, and 
+      <xref target='RFC7622'/>.</t>
 
     </section>
 
