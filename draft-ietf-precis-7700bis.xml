@@ -8,7 +8,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7700bis-01" obsoletes="7700">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7700bis-02" obsoletes="7700">
 
   <front>
 
@@ -71,12 +71,12 @@
           <t>Width Mapping Rule: There is no width-mapping rule (such a rule is not necessary because width mapping is performed as part of normalization using Normalization Form KC (NFKC) as specified below).</t>
           <t>Additional Mapping Rule: The additional mapping rule consists of the following sub-rules.
             <list>
-              <t>May any instances of non-ASCII space be mapped to ASCII space (U+0020); a non-ASCII space is any Unicode code point having a general category of "Zs", naturally with the exception of U+0020.</t>
+              <t>Map any instances of non-ASCII space be mapped to ASCII space (U+0020); a non-ASCII space is any Unicode code point having a general category of "Zs", naturally with the exception of U+0020.</t>
               <t>Remove any instances of the ASCII space character at the beginning or end of a nickname (e.g., "stpeter&#160;" is mapped to "stpeter").</t>
               <t>Map interior sequences of more than one ASCII space character to a single ASCII space character (e.g., "St&#160;&#160;Peter" is mapped to "St&#160;Peter").</t>
             </list>
           </t>
-          <t>Case Mapping Rule: Apply Unicode Default Case Folding, as defined in the Unicode Standard <xref target='Unicode'/> (at the time of this writing, the algorithm is specified in Chapter 3 of <xref target='Unicode7.0'/>).  In applications that prohibit conflicting nicknames, this rule helps to reduce the possibility of confusion by ensuring that nicknames differing only by case (e.g., "stpeter" vs. "StPeter") would not be presented to a human user at the same time.</t>
+          <t>Case Mapping Rule: Apply the Unicode toLower() operation, as defined in the Unicode Standard <xref target='Unicode'/>.  In applications that prohibit conflicting nicknames, this rule helps to reduce the possibility of confusion by ensuring that nicknames differing only by case (e.g., "stpeter" vs. "StPeter") would not be presented to a human user at the same time.  (As explained below, this is typically appropriate only for comparison, not for enforcement.)</t>
           <t>Normalization Rule: Apply Unicode Normalization Form KC.  Because NFKC is more "aggressive" in finding matches than other normalization forms (in the terminology of Unicode, it performs both canonical and compatibility decomposition before recomposing code points), this rule helps to reduce the possibility of confusion by increasing the number of characters that would match (e.g., U+2163 ROMAN NUMERAL FOUR would match the combination of U+0049 LATIN CAPITAL LETTER I and U+0056 LATIN CAPITAL LETTER V).</t>
           <t>Directionality Rule: There is no directionality rule. The "Bidi Rule" (defined in <xref target='RFC5893'/>) and similar rules are unnecessary and inapplicable to nicknames, because it is perfectly acceptable for a given nickname to be presented differently in different layout systems (e.g., a user interface that is configured to handle primarily a right-to-left script versus an interface that is configured to handle primarily a left-to-right script), as long as the presentation is consistent in any given layout system.</t>
         </list>
@@ -89,17 +89,14 @@
 
 
     <section title='Enforcement' anchor='rules-enforce'>
-<t>An entity that performs enforcement according to this profile MUST
-  prepare a string as described in <xref target='rules-prep'/> and MUST also apply the
-  following rules specified in <xref target='rules-rules'/> in the order shown:
+<t>An entity that performs enforcement according to this profile MUST prepare a string as described in <xref target='rules-prep'/> and MUST also apply the following rules specified in <xref target='rules-rules'/> in the order shown:
 <list style="numbers">
 <?rfc subcompact="yes"?>
 <t>Additional Mapping Rule</t>
 <t>Normalization Rule</t>
-<t>Normalization Rule</t>
 </list></t>
 <?rfc subcompact="no"?>
-
+<t>Note: An entity SHOULD NOT apply the Case Mapping Rule during enforcement, because typically it is appropriate only during comparison.</t>
 <t>After all of the foregoing rules have been enforced, the entity MUST
   ensure that the nickname is not zero bytes in length (this is done
   after enforcing the rules to prevent applications from mistakenly
@@ -120,7 +117,7 @@
 <t>Normalization Rule</t>
 </list></t>
 <?rfc subcompact="no"?>
-<t>  The two strings are to be considered equivalent if they are an exact
+<t>The two strings are to be considered equivalent if they are an exact
   octet-for-octet match (sometimes called "bit-string identity").
 </t>
     </section>
@@ -156,7 +153,7 @@
       ]]></artwork>
     </figure>
 
-    <t>Regarding examples 5, 6, and 7: applying Unicode Default Case Folding
+    <t>Regarding examples 5, 6, and 7: applying the Unicode toLower() operation
   to GREEK CAPITAL LETTER SIGMA (U+03A3) results in GREEK SMALL LETTER
   SIGMA (U+03C3), and the same is true of GREEK SMALL LETTER FINAL
   SIGMA (U+03C2); therefore, the comparison operation defined in
@@ -166,8 +163,8 @@
 
     Regarding example 8: symbol characters such as BLACK CHESS KING
     (U+265A) are allowed by the PRECIS FreeformClass and thus can be
-    used in nicknames.  Regarding example 9: applying Unicode Default
-    Case Folding to ROMAN NUMERAL FOUR (U+2163) results in SMALL ROMAN
+    used in nicknames.  Regarding example 9: applying the Unicode 
+    toLower() operation to ROMAN NUMERAL FOUR (U+2163) results in SMALL ROMAN
     NUMERAL FOUR (U+2173), and applying NFKC to SMALL ROMAN NUMERAL
     FOUR (U+2173) results in LATIN SMALL LETTER I (U+0069) LATIN SMALL
     LETTER V (U+0086).</t>
@@ -196,7 +193,7 @@
         <t hangText='Replaces:'>None</t>
         <t hangText='Width Mapping Rule:'>None (handled via NFKC)</t>
         <t hangText='Additional Mapping Rule:'>Map non-ASCII space characters to ASCII space, strip leading and trailing space characters, map interior sequences of multiple space characters to a single ASCII space.</t>
-        <t hangText='Case Mapping Rule:'>Map uppercase and titlecase characters to lowercase using Unicode Default Case Folding.</t>
+        <t hangText='Case Mapping Rule:'>Map uppercase and titlecase characters to lowercase using the Unicode toLower() operation.</t>
         <t hangText='Normalization Rule:'>NFKC</t>
         <t hangText='Directionality Rule:'>None</t>
         <t hangText='Enforcement:'>To be specified by applications.</t>
@@ -237,16 +234,6 @@
       <organization>The Unicode Consortium</organization>
     </author>
     <date />
-  </front>
-</reference>
-
-<reference anchor="Unicode7.0" target="http://www.unicode.org/versions/Unicode7.0.0/">
-  <front>
-    <title>The Unicode Standard, Version 7.0.0</title>
-    <author>
-      <organization>The Unicode Consortium</organization>
-    </author>
-    <date year="2014" />
   </front>
 </reference>
 
@@ -368,6 +355,7 @@
     <t>
       <list style='symbols'>
         <t>Addressed <xref target="Err4570"/> by removing the directionality rule and adding the normalization rule to Section 2.3.</t>
+        <t>In accordance with working group discussions and updates to <xref target='RFC7564'/>, removed the use of the Unicode CaseFold() operation in favor of the Unicode toLower() operation.</t>
         <t>Clarified several editorial matters.</t>
         <t>Updated references.</t>
       </list>
@@ -375,7 +363,7 @@
   </section>
 
   <section title="Acknowledgements" anchor="acks">
-    <t>Thanks to Sam Whited for submitting <xref target="Err4570"/>.</t>
+    <t>Thanks to Sam Whited for his feedback and for submitting <xref target="Err4570"/>.</t>
     <t>See <xref target='RFC7700'/> for acknowledgements related to the specification that this document supersedes.</t>
   </section>
 

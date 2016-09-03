@@ -8,7 +8,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7613bis-01" obsoletes="7613">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7613bis-02" obsoletes="7613">
 
   <front>
 
@@ -229,7 +229,7 @@
           <list style='numbers'>
             <t>Width-Mapping Rule: Map fullwidth and halfwidth characters to their decomposition mappings (see Unicode Standard Annex #11 <xref target='UAX11'/>).</t>
             <t>Additional Mapping Rule: There is no additional mapping rule.</t>
-            <t>Case-Mapping Rule: Map uppercase and titlecase characters to their lowercase equivalents, preferably using Unicode Default Case Folding as defined in the Unicode Standard <xref target='Unicode'/> (at the time of this writing, the algorithm is specified in Chapter 3 of <xref target='Unicode7.0'/>, but the chapter number might change in a future version of the Unicode Standard); see further discussion in <xref target='username-case'/>.</t>
+            <t>Case-Mapping Rule: Map uppercase and titlecase characters to their lowercase equivalents, preferably using the Unicode toLower() operation as defined in the Unicode Standard <xref target='Unicode'/>; see further discussion in <xref target='username-case'/>.</t>
             <t>Normalization Rule: Apply Unicode Normalization Form C (NFC) to all characters.</t>
             <t>Directionality Rule: Apply the "Bidi Rule" defined in <xref target='RFC5893'/> to strings that contain right-to-left characters (i.e., each of the six conditions of the Bidi Rule must be satisfied); for strings that do not contain right-to-left characters, there is no special processing for directionality.</t>
           </list>
@@ -249,9 +249,9 @@
         <t>An entity that performs enforcement according to this profile MUST prepare a string as described in <xref target='usernamecasemapped-preparation'/> and MUST also apply the following rules specified in <xref target='usernamecasemapped-rules'/> in the order shown:</t>
         <t>
           <list style="numbers">
+            <t>Case-Mapping Rule</t>
             <t>Normalization Rule</t>
             <t>Directionality Rule</t>
-            <t>Case-Mapping Rule</t>
           </list>
         </t>
         <t>After all of the foregoing rules have been enforced, the entity MUST ensure that the username is not zero bytes in length (this is done after enforcing the rules to prevent applications from mistakenly omitting a username entirely, because when internationalized characters are accepted, a non-empty sequence of characters can result in a zero-length username after canonicalization).</t>
@@ -259,7 +259,7 @@
       <section title="Comparison" anchor="usernamecasemapped-comparison">
         <t>An entity that performs comparison of two strings according to this
         profile MUST prepare each string as specified in
-        <xref target="usernamecasemapped-preparation"/> and then
+        <xref target="usernamecasemapped-preparation"/> and then MUST
         enforce the rules specified in
         <xref target="usernamecasemapped-enforcement"/>.
         The two strings are to be considered equivalent if they are an exact
@@ -298,7 +298,6 @@
           <list style="numbers">
             <t>Normalization Rule</t>
             <t>Directionality Rule</t>
-            <t>Case-Mapping Rule</t>
           </list>
         </t>
         <t>After all of the foregoing rules have been enforced, the entity MUST ensure that the username is not zero bytes in length (this is done after enforcing the rules to prevent applications from mistakenly omitting a username entirely, because when internationalized characters are accepted, a non-empty sequence of characters can result in a zero-length username after canonicalization).</t>
@@ -307,7 +306,7 @@
       <section title="Comparison" anchor="usernamecasepreserved-comparison">
         <t>An entity that performs comparison of two strings according to this
         profile MUST prepare each string as specified in
-        <xref target="usernamecasepreserved-preparation"/> and then
+        <xref target="usernamecasepreserved-preparation"/> and then MUST
         enforce the rules specified in
         <xref target="usernamecasepreserved-enforcement"/>.
         The two strings are to be considered equivalent if they are an exact
@@ -465,7 +464,7 @@
 | 10| <henry&#x2163;>      | The sixth character is ROMAN    |
 |   |                      | NUMERAL FOUR (U+2163)           |
 +--------------------------+---------------------------------+
-| 11| <&#x265A;>           | A localpart of BLACK CHESS KING | 
+| 11| <&#x265A;>           | A user part of BLACK CHESS KING | 
 |   |                      | (U+265A)                        |
 +--------------------------+---------------------------------+
         ]]></artwork>
@@ -573,8 +572,9 @@
             Unicode code point having a Unicode general category of "Zs"
             (with the exception of U+0020).</t>
 
-            <t>Case-Mapping Rule: Uppercase and titlecase characters MUST NOT
-            be mapped to their lowercase equivalents.</t>
+            <t>Case-Mapping Rule: There is no case mapping rule (because mapping
+            uppercase and titlecase characters to their lowercase equivalents
+            would lead to false positives and thus to reduced security).</t>
 
             <t>Normalization Rule: Unicode Normalization Form C (NFC) MUST be
             applied to all characters.</t>
@@ -601,7 +601,7 @@
       <section title="Comparison" anchor="opaquestring-profile-comparison">
         <t>An entity that performs comparison of two strings according to this
         profile MUST prepare each string as specified in
-        <xref target="opaquestring-profile-preparation"/> and then
+        <xref target="opaquestring-profile-preparation"/> and then MUST
         enforce the rules specified in
         <xref target="opaquestring-profile-enforcement"/>.
         The two strings are to be considered equivalent if they are an exact
@@ -747,11 +747,7 @@
           Appendix B.1 of <xref target='RFC3454'/>) to nothing, whereas the
           PRECIS IdentifierClass entirely disallows most of these characters,
           which correspond to the code points from the PRECIS  "M" category
-          defined under Section 9.13 of <xref target='RFC7564'/> (with
-          the exception of MONGOLIAN TODO SOFT HYPHEN (U+1806), which was
-          "commonly mapped to nothing" in Unicode 3.2 but at the time of
-          this writing does not have a derived property of
-          Default_Ignorable_Code_Point in Unicode 7.0).  For migration
+          defined under Section 9.13 of <xref target='RFC7564'/>. For migration
           purposes, the operator might want to remove from usernames any
           code points contained in the PRECIS "M" category (e.g.,
           SOFT HYPHEN (U+00AD)).  Because these code points would have
@@ -814,10 +810,8 @@
           Appendix B.1 of <xref target='RFC3454'/>) to nothing, whereas the
           PRECIS FreeformClass entirely disallows such characters, which
           correspond to the code points from the PRECIS "M" category defined
-          under Section 9.13 of <xref target='RFC7564'/> (with the exception
-          of MONGOLIAN TODO SOFT HYPHEN (U+1806), which was commonly mapped to
-          nothing in Unicode 3.2 but at the time of this writing is allowed by
-          Unicode 7.0).  In practice, this change will probably have no effect
+          under Section 9.13 of <xref target='RFC7564'/>. 
+          In practice, this change will probably have no effect
           on comparison, but user-oriented software might reject such code
           points instead of ignoring them during password preparation.</t>
 
@@ -1006,19 +1000,6 @@ IANA has added the following entry to the "PRECIS Profiles"
   </front>
 </reference>
 
-<reference anchor="Unicode7.0" target="http://www.unicode.org/versions/Unicode7.0.0/">
-  <front>
-    <title>The Unicode Standard, Version 7.0.0</title>
-    <author>
-      <organization>The Unicode Consortium</organization>
-    </author>
-    <date/>
-<!--    <date year="2014" /> -->
-  </front>
-    <seriesInfo name="(Mountain View, CA: The Unicode Consortium, 2014"
-      value="ISBN 978-1-936213-09-2)"/>
-</reference>
-
     </references>
 
     <references title="Informative References">
@@ -1091,6 +1072,8 @@ IANA has added the following entry to the "PRECIS Profiles"
       <t>The following modifications were made from <xref target='RFC7613'/>.</t>
       <t>
         <list style='symbols'>
+          <t>Corrected the order of operations for the UsernameCaseMapped profile to ensure consistency with RFC 7564.</t>
+          <t>In accordance with working group discussions and updates to <xref target='RFC7564'/>, removed the use of the Unicode CaseFold() operation in favor of the Unicode toLower() operation.</t>
           <t>Modified the presentation (but not the content) of the rules.</t>
           <t>Clarified several editorial matters.</t>
         </list>
@@ -1100,31 +1083,8 @@ IANA has added the following entry to the "PRECIS Profiles"
 
     <section title="Acknowledgements" anchor="acks">
       
-      <t>This document borrows some text from <xref target='RFC4013'/> and
-      <xref target='RFC6120'/>.</t>
-
-      <t>The following individuals provided helpful feedback on this document:
-      Marc Blanchet, Ben Campbell, Alan DeKok, Joe Hildebrand, Jeffrey
-      Hutzelman, Simon Josefsson, Jonathan Lennox, James Manger, Matt Miller,
-      Chris Newman, Yutaka OIWA, Pete Resnick, Andrew Sullivan, Nico Williams,
-      and Yoshiro YONEYA.  Nico Williams in particular deserves special
-      recognition for providing text that was used in <xref
-      target='username-case'/>.  Thanks also to Takahiro NEMOTO and Yoshiro
-      YONEYA for implementation feedback.</t>
-
-      <t>Robert Sparks and Derek Atkins reviewed the document on behalf of the
-      General Area Review Team and the Security Directorate, respectively.</t>
-
-      <t>Benoit Claise and Stephen Farrell provided helpful input during IESG
-      review.</t>
-
-      <t>Thanks to Matt Miller as document shepherd, Marc Blanchet and Yoshiro
-      YONEYA as working group chairs, and Pete Resnick and Barry Leiba as area
-      directors.</t>
-
-      <t>Peter Saint-Andre wishes to acknowledge Cisco Systems, Inc., for
-      employing him during his work on earlier draft versions of this
-      document.</t>
+      <t>Thanks to Christian Schudt and Sam Whited for their bug reports and feedback.</t>
+      <t>See <xref target='RFC7613'/> for acknowledgements related to the specification that this document supersedes.</t>
       
     </section>
 

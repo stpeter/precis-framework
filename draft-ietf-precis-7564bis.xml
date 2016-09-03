@@ -11,7 +11,7 @@
 <?rfc tocdepth="3"?>
 <?rfc rfcedstyle="yes"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7564bis-01" obsoletes="7564">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7564bis-02" obsoletes="7564">
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -220,11 +220,6 @@
       and <xref target='Unicode'/>.  The terms "left-to-right" (LTR) and
       "right-to-left" (RTL) are defined in Unicode Standard Annex #9 <xref
       target='UAX9'/>.</t>
-
-      <t>As of the date of writing, the version of Unicode published by the
-      Unicode Consortium is 7.0 <xref target='Unicode7.0'/>; however, PRECIS
-      is not tied to a specific version of Unicode.  The latest version of
-      Unicode is always available <xref target='Unicode'/>.</t>
 
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
       "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
@@ -671,29 +666,24 @@
           titlecase characters to their lowercase equivalents).</t>
 
           <t>If case mapping is desired (instead of case preservation), it is
-          RECOMMENDED to use Unicode Default Case Folding as defined in the
-          Unicode Standard <xref target='Unicode'/> (at the time of this
-          writing, the algorithm is specified in Chapter 3 of <xref
-          target='Unicode7.0'/>).</t>
+          RECOMMENDED to use the Unicode toLower() operation defined in the
+          Unicode Standard <xref target='Unicode'/>.  In contrast to the Unicode
+          CaseFold() operation, the toLower() operation is less likely to violate 
+          the "Principle of Least Astonishment", especially when an application 
+          merely wishes to convert uppercase and titlecase code points to the 
+          lowercase equivalents while preserving lowercase code points.  Although
+          the CaseFold() operation can be appropriate when an application needs 
+          to compare two strings (such as in search operations), in general few
+          application developers and even fewer users understand its implications,
+          so toLower() is almost always the safer choice.</t>
 
-          <t><list style='empty'><t>Note: Unicode Default Case Folding is not
+          <t><list style='empty'><t>Note: Neither toLower() nor CaseFold() is
           designed to handle various localization issues (such as so-called
           "dotless i" in several Turkic languages).  The PRECIS mappings
           document <xref target='RFC7790'/> describes these
           issues in greater detail and defines a "local case mapping" method
           that handles some locale-dependent and context-dependent
           mappings.</t></list></t>
-
-          <t>The Unicode toCaseFold() operation defined by the Unicode Default
-          Case Folding algorithm is most appropriate when an application needs
-          to compare two strings.  When an application merely wishes to convert
-          uppercase and titlecase code points to the lowercase equivalents while
-          preserving lowercase code points, the Unicode toLower() operation is
-          more appropriate and is less likely to violate the "Principle of Least
-          Astonishment".  Therefore, application developers are advised to 
-          carefully consider whether they truly need to use the toCaseFold()
-          operation in a given situation, or whether the toLower() operation
-          would be more appropriate than the toCaseFold() operation.</t>
 
           <t>In order to maximize entropy and minimize the potential for false
           positives, it is NOT RECOMMENDED for application protocols to map
@@ -1063,8 +1053,7 @@ Else DISALLOWED;
       and therefore were defined at the time of Unicode 5.2).  Changes in
       Unicode properties that do not affect the outcome of this process
       therefore do not affect this framework.  For example, a character can
-      have its Unicode General_Category value (at the time of this writing,
-      see Chapter 4 of <xref target='Unicode7.0'/>) change from So to Sm, or
+      have its Unicode General_Category value change from So to Sm, or
       from Lo to Ll, without affecting the algorithm results.  Moreover, even
       if such changes were to result, the <xref target="G">BackwardCompatible
       list</xref> can be adjusted to ensure the stability of the results.</t>
@@ -1252,9 +1241,7 @@ P: General_Category(cp) is in {Pc, Pd, Ps, Pe, Pi, Pf, Po}
         </section>
         <section anchor="Q" title="HasCompat (Q)">
           <t>This PRECIS-specific category is used to group code points that
-          have compatibility equivalents as explained in the Unicode Standard
-          (at the time of this writing, see Chapters 2 and 3 of <xref
-          target='Unicode7.0'/>).</t>
+          have compatibility equivalents as explained in the Unicode Standard.</t>
 
           <figure>
             <artwork>
@@ -1421,7 +1408,7 @@ Specification: Section 4.2 of RFC 7564.
             characters to ASCII space."]</t>
 
             <t hangText='Case Mapping Rule:'>[the behavioral rule for handling
-            of case, e.g., "Unicode Default Case Folding"]</t>
+            of case, e.g., "apply the Unicode toLower() operation"]</t>
 
             <t hangText='Normalization Rule:'>[which Unicode normalization
             form is applied, e.g., "NFC"]</t>
@@ -1841,19 +1828,6 @@ Specification: Section 4.2 of RFC 7564.
 <!--    <date year="2015-present" /> -->
   <date/>
   </front>
-</reference>
-
-<reference anchor="Unicode7.0" target="http://www.unicode.org/versions/Unicode7.0.0/">
-  <front>
-    <title>The Unicode Standard, Version 7.0.0</title>
-    <author>
-      <organization>The Unicode Consortium</organization>
-    </author>
-<!--    <date month="June" year="2014" /> -->
-  <date/>
-  </front>
-    <seriesInfo name="(Mountain View, CA: The Unicode Consortium, 2014"
-      value="ISBN 978-1-936213-09-2)"/>
 </reference>
 
     </references>
@@ -2286,7 +2260,7 @@ integral part of The Unicode Standard'/>
       <t>The following modifications were made from <xref target='RFC7564'/>.</t>
       <t>
         <list style='symbols'>
-          <t>Described the circumstances under which the Unicode toLower() operation can be preferable to the Unicode toCaseFold() operation.</t>
+          <t>Recommended the Unicode toLower() operation over the Unicode toCaseFold() operation.</t>
           <t>Clarified the meaning of "preparation".</t>
         </list>
       </t>
@@ -2294,7 +2268,7 @@ integral part of The Unicode Standard'/>
     </section>
 
     <section title="Acknowledgements">
-      <t>Thanks to Sam Whited for submitting <xref target="Err4568"/>.</t>
+      <t>Thanks to Martin Duerst, John Klensin, Christian Schudt, and Sam Whited for their feedback.  Thanks to Sam Whited also for submitting <xref target="Err4568"/>.</t>
       <t>See <xref target='RFC7564'/> for acknowledgements related to the specification that this document supersedes.</t>
 
       <t>Some algorithms and textual descriptions have been borrowed from
