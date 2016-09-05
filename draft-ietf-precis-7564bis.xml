@@ -11,7 +11,7 @@
 <?rfc tocdepth="3"?>
 <?rfc rfcedstyle="yes"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7564bis-02" obsoletes="7564">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7564bis-03" obsoletes="7564">
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -901,10 +901,10 @@
    username   = userpart *(1*SP userpart)
    userpart   = 1*(idbyte)
                 ;
-                ; an "idbyte" is a byte used to represent a 
-                ; UTF-8 encoded Unicode code point that can be
-                ; contained in a string that conforms to the 
-                ; PRECIS "IdentifierClass"
+                ; an "idbyte" is a byte used to encode a 
+                ; Unicode code point that can be contained 
+                ; in a string that conforms to the PRECIS 
+                ; "IdentifierClass"
                 ;
           ]]></artwork>
         </figure>
@@ -1697,7 +1697,8 @@ Specification: Section 4.2 of RFC 7564.
         <t>Although strings that are consumed in PRECIS-based application
         protocols are often encoded using UTF-8 <xref target='RFC3629'/>, the
         exact encoding is a matter for the application protocol that uses
-        PRECIS, not for the PRECIS framework.</t>
+        PRECIS, not for the PRECIS framework or for specifications that
+        define PRECIS string classes or profiles thereof.</t>
 
       </section>
       <section title="Character Sets" anchor='interop-characters'>

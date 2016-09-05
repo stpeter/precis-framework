@@ -8,7 +8,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7613bis-02" obsoletes="7613">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7613bis-03" obsoletes="7613">
 
   <front>
 
@@ -167,10 +167,12 @@
 
     <section title='Definition' anchor='username-definition'>
       <t>This document specifies that a username is a string of Unicode code
-      points <xref target='Unicode'/>, encoded using UTF-8 <xref
-      target='RFC3629'/>, and structured as an ordered sequence of
-      "userparts". A userpart is allowed to contain only code points that
-      are in turn allowed by the PRECIS IdentifierClass defined in
+      points <xref target='Unicode'/> that is 
+      structured as an ordered sequence of "userparts"
+      and expressed in a standard Unicode Encoding Form (such as
+      UTF-8 <xref target='RFC3629'/>).
+      A userpart is allowed to contain only code points that
+      are allowed by the PRECIS IdentifierClass defined in
       Section 4.2 of <xref target="RFC7564"/>, and thus consists almost
       exclusively of letters and digits. A username can consist of a
       single userpart or a space-separated sequence of userparts.</t>
@@ -183,10 +185,10 @@
    username   = userpart *(1*SP userpart)
    userpart   = 1*(idbyte)
                 ;
-                ; an "idbyte" is a byte used to represent a 
-                ; UTF-8 encoded Unicode code point that can be
-                ; contained in a string that conforms to the 
-                ; PRECIS IdentifierClass
+                ; an "idbyte" is a byte used to encode a 
+                ; Unicode code point that can be contained 
+                ; in a string that conforms to the PRECIS 
+                ; IdentifierClass
                 ;
         ]]></artwork>
       </figure>
@@ -241,7 +243,6 @@
           <list style='numbers'>
             <t>Apply the width-mapping rule specified in <xref target='usernamecasemapped-rules'/>.  It is necessary to apply the rule at this point because otherwise the PRECIS "HasCompat" category specified in Section 9.17 of <xref target='RFC7564'/> would forbid fullwidth and halfwidth characters.</t>
             <t>Ensure that the string consists only of Unicode code points that conform to the PRECIS IdentifierClass defined in Section 4.2 of <xref target='RFC7564'/>.</t>
-            <t>Encode the string as UTF-8 <xref target='RFC3629'/>.</t>
           </list>
         </t>
       </section>
@@ -287,7 +288,6 @@
           <list style='numbers'>
             <t>Apply the width-mapping rule specified in <xref target='usernamecasemapped-rules'/>.  It is necessary to apply the rule at this point because otherwise the PRECIS "HasCompat" category specified in Section 9.17 of <xref target='RFC7564'/> would forbid fullwidth and halfwidth characters.</t>
             <t>Ensure that the string consists only of Unicode code points that conform to the PRECIS IdentifierClass defined in Section 4.2 of <xref target='RFC7564'/>.</t>
-            <t>Encode the string as UTF-8 <xref target='RFC3629'/>.</t>
           </list>
         </t>
       </section>
@@ -489,10 +489,10 @@
 
     <section title='Definition' anchor='password-definition'>
       <t>This document specifies that a password is a string of Unicode code
-      points <xref target='Unicode'/>, encoded using UTF-8 <xref
-      target='RFC3629'/>, and conformant to the OpaqueString profile
-      (specified below) of the PRECIS FreeformClass defined in
-      Section 4.3 of <xref target="RFC7564"/>.</t>
+      points <xref target='Unicode'/> that is conformant to the OpaqueString 
+      profile (specified below) of the PRECIS FreeformClass defined in
+      Section 4.3 of <xref target="RFC7564"/>, and that is expressed in a 
+      standard Unicode Encoding Form (such as UTF-8 <xref target='RFC3629'/>).</t>
 
       <t>The syntax for a password is defined as follows, using the Augmented
       Backus-Naur Form (ABNF) <xref target="RFC5234"/>.</t>
@@ -501,10 +501,10 @@
         <artwork><![CDATA[
    password   = 1*(freebyte)
                 ;
-                ; a "freebyte" is a byte used to represent a 
-                ; UTF-8 encoded Unicode code point that can be
-                ; contained in a string that conforms to the 
-                ; PRECIS FreeformClass
+                ; a "freebyte" is a byte used to encode a 
+                ; Unicode code point that can be contained 
+                ; in a string that conforms to the PRECIS 
+                ; FreeformClass
                 ;
         ]]></artwork>
       </figure>
@@ -550,8 +550,7 @@
         <t>An entity that prepares a string according to this profile MUST
         ensure that the string consists only of Unicode code points that
         conform to the FreeformClass base string class defined in <xref
-        target='RFC7564'/>.  In addition, the entity MUST encode the string
-        as UTF-8 <xref target='RFC3629'/>.</t>
+        target='RFC7564'/>.</t>
 
       </section>
       <section title="Enforcement" anchor="opaquestring-profile-enforcement">

@@ -8,7 +8,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7700bis-02" obsoletes="7700">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7700bis-03" obsoletes="7700">
 
   <front>
 
@@ -71,7 +71,7 @@
           <t>Width Mapping Rule: There is no width-mapping rule (such a rule is not necessary because width mapping is performed as part of normalization using Normalization Form KC (NFKC) as specified below).</t>
           <t>Additional Mapping Rule: The additional mapping rule consists of the following sub-rules.
             <list>
-              <t>Map any instances of non-ASCII space be mapped to ASCII space (U+0020); a non-ASCII space is any Unicode code point having a general category of "Zs", naturally with the exception of U+0020.</t>
+              <t>Map any instances of non-ASCII space to ASCII space (U+0020); a non-ASCII space is any Unicode code point having a general category of "Zs", naturally with the exception of U+0020.</t>
               <t>Remove any instances of the ASCII space character at the beginning or end of a nickname (e.g., "stpeter&#160;" is mapped to "stpeter").</t>
               <t>Map interior sequences of more than one ASCII space character to a single ASCII space character (e.g., "St&#160;&#160;Peter" is mapped to "St&#160;Peter").</t>
             </list>
@@ -84,7 +84,7 @@
     </section>
 
     <section title='Preparation' anchor='rules-prep'>
-      <t>An entity that prepares a string for subsequent enforcement according to this profile MUST ensure that the string consists only of Unicode code points that conform to the FreeformClass string class defined in <xref target='RFC7564'/>.  In addition, the entity MUST ensure that the string is encoded as UTF-8 <xref target='RFC3629'/>.</t>
+      <t>An entity that prepares a string for subsequent enforcement according to this profile MUST ensure that the string consists only of Unicode code points that conform to the FreeformClass string class defined in <xref target='RFC7564'/>.</t>
     </section>
 
 
@@ -144,7 +144,8 @@
 +---------------------------+-----------------------------------+
 | 6 | <&#x3C3;>             | GREEK SMALL LETTER SIGMA (U+03C3) |
 +---------------------------+-----------------------------------+
-| 7 | <&#x3C2;>             | GREEK SMALL LETTER SIGMA (U+03C3) |
+| 7 | <&#x3C2;>             | GREEK SMALL LETTER FINAL SIGMA    | 
+|   |                       | (U+03C2) |
 +---------------------------+-----------------------------------+
 | 8 | <&#x265A;>            | BLACK CHESS KING (U+265A)         |
 +---------------------------+-----------------------------------+
@@ -155,10 +156,10 @@
 
     <t>Regarding examples 5, 6, and 7: applying the Unicode toLower() operation
   to GREEK CAPITAL LETTER SIGMA (U+03A3) results in GREEK SMALL LETTER
-  SIGMA (U+03C3), and the same is true of GREEK SMALL LETTER FINAL
-  SIGMA (U+03C2); therefore, the comparison operation defined in
-  <xref target="rules-comp"/> would result in matching of the nicknames in examples 5,
-  6, and 7.
+  SIGMA (U+03C3), however the toLower() operation does not modify GREEK SMALL 
+  LETTER FINAL SIGMA (U+03C2); therefore, the comparison operation defined in
+  <xref target="rules-comp"/> would result in matching of the nicknames in 
+  examples 5 and 6 but not the nicknames in examples 5 and 7 or 6 and 7.
 
 
     Regarding example 8: symbol characters such as BLACK CHESS KING
@@ -222,7 +223,6 @@
     <references title="Normative References">
 
 <?rfc include="reference.RFC.2119.xml"?>
-<?rfc include="reference.RFC.3629.xml"?>
 <?rfc include="reference.RFC.5893.xml"?>
 <?rfc include="reference.RFC.6365.xml"?>
 <?rfc include="reference.RFC.7564.xml"?>
