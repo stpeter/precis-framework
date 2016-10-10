@@ -8,7 +8,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7700bis-03" obsoletes="7700">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7700bis-04" obsoletes="7700">
 
   <front>
 
@@ -350,8 +350,8 @@
 
   </references>
 
-  <section title="Differences from RFC 7700" anchor="diffs">
-    <t>The following modifications were made from <xref target='RFC7700'/>.</t>
+  <section title="Changes from RFC 7700" anchor="changes">
+    <t>The following changes were made from <xref target='RFC7700'/>.</t>
     <t>
       <list style='symbols'>
         <t>Addressed <xref target="Err4570"/> by removing the directionality rule and adding the normalization rule to Section 2.3.</t>

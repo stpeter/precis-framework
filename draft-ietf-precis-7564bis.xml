@@ -11,7 +11,7 @@
 <?rfc tocdepth="3"?>
 <?rfc rfcedstyle="yes"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7564bis-03" obsoletes="7564">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7564bis-04" obsoletes="7564">
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -738,7 +738,7 @@
 
           <t>The PRECIS framework does not directly address how to deal with
           bidirectional strings across all string classes and profiles, and
-          does not define any new directionality rules, since at present there
+          does not define any new directionality rules, because at present there
           is no widely accepted and implemented solution for the safe display
           of arbitrary bidirectional strings beyond the Unicode bidirectional
           algorithm <xref target='UAX9'/>.  Although rules for management and
@@ -890,7 +890,7 @@
         might take the form of a user's full name (e.g., the user's personal
         name followed by a space and then the user's family name).  Such a
         simple user name cannot be defined as an instance of the
-        IdentifierClass or a profile thereof, since space characters are not
+        IdentifierClass or a profile thereof, because space characters are not
         allowed in the IdentifierClass; however, it could be defined using a
         space-separated sequence of IdentifierClass instances, as in the
         following ABNF <xref target='RFC5234'/> from <xref
@@ -972,7 +972,7 @@
           are allowed to be used in specific string classes.  In the remainder
           of this document, the abbreviated term *_PVAL is used, where * = (ID
           | FREE), i.e., either "FREE_PVAL" or "ID_PVAL".  In practice, the
-          derived property ID_PVAL is not used in this specification, since
+          derived property ID_PVAL is not used in this specification, because
           every ID_PVAL code point is PVALID.</t>
 
           <t hangText='CONTEXTUAL RULE REQUIRED'>Some characteristics of the
@@ -998,7 +998,7 @@
           permitted in others.  In the remainder of this document, the
           abbreviated term *_DIS is used, where * = (ID | FREE), i.e., either
           "FREE_DIS" or "ID_DIS".  In practice, the derived property FREE_DIS
-          is not used in this specification, since every FREE_DIS code point
+          is not used in this specification, because every FREE_DIS code point
           is DISALLOWED.</t>
 
           <t hangText='UNASSIGNED'>Those code points that are not designated
@@ -1008,7 +1008,7 @@
       </t>
       <t>The algorithm to calculate the value of the derived property is as
       follows (implementations MUST NOT modify the order of operations within
-      this algorithm, since doing so would cause inconsistent results across
+      this algorithm, because doing so would cause inconsistent results across
       implementations):</t>
 
       <figure>
@@ -1038,7 +1038,7 @@ Else DISALLOWED;
       be assigned to FREE_PVAL.  For the sake of brevity, the designation
       "FREE_PVAL" is used herein, instead of the longer designation "ID_DIS or
       FREE_PVAL".  In practice, the derived properties ID_PVAL and FREE_DIS
-      are not used in this specification, since every ID_PVAL code point is
+      are not used in this specification, because every ID_PVAL code point is
       PVALID and every FREE_DIS code point is DISALLOWED.</t>
 
       <t>Use of the name of a rule (such as "Exceptions") implies the set of
@@ -1048,7 +1048,7 @@ Else DISALLOWED;
 
       <t>The mechanisms described here allow determination of the value of the
       property for future versions of Unicode (including characters added
-      after Unicode 5.2 or 7.0 depending on the category, since some
+      after Unicode 5.2 or 7.0 depending on the category, because some
       categories mentioned in this document are simply pointers to IDNA2008
       and therefore were defined at the time of Unicode 5.2).  Changes in
       Unicode properties that do not affect the outcome of this process
@@ -1278,7 +1278,7 @@ R: General_Category(cp) is in {Lt, Nl, No, Me}
       <t>
         <list style='symbols'>
           <t>Protocol designers are strongly encouraged to question the
-          assumption that they need to define new profiles, since existing
+          assumption that they need to define new profiles, because existing
           profiles are designed for wide reuse (see <xref target='profiles'/>
           for further discussion).</t>
 
@@ -1683,7 +1683,7 @@ Specification: Section 4.2 of RFC 7564.
         <t>In protocols that provide passwords as input to a cryptographic
         algorithm such as a hash function, the client will need to perform
         proper preparation of the password before applying the algorithm,
-        since the password is not available to the server in plaintext
+        because the password is not available to the server in plaintext
         form.</t>
 
         <t>Further discussion of password handling can be found in <xref
@@ -2257,12 +2257,13 @@ integral part of The Unicode Standard'/>
 
     </references>
 
-    <section title="Differences from RFC 7564" anchor="diffs">
-      <t>The following modifications were made from <xref target='RFC7564'/>.</t>
+    <section title="Changes from RFC 7564" anchor="changes">
+      <t>The following changes were made from <xref target='RFC7564'/>.</t>
       <t>
         <list style='symbols'>
-          <t>Recommended the Unicode toLower() operation over the Unicode toCaseFold() operation.</t>
-          <t>Clarified the meaning of "preparation".</t>
+          <t>Recommended the Unicode toLower() operation over the Unicode toCaseFold() operation in most PRECIS applications.</t>
+          <t>Clarified the meaning of "preparation" and described the motivation for including it in PRECIS.</t>
+          <t>Updated references.</t>
         </list>
       </t>
       <t>See <xref target='RFC7613'/> for a description of the differences from <xref target='RFC3454'/>.</t>

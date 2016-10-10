@@ -8,7 +8,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7613bis-03" obsoletes="7613">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7613bis-04" obsoletes="7613">
 
   <front>
 
@@ -1067,14 +1067,16 @@ IANA has added the following entry to the "PRECIS Profiles"
 
     </references>
 
-    <section title="Differences from RFC 7613" anchor="diffs">
-      <t>The following modifications were made from <xref target='RFC7613'/>.</t>
+    <section title="Changes from RFC 7613" anchor="changes">
+      <t>The following changes were made from <xref target='RFC7613'/>.</t>
       <t>
         <list style='symbols'>
           <t>Corrected the order of operations for the UsernameCaseMapped profile to ensure consistency with RFC 7564.</t>
           <t>In accordance with working group discussions and updates to <xref target='RFC7564'/>, removed the use of the Unicode CaseFold() operation in favor of the Unicode toLower() operation.</t>
           <t>Modified the presentation (but not the content) of the rules.</t>
+          <t>Removed UTF-8 as a mandatory encoding, because that is a matter for the application.</t>
           <t>Clarified several editorial matters.</t>
+          <t>Updated references.</t>
         </list>
       </t>
       <t>See <xref target='RFC7613'/> for a description of the differences from <xref target='RFC4013'/>.</t>
