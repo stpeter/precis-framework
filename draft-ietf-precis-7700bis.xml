@@ -48,7 +48,7 @@
 
     <section title="Overview" anchor="overview">
       <t>A number of technologies and applications provide the ability for a person to choose a memorable, human-friendly name in a communications context, or to set such a name for another entity such as a device, account, contact, or website.  Such names are variously called "nicknames" (e.g., in chat room applications), "display names" (e.g., in Internet mail), or "petnames" (see <xref target='PETNAME-SYSTEMS'/>); for consistency, these are all called "nicknames" in this document.</t>
-      <t>Nicknames are commonly supported in technologies for textual chat rooms, e.g., Internet Relay Chat <xref target='RFC2811'/> and multi-party chat technologies based on the Extensible Messaging and Presence Protocol (XMPP) <xref target='RFC6120'/> <xref target='XEP-0045'/>, the Message Session Relay Protocol (MSRP) <xref target='RFC4975'/> <xref target='RFC7701'/>, and Centralized Conferencing (XCON) <xref target='RFC5239'/> <xref target='XCON-SYSTEM'/>.  Recent chat room technologies also allow internationalized nicknames because they support characters from outside the ASCII range <xref target='RFC20'/>, typically by means of the Unicode character set <xref target='Unicode'/>.  Although such nicknames tend to be used primarily for display purposes, they are sometimes used for programmatic purposes as well (e.g., kicking users or avoiding nickname conflicts).</t>
+      <t>Nicknames are commonly supported in technologies for textual chat rooms, e.g., Internet Relay Chat <xref target='RFC2811'/> and multi-party chat technologies based on the Extensible Messaging and Presence Protocol (XMPP) <xref target='RFC6120'/> <xref target='XEP-0045'/>, the Message Session Relay Protocol (MSRP) <xref target='RFC4975'/> <xref target='RFC7701'/>, and Centralized Conferencing (XCON) <xref target='RFC5239'/> <xref target='XCON-SYSTEM'/>.  Recent chat room technologies also allow internationalized nicknames because they support code points from outside the ASCII range <xref target='RFC20'/>, typically by means of the Unicode character set <xref target='Unicode'/>.  Although such nicknames tend to be used primarily for display purposes, they are sometimes used for programmatic purposes as well (e.g., kicking users or avoiding nickname conflicts).</t>
       <t>A similar usage enables a person to set their own preferred display name or to set a preferred display name for another user (e.g., the "display-name" construct in the Internet message format <xref target='RFC5322'/> and <xref target='XEP-0172'/> in XMPP).</t>
       <t>Memorable, human-friendly names are also used in contexts other than personal messaging, such as names for devices (e.g., in a network visualization application), websites (e.g., for bookmarks in a web browser), accounts (e.g., in a web interface for a list of payees in a bank account), people (e.g., in a contact list application), and the like.</t>
       <t>The rules specified in this document can be applied in all of the foregoing contexts.</t>
@@ -77,7 +77,7 @@
             </list>
           </t>
           <t>Case Mapping Rule: Apply the Unicode toLower() operation, as defined in the Unicode Standard <xref target='Unicode'/>.  In applications that prohibit conflicting nicknames, this rule helps to reduce the possibility of confusion by ensuring that nicknames differing only by case (e.g., "stpeter" vs. "StPeter") would not be presented to a human user at the same time.  (As explained below, this is typically appropriate only for comparison, not for enforcement.)</t>
-          <t>Normalization Rule: Apply Unicode Normalization Form KC.  Because NFKC is more "aggressive" in finding matches than other normalization forms (in the terminology of Unicode, it performs both canonical and compatibility decomposition before recomposing code points), this rule helps to reduce the possibility of confusion by increasing the number of characters that would match (e.g., U+2163 ROMAN NUMERAL FOUR would match the combination of U+0049 LATIN CAPITAL LETTER I and U+0056 LATIN CAPITAL LETTER V).</t>
+          <t>Normalization Rule: Apply Unicode Normalization Form KC.  Because NFKC is more "aggressive" in finding matches than other normalization forms (in the terminology of Unicode, it performs both canonical and compatibility decomposition before recomposing code points), this rule helps to reduce the possibility of confusion by increasing the number of code points that would match (e.g., U+2163 ROMAN NUMERAL FOUR would match the combination of U+0049 LATIN CAPITAL LETTER I and U+0056 LATIN CAPITAL LETTER V).</t>
           <t>Directionality Rule: There is no directionality rule. The "Bidi Rule" (defined in <xref target='RFC5893'/>) and similar rules are unnecessary and inapplicable to nicknames, because it is perfectly acceptable for a given nickname to be presented differently in different layout systems (e.g., a user interface that is configured to handle primarily a right-to-left script versus an interface that is configured to handle primarily a left-to-right script), as long as the presentation is consistent in any given layout system.</t>
         </list>
       </t>
@@ -173,7 +173,7 @@
 
   <section title="Use in Application Protocols" anchor="use">
     <t>This specification defines only the PRECIS-based rules for handling of nickname strings.  It is the responsibility of an application protocol (e.g., MSRP, XCON, or XMPP) or application definition to specify the protocol slots in which nickname strings can appear, the entities that are expected to enforce the rules governing nickname strings, and when in protocol processing or interface handling the rules need to be enforced.  See Section 6 of <xref target='RFC7564'/> for guidelines about using PRECIS profiles in applications.</t>
-    <t>Above and beyond the PRECIS-based rules specified here, application protocols can also define application-specific rules governing nickname strings (rules regarding the minimum or maximum length of nicknames, further restrictions on allowable characters or character ranges, safeguards to mitigate the effects of visually similar characters, etc.).</t>
+    <t>Above and beyond the PRECIS-based rules specified here, application protocols can also define application-specific rules governing nickname strings (rules regarding the minimum or maximum length of nicknames, further restrictions on allowable code points or character ranges, safeguards to mitigate the effects of visually similar characters, etc.).</t>
     <t>Naturally, application protocols can also specify rules governing the actual use of nicknames in applications (reserved nicknames, authorization requirements for using nicknames, whether certain nicknames can be prohibited, handling of duplicates, the relationship between nicknames and underlying identifiers such as SIP URIs or Jabber IDs, etc.).</t>
     <t>Entities that enforce the rules specified in this document are encouraged to be liberal in what they accept by following this procedure:</t>
     <t>
@@ -194,7 +194,7 @@
         <t hangText='Replaces:'>None</t>
         <t hangText='Width Mapping Rule:'>None (handled via NFKC)</t>
         <t hangText='Additional Mapping Rule:'>Map non-ASCII space characters to ASCII space, strip leading and trailing space characters, map interior sequences of multiple space characters to a single ASCII space.</t>
-        <t hangText='Case Mapping Rule:'>Map uppercase and titlecase characters to lowercase using the Unicode toLower() operation.</t>
+        <t hangText='Case Mapping Rule:'>Map uppercase and titlecase code points to lowercase using the Unicode toLower() operation.</t>
         <t hangText='Normalization Rule:'>NFKC</t>
         <t hangText='Directionality Rule:'>None</t>
         <t hangText='Enforcement:'>To be specified by applications.</t>
@@ -208,7 +208,7 @@
       <t>The security considerations described in <xref target="RFC7564"/> apply to the FreeformClass string class used in this document for nicknames.</t>
     </section>
     <section title="Reuse of Unicode" anchor="security-unicode">
-      <t>The security considerations described in <xref target='UTS39'/> apply to the use of Unicode characters in nicknames.</t>
+      <t>The security considerations described in <xref target='UTS39'/> apply to the use of Unicode code points in nicknames.</t>
     </section>
     <section title="Visually Similar Characters" anchor="security-similar">
       <t><xref target='RFC7564'/> describes some of the security considerations related to visually similar characters, also called "confusable characters" or "confusables".</t>

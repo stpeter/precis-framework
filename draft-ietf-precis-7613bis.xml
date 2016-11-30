@@ -78,20 +78,20 @@
     and passwords will work in ways that make sense for typical users
     throughout the world, this document defines rules for preparing,
     enforcing, and comparing internationalized strings that represent
-    usernames and passwords.  Such strings consist of characters from the
+    usernames and passwords.  Such strings consist of code points from the
     Unicode character set <xref target="Unicode"/>, with special attention to
-    characters outside the ASCII range <xref target='RFC20'/>.  The rules for
+    code points outside the ASCII range <xref target='RFC20'/>.  The rules for
     handling such strings are specified through profiles of the string classes
     defined in the preparation, enforcement, and comparison of
     internationalized strings (PRECIS) framework specification <xref
     target='RFC7564'/>.</t>
 
     <t>Profiles of the PRECIS framework enable software to handle Unicode
-    characters outside the ASCII range in an automated way, so that such
-    characters are treated carefully and consistently in application
+    code points outside the ASCII range in an automated way, so that such
+    code points are treated carefully and consistently in application
     protocols.  In large measure, these profiles are designed to protect
     application developers from the potentially negative consequences of
-    supporting the full range of Unicode characters.  For instance, in almost
+    supporting the full range of Unicode code points.  For instance, in almost
     all application protocols it would be dangerous to treat the Unicode
     character SUPERSCRIPT ONE (U+00B9) as equivalent to DIGIT ONE (U+0031),
     because that would result in false positives during comparison,
@@ -154,7 +154,7 @@
     well that the exact form of a username in any particular SASL mechanism or
     application technology is a matter for implementation and deployment, and
     that a username does not necessarily map to any particular application
-    identifier (such as the localpart of an email address).</t>
+    identifier.</t>
 
     <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
     "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
@@ -183,18 +183,17 @@
       <figure>
         <artwork><![CDATA[
    username   = userpart *(1*SP userpart)
-   userpart   = 1*(idbyte)
+   userpart   = 1*(idpoint)
                 ;
-                ; an "idbyte" is a byte used to encode a 
-                ; Unicode code point that can be contained 
-                ; in a string that conforms to the PRECIS 
-                ; IdentifierClass
+                ; an "idpoint" is a Unicode code point that
+                ; can be contained in a string conforming to 
+                ; the PRECIS IdentifierClass
                 ;
         ]]></artwork>
       </figure>
 
       <t>All code points and blocks not explicitly allowed in the PRECIS
-      IdentifierClass are disallowed; this includes private use characters,
+      IdentifierClass are disallowed; this includes private use code points,
       surrogate code points, and the other code points and blocks that were
       defined as "Prohibited Output" in <xref target='RFC4013'/>.  In
       addition, common constructions such as "user@example.com" (e.g., the
@@ -205,7 +204,7 @@
       <t><list style='empty'><t>Implementation Note: The username construct
       defined in this document does not necessarily match what all deployed
       applications might refer to as a "username" or "userid" but instead
-      provides a relatively safe subset of Unicode characters that can be
+      provides a relatively safe subset of Unicode code points that can be
       used in existing SASL mechanisms and in application protocols that use
       SASL, and even in most application protocols that do not currently use
       SASL.</t></list></t>
@@ -226,14 +225,14 @@
 
     <section title='UsernameCaseMapped Profile' anchor='usernamecasemapped'>
       <section title="Rules" anchor="usernamecasemapped-rules">
-        <t>The following rules apply within the UsernameCaseMapped profile of the PRECIS IdentifierClass.</t>
+        <t>The following rules are defined for use within the UsernameCaseMapped profile of the PRECIS IdentifierClass.</t>
         <t>
           <list style='numbers'>
-            <t>Width-Mapping Rule: Map fullwidth and halfwidth characters to their decomposition mappings (see Unicode Standard Annex #11 <xref target='UAX11'/>).</t>
+            <t>Width-Mapping Rule: Map fullwidth and halfwidth code points to their decomposition mappings (see Unicode Standard Annex #11 <xref target='UAX11'/>).</t>
             <t>Additional Mapping Rule: There is no additional mapping rule.</t>
-            <t>Case-Mapping Rule: Map uppercase and titlecase characters to their lowercase equivalents, preferably using the Unicode toLower() operation as defined in the Unicode Standard <xref target='Unicode'/>; see further discussion in <xref target='username-case'/>.</t>
-            <t>Normalization Rule: Apply Unicode Normalization Form C (NFC) to all characters.</t>
-            <t>Directionality Rule: Apply the "Bidi Rule" defined in <xref target='RFC5893'/> to strings that contain right-to-left characters (i.e., each of the six conditions of the Bidi Rule must be satisfied); for strings that do not contain right-to-left characters, there is no special processing for directionality.</t>
+            <t>Case-Mapping Rule: Map uppercase and titlecase code points to their lowercase equivalents, preferably using the Unicode toLower() operation as defined in the Unicode Standard <xref target='Unicode'/>; see further discussion in <xref target='username-case'/>.</t>
+            <t>Normalization Rule: Apply Unicode Normalization Form C (NFC) to all strings.</t>
+            <t>Directionality Rule: Apply the "Bidi Rule" defined in <xref target='RFC5893'/> to strings that contain right-to-left code points (i.e., each of the six conditions of the Bidi Rule must be satisfied); for strings that do not contain right-to-left code points, there is no special processing for directionality.</t>
           </list>
         </t>
       </section>
@@ -241,8 +240,8 @@
         <t>An entity that prepares a string for subsequent enforcement according to this profile MUST proceed as follows (applying the steps in the order shown).</t>
         <t>
           <list style='numbers'>
-            <t>Apply the width-mapping rule specified in <xref target='usernamecasemapped-rules'/>.  It is necessary to apply the rule at this point because otherwise the PRECIS "HasCompat" category specified in Section 9.17 of <xref target='RFC7564'/> would forbid fullwidth and halfwidth characters.</t>
-            <t>Ensure that the string consists only of Unicode code points that conform to the PRECIS IdentifierClass defined in Section 4.2 of <xref target='RFC7564'/>.</t>
+            <t>Apply the width-mapping rule specified in <xref target='usernamecasemapped-rules'/>.  It is necessary to apply the rule at this point because otherwise the PRECIS "HasCompat" category specified in Section 9.17 of <xref target='RFC7564'/> would forbid fullwidth and halfwidth code points.</t>
+            <t>Ensure that the string consists only of Unicode code points that explicitly allowed by the PRECIS IdentifierClass defined in Section 4.2 of <xref target='RFC7564'/>.</t>
           </list>
         </t>
       </section>
@@ -270,14 +269,14 @@
 
     <section title='UsernameCasePreserved Profile' anchor='usernamecasepreserved'>
       <section title="Rules" anchor="usernamecasepreserved-rules">
-        <t>The following rules apply within the UsernameCasePreserved profile of the PRECIS IdentifierClass.</t>
+        <t>The following rules are defined for use within the UsernameCasePreserved profile of the PRECIS IdentifierClass.</t>
         <t>
           <list style='numbers'>
-            <t>Width-Mapping Rule: Map fullwidth and halfwidth characters to their decomposition mappings (see Unicode Standard Annex #11 <xref target='UAX11'/>).</t>
+            <t>Width-Mapping Rule: Map fullwidth and halfwidth code points to their decomposition mappings (see Unicode Standard Annex #11 <xref target='UAX11'/>).</t>
             <t>Additional Mapping Rule: There is no additional mapping rule.</t>
             <t>Case-Mapping Rule: There is no case-mapping rule.</t>
-            <t>Normalization Rule: Apply Unicode Normalization Form C (NFC) to all characters.</t>
-            <t>Directionality Rule: Apply the "Bidi Rule" defined in <xref target='RFC5893'/> to strings that contain right-to-left characters (i.e., each of the six conditions of the Bidi Rule must be satisfied); for strings that do not contain right-to-left characters, there is no special processing for directionality.</t>
+            <t>Normalization Rule: Apply Unicode Normalization Form C (NFC) to all strings.</t>
+            <t>Directionality Rule: Apply the "Bidi Rule" defined in <xref target='RFC5893'/> to strings that contain right-to-left code points (i.e., each of the six conditions of the Bidi Rule must be satisfied); for strings that do not contain right-to-left code points, there is no special processing for directionality.</t>
           </list>
         </t>
       </section>
@@ -286,8 +285,8 @@
         <t>An entity that prepares a string for subsequent enforcement according to this profile MUST proceed as follows (applying the steps in the order shown).</t>
         <t>
           <list style='numbers'>
-            <t>Apply the width-mapping rule specified in <xref target='usernamecasemapped-rules'/>.  It is necessary to apply the rule at this point because otherwise the PRECIS "HasCompat" category specified in Section 9.17 of <xref target='RFC7564'/> would forbid fullwidth and halfwidth characters.</t>
-            <t>Ensure that the string consists only of Unicode code points that conform to the PRECIS IdentifierClass defined in Section 4.2 of <xref target='RFC7564'/>.</t>
+            <t>Apply the width-mapping rule specified in <xref target='usernamecasemapped-rules'/>.  It is necessary to apply the rule at this point because otherwise the PRECIS "HasCompat" category specified in Section 9.17 of <xref target='RFC7564'/> would forbid fullwidth and halfwidth code points.</t>
+            <t>Ensure that the string consists only of Unicode code points that are explicitly allowed by the PRECIS IdentifierClass defined in Section 4.2 of <xref target='RFC7564'/>.</t>
           </list>
         </t>
       </section>
@@ -476,7 +475,7 @@
       it is a space-separated sequence of userparts.  Regarding example 10:
       the Unicode character ROMAN NUMERAL FOUR (U+2163) has a compatibility
       equivalent of the string formed of LATIN CAPITAL LETTER I (U+0049) and
-      LATIN CAPITAL LETTER V (U+0056), but characters with compatibility
+      LATIN CAPITAL LETTER V (U+0056), but code points with compatibility
       equivalents are not allowed in the PRECIS IdentifierClass.  Regarding
       example 11: symbol characters such as BLACK CHESS KING (U+265A) are not
       allowed in the PRECIS IdentifierClass.</t>
@@ -499,17 +498,16 @@
 
       <figure>
         <artwork><![CDATA[
-   password   = 1*(freebyte)
+   password   = 1*(freepoint)
                 ;
-                ; a "freebyte" is a byte used to encode a 
-                ; Unicode code point that can be contained 
-                ; in a string that conforms to the PRECIS 
-                ; FreeformClass
+                ; a "freepoint" is a Unicode code point that
+                ; can be contained in a string conforming to 
+                ; the PRECIS FreeformClass
                 ;
         ]]></artwork>
       </figure>
       <t>All code points and blocks not explicitly allowed in the PRECIS
-      FreeformClass are disallowed; this includes private use characters,
+      FreeformClass are disallowed; this includes private use code points,
       surrogate code points, and the other code points and blocks defined as
       "Prohibited Output" in Section 2.3 of RFC 4013 (when corrected per
       <xref target="Err1812" />).</t>
@@ -549,8 +547,8 @@
       <section title="Preparation" anchor="opaquestring-profile-preparation">
         <t>An entity that prepares a string according to this profile MUST
         ensure that the string consists only of Unicode code points that
-        conform to the FreeformClass base string class defined in <xref
-        target='RFC7564'/>.</t>
+        are explicitly allowed by the FreeformClass base string class defined 
+        in <xref target='RFC7564'/>.</t>
 
       </section>
       <section title="Enforcement" anchor="opaquestring-profile-enforcement">
@@ -562,7 +560,7 @@
 
         <t>
           <list style='numbers'>
-            <t>Width-Mapping Rule: Fullwidth and halfwidth characters MUST NOT
+            <t>Width-Mapping Rule: Fullwidth and halfwidth code points MUST NOT
             be mapped to their decomposition mappings (see Unicode Standard
             Annex #11 <xref target='UAX11'/>).</t>
 
@@ -572,11 +570,11 @@
             (with the exception of U+0020).</t>
 
             <t>Case-Mapping Rule: There is no case mapping rule (because mapping
-            uppercase and titlecase characters to their lowercase equivalents
+            uppercase and titlecase code points to their lowercase equivalents
             would lead to false positives and thus to reduced security).</t>
 
             <t>Normalization Rule: Unicode Normalization Form C (NFC) MUST be
-            applied to all characters.</t>
+            applied to all strings.</t>
 
             <t>Directionality Rule: There is no directionality rule. The "Bidi
             Rule" (defined in <xref target='RFC5893'/>) and similar rules are
@@ -673,7 +671,7 @@
     <t>Above and beyond the PRECIS-based rules specified here, application
     protocols can also define application-specific rules governing such
     strings (rules regarding minimum or maximum length, further restrictions
-    on allowable characters or character ranges, safeguards to mitigate the
+    on allowable code points or character ranges, safeguards to mitigate the
     effects of visually similar characters, etc.), application-layer
     constructs (see <xref target='username-app'/>), and related matters.</t>
 
@@ -732,7 +730,7 @@
           compatibility equivalents and, where there is no conflict, map those
           code points to their equivalents.  Naturally, it is possible that
           during this process the operator will discover conflicting usernames
-          (e.g., HENRYIV with the last two characters being LATIN CAPITAL
+          (e.g., HENRYIV with the last two code points being LATIN CAPITAL
           LETTER I (U+0049) and LATIN CAPITAL LETTER V (U+0056)
           vs.&nbsp;"HENRYIV" with the last character being ROMAN NUMERAL FOUR
           (U+2163), which is compatibility equivalent to U+0049 and U+0056);
@@ -744,7 +742,7 @@
 
           <t>SASLprep mapped the "characters commonly mapped to nothing" from
           Appendix B.1 of <xref target='RFC3454'/>) to nothing, whereas the
-          PRECIS IdentifierClass entirely disallows most of these characters,
+          PRECIS IdentifierClass entirely disallows most of these code points,
           which correspond to the code points from the PRECIS  "M" category
           defined under Section 9.13 of <xref target='RFC7564'/>. For migration
           purposes, the operator might want to remove from usernames any
@@ -754,8 +752,8 @@
           notice the difference if, upon migration to PRECIS, the code points
           are removed.</t>
 
-          <t>SASLprep allowed uppercase and titlecase characters, whereas the
-          UsernameCaseMapped profile maps uppercase and titlecase characters
+          <t>SASLprep allowed uppercase and titlecase code points, whereas the
+          UsernameCaseMapped profile maps uppercase and titlecase code points
           to their lowercase equivalents (by contrast, the
           UsernameCasePreserved profile matches SASLprep in this regard).  For
           migration purposes, the operator can use either the
@@ -807,7 +805,7 @@
 
           <t>SASLprep mapped the "characters commonly mapped to nothing" from
           Appendix B.1 of <xref target='RFC3454'/>) to nothing, whereas the
-          PRECIS FreeformClass entirely disallows such characters, which
+          PRECIS FreeformClass entirely disallows such code points, which
           correspond to the code points from the PRECIS "M" category defined
           under Section 9.13 of <xref target='RFC7564'/>. 
           In practice, this change will probably have no effect
@@ -836,11 +834,11 @@ IANA has added the following entry to the "PRECIS Profiles"
 
           <t hangText='Replaces:'>The SASLprep profile of stringprep.</t>
           <t hangText='Width-Mapping Rule:'>Map fullwidth and halfwidth
-          characters to their decomposition mappings.</t>
+          code points to their decomposition mappings.</t>
 
           <t hangText='Additional Mapping Rule:'>None.</t>
           <t hangText='Case-Mapping Rule:'>Map uppercase and titlecase
-          characters to lowercase.</t>
+          code points to lowercase.</t>
 
           <t hangText='Normalization Rule:'>NFC.</t>
           <t hangText='Directionality Rule:'>The "Bidi Rule" defined in RFC
@@ -868,7 +866,7 @@ IANA has added the following entry to the "PRECIS Profiles"
 
           <t hangText='Replaces:'>The SASLprep profile of stringprep.</t>
           <t hangText='Width-Mapping Rule:'>Map fullwidth and halfwidth
-          characters to their decomposition mappings.</t>
+          code points to their decomposition mappings.</t>
 
           <t hangText='Additional Mapping Rule:'>None.</t>
           <t hangText='Case-Mapping Rule:'>None.</t>
@@ -900,7 +898,7 @@ IANA has added the following entry to the "PRECIS Profiles"
           <t hangText='Replaces:'>The SASLprep profile of stringprep.</t>
           <t hangText='Width-Mapping Rule:'>None.</t>
           <t hangText='Additional Mapping Rule:'>Map non-ASCII space
-          characters to ASCII space.</t>
+          code points to ASCII space.</t>
 
           <t hangText='Case-Mapping Rule:'>None.</t>
           <t hangText='Normalization Rule:'>NFC.</t>
@@ -952,7 +950,7 @@ IANA has added the following entry to the "PRECIS Profiles"
     </section>
     <section title="Reuse of Unicode" anchor="security-unicode">
       <t>The security considerations described in <xref target='UTS39'/> apply
-      to the use of Unicode characters in usernames and passwords.</t>
+      to the use of Unicode code points in usernames and passwords.</t>
 
     </section>
   </section>
