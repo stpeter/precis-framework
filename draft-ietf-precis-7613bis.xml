@@ -8,7 +8,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7613bis-04" obsoletes="7613">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7613bis-05" obsoletes="7613">
 
   <front>
 
@@ -79,7 +79,7 @@
     throughout the world, this document defines rules for preparing,
     enforcing, and comparing internationalized strings that represent
     usernames and passwords.  Such strings consist of code points from the
-    Unicode character set <xref target="Unicode"/>, with special attention to
+    Unicode coded character set <xref target="Unicode"/>, with special attention to
     code points outside the ASCII range <xref target='RFC20'/>.  The rules for
     handling such strings are specified through profiles of the string classes
     defined in the preparation, enforcement, and comparison of
@@ -93,7 +93,7 @@
     application developers from the potentially negative consequences of
     supporting the full range of Unicode code points.  For instance, in almost
     all application protocols it would be dangerous to treat the Unicode
-    character SUPERSCRIPT ONE (U+00B9) as equivalent to DIGIT ONE (U+0031),
+    code point SUPERSCRIPT ONE (U+00B9) as equivalent to DIGIT ONE (U+0031),
     because that would result in false positives during comparison,
     authentication, and authorization (e.g., an attacker could easy spoof an
     account "user1@example.com").</t>
@@ -223,96 +223,6 @@
 
     </section>
 
-    <section title='UsernameCaseMapped Profile' anchor='usernamecasemapped'>
-      <section title="Rules" anchor="usernamecasemapped-rules">
-        <t>The following rules are defined for use within the UsernameCaseMapped profile of the PRECIS IdentifierClass.</t>
-        <t>
-          <list style='numbers'>
-            <t>Width-Mapping Rule: Map fullwidth and halfwidth code points to their decomposition mappings (see Unicode Standard Annex #11 <xref target='UAX11'/>).</t>
-            <t>Additional Mapping Rule: There is no additional mapping rule.</t>
-            <t>Case-Mapping Rule: Map uppercase and titlecase code points to their lowercase equivalents, preferably using the Unicode toLower() operation as defined in the Unicode Standard <xref target='Unicode'/>; see further discussion in <xref target='username-case'/>.</t>
-            <t>Normalization Rule: Apply Unicode Normalization Form C (NFC) to all strings.</t>
-            <t>Directionality Rule: Apply the "Bidi Rule" defined in <xref target='RFC5893'/> to strings that contain right-to-left code points (i.e., each of the six conditions of the Bidi Rule must be satisfied); for strings that do not contain right-to-left code points, there is no special processing for directionality.</t>
-          </list>
-        </t>
-      </section>
-      <section title="Preparation" anchor="usernamecasemapped-preparation">
-        <t>An entity that prepares a string for subsequent enforcement according to this profile MUST proceed as follows (applying the steps in the order shown).</t>
-        <t>
-          <list style='numbers'>
-            <t>Apply the width-mapping rule specified in <xref target='usernamecasemapped-rules'/>.  It is necessary to apply the rule at this point because otherwise the PRECIS "HasCompat" category specified in Section 9.17 of <xref target='RFC7564'/> would forbid fullwidth and halfwidth code points.</t>
-            <t>Ensure that the string consists only of Unicode code points that explicitly allowed by the PRECIS IdentifierClass defined in Section 4.2 of <xref target='RFC7564'/>.</t>
-          </list>
-        </t>
-      </section>
-      <section title="Enforcement" anchor="usernamecasemapped-enforcement">
-        <t>An entity that performs enforcement according to this profile MUST prepare a string as described in <xref target='usernamecasemapped-preparation'/> and MUST also apply the following rules specified in <xref target='usernamecasemapped-rules'/> in the order shown:</t>
-        <t>
-          <list style="numbers">
-            <t>Case-Mapping Rule</t>
-            <t>Normalization Rule</t>
-            <t>Directionality Rule</t>
-          </list>
-        </t>
-        <t>After all of the foregoing rules have been enforced, the entity MUST ensure that the username is not zero bytes in length (this is done after enforcing the rules to prevent applications from mistakenly omitting a username entirely, because when internationalized characters are accepted, a non-empty sequence of characters can result in a zero-length username after canonicalization).</t>
-      </section>
-      <section title="Comparison" anchor="usernamecasemapped-comparison">
-        <t>An entity that performs comparison of two strings according to this
-        profile MUST prepare each string as specified in
-        <xref target="usernamecasemapped-preparation"/> and then MUST
-        enforce the rules specified in
-        <xref target="usernamecasemapped-enforcement"/>.
-        The two strings are to be considered equivalent if they are an exact
-        octet-for-octet match (sometimes called "bit-string identity").</t> 
-      </section>
-    </section>
-
-    <section title='UsernameCasePreserved Profile' anchor='usernamecasepreserved'>
-      <section title="Rules" anchor="usernamecasepreserved-rules">
-        <t>The following rules are defined for use within the UsernameCasePreserved profile of the PRECIS IdentifierClass.</t>
-        <t>
-          <list style='numbers'>
-            <t>Width-Mapping Rule: Map fullwidth and halfwidth code points to their decomposition mappings (see Unicode Standard Annex #11 <xref target='UAX11'/>).</t>
-            <t>Additional Mapping Rule: There is no additional mapping rule.</t>
-            <t>Case-Mapping Rule: There is no case-mapping rule.</t>
-            <t>Normalization Rule: Apply Unicode Normalization Form C (NFC) to all strings.</t>
-            <t>Directionality Rule: Apply the "Bidi Rule" defined in <xref target='RFC5893'/> to strings that contain right-to-left code points (i.e., each of the six conditions of the Bidi Rule must be satisfied); for strings that do not contain right-to-left code points, there is no special processing for directionality.</t>
-          </list>
-        </t>
-      </section>
-
-      <section title="Preparation" anchor="usernamecasepreserved-preparation">
-        <t>An entity that prepares a string for subsequent enforcement according to this profile MUST proceed as follows (applying the steps in the order shown).</t>
-        <t>
-          <list style='numbers'>
-            <t>Apply the width-mapping rule specified in <xref target='usernamecasemapped-rules'/>.  It is necessary to apply the rule at this point because otherwise the PRECIS "HasCompat" category specified in Section 9.17 of <xref target='RFC7564'/> would forbid fullwidth and halfwidth code points.</t>
-            <t>Ensure that the string consists only of Unicode code points that are explicitly allowed by the PRECIS IdentifierClass defined in Section 4.2 of <xref target='RFC7564'/>.</t>
-          </list>
-        </t>
-      </section>
-
-      <section title="Enforcement" anchor="usernamecasepreserved-enforcement">
-        <t>An entity that performs enforcement according to this profile MUST prepare a string as described in <xref target='usernamecasepreserved-preparation'/> and MUST also apply the following rules specified in <xref target='usernamecasepreserved-rules'/> in the order shown:</t>
-        <t>
-          <list style="numbers">
-            <t>Normalization Rule</t>
-            <t>Directionality Rule</t>
-          </list>
-        </t>
-        <t>After all of the foregoing rules have been enforced, the entity MUST ensure that the username is not zero bytes in length (this is done after enforcing the rules to prevent applications from mistakenly omitting a username entirely, because when internationalized characters are accepted, a non-empty sequence of characters can result in a zero-length username after canonicalization).</t>
-      </section>
-
-      <section title="Comparison" anchor="usernamecasepreserved-comparison">
-        <t>An entity that performs comparison of two strings according to this
-        profile MUST prepare each string as specified in
-        <xref target="usernamecasepreserved-preparation"/> and then MUST
-        enforce the rules specified in
-        <xref target="usernamecasepreserved-enforcement"/>.
-        The two strings are to be considered equivalent if they are an exact
-        octet-for-octet match (sometimes called "bit-string identity").</t>
-      </section>
-    </section>
-
     <section title='Case Mapping vs. Case Preservation' anchor='username-case'>
       <t>In order to accommodate the widest range of username constructs in
       applications, this document defines two username profiles:
@@ -381,6 +291,96 @@
       (each of these approaches can be legitimate, depending on the
       application in question).</t> 
 
+    </section>
+
+    <section title='UsernameCaseMapped Profile' anchor='usernamecasemapped'>
+      <section title="Rules" anchor="usernamecasemapped-rules">
+        <t>The following rules are defined for use within the UsernameCaseMapped profile of the PRECIS IdentifierClass.</t>
+        <t>
+          <list style='numbers'>
+            <t>Width-Mapping Rule: Map fullwidth and halfwidth code points to their decomposition mappings (see Unicode Standard Annex #11 <xref target='UAX11'/>).</t>
+            <t>Additional Mapping Rule: There is no additional mapping rule.</t>
+            <t>Case-Mapping Rule: Map uppercase and titlecase code points to their lowercase equivalents, preferably using the Unicode toLower() operation as defined in the Unicode Standard <xref target='Unicode'/>; see further discussion in <xref target='username-case'/>.</t>
+            <t>Normalization Rule: Apply Unicode Normalization Form C (NFC) to all strings.</t>
+            <t>Directionality Rule: Apply the "Bidi Rule" defined in <xref target='RFC5893'/> to strings that contain right-to-left code points (i.e., each of the six conditions of the Bidi Rule must be satisfied); for strings that do not contain right-to-left code points, there is no special processing for directionality.</t>
+          </list>
+        </t>
+      </section>
+      <section title="Preparation" anchor="usernamecasemapped-preparation">
+        <t>An entity that prepares a string for subsequent enforcement according to this profile MUST proceed as follows (applying the steps in the order shown).</t>
+        <t>
+          <list style='numbers'>
+            <t>Apply the width-mapping rule specified in <xref target='usernamecasemapped-rules'/>.  It is necessary to apply the rule at this point because otherwise the PRECIS "HasCompat" category specified in Section 9.17 of <xref target='RFC7564'/> would forbid fullwidth and halfwidth code points.</t>
+            <t>Ensure that the string consists only of Unicode code points that are explicitly allowed by the PRECIS IdentifierClass defined in Section 4.2 of <xref target='RFC7564'/>.</t>
+          </list>
+        </t>
+      </section>
+      <section title="Enforcement" anchor="usernamecasemapped-enforcement">
+        <t>An entity that performs enforcement according to this profile MUST prepare a string as described in <xref target='usernamecasemapped-preparation'/> and MUST also apply the following rules specified in <xref target='usernamecasemapped-rules'/> in the order shown:</t>
+        <t>
+          <list style="numbers">
+            <t>Case-Mapping Rule</t>
+            <t>Normalization Rule</t>
+            <t>Directionality Rule</t>
+          </list>
+        </t>
+        <t>After all of the foregoing rules have been enforced, the entity MUST ensure that the username is not zero bytes in length (this is done after enforcing the rules to prevent applications from mistakenly omitting a username entirely, because when internationalized strings are accepted, a non-empty sequence of characters can result in a zero-length username after canonicalization).</t>
+      </section>
+      <section title="Comparison" anchor="usernamecasemapped-comparison">
+        <t>An entity that performs comparison of two strings according to this
+        profile MUST prepare each string as specified in
+        <xref target="usernamecasemapped-preparation"/> and then MUST
+        enforce the rules specified in
+        <xref target="usernamecasemapped-enforcement"/>.
+        The two strings are to be considered equivalent if and only if they are an exact
+        octet-for-octet match (sometimes called "bit-string identity").</t> 
+      </section>
+    </section>
+
+    <section title='UsernameCasePreserved Profile' anchor='usernamecasepreserved'>
+      <section title="Rules" anchor="usernamecasepreserved-rules">
+        <t>The following rules are defined for use within the UsernameCasePreserved profile of the PRECIS IdentifierClass.</t>
+        <t>
+          <list style='numbers'>
+            <t>Width-Mapping Rule: Map fullwidth and halfwidth code points to their decomposition mappings (see Unicode Standard Annex #11 <xref target='UAX11'/>).</t>
+            <t>Additional Mapping Rule: There is no additional mapping rule.</t>
+            <t>Case-Mapping Rule: There is no case-mapping rule.</t>
+            <t>Normalization Rule: Apply Unicode Normalization Form C (NFC) to all strings.</t>
+            <t>Directionality Rule: Apply the "Bidi Rule" defined in <xref target='RFC5893'/> to strings that contain right-to-left code points (i.e., each of the six conditions of the Bidi Rule must be satisfied); for strings that do not contain right-to-left code points, there is no special processing for directionality.</t>
+          </list>
+        </t>
+      </section>
+
+      <section title="Preparation" anchor="usernamecasepreserved-preparation">
+        <t>An entity that prepares a string for subsequent enforcement according to this profile MUST proceed as follows (applying the steps in the order shown).</t>
+        <t>
+          <list style='numbers'>
+            <t>Apply the width-mapping rule specified in <xref target='usernamecasemapped-rules'/>.  It is necessary to apply the rule at this point because otherwise the PRECIS "HasCompat" category specified in Section 9.17 of <xref target='RFC7564'/> would forbid fullwidth and halfwidth code points.</t>
+            <t>Ensure that the string consists only of Unicode code points that are explicitly allowed by the PRECIS IdentifierClass defined in Section 4.2 of <xref target='RFC7564'/>.</t>
+          </list>
+        </t>
+      </section>
+
+      <section title="Enforcement" anchor="usernamecasepreserved-enforcement">
+        <t>An entity that performs enforcement according to this profile MUST prepare a string as described in <xref target='usernamecasepreserved-preparation'/> and MUST also apply the following rules specified in <xref target='usernamecasepreserved-rules'/> in the order shown:</t>
+        <t>
+          <list style="numbers">
+            <t>Normalization Rule</t>
+            <t>Directionality Rule</t>
+          </list>
+        </t>
+        <t>After all of the foregoing rules have been enforced, the entity MUST ensure that the username is not zero bytes in length (this is done after enforcing the rules to prevent applications from mistakenly omitting a username entirely, because when internationalized strings are accepted, a non-empty sequence of characters can result in a zero-length username after canonicalization).</t>
+      </section>
+
+      <section title="Comparison" anchor="usernamecasepreserved-comparison">
+        <t>An entity that performs comparison of two strings according to this
+        profile MUST prepare each string as specified in
+        <xref target="usernamecasepreserved-preparation"/> and then MUST
+        enforce the rules specified in
+        <xref target="usernamecasepreserved-enforcement"/>.
+        The two strings are to be considered equivalent if and only if they are an exact
+        octet-for-octet match (sometimes called "bit-string identity").</t>
+      </section>
     </section>
 
     <section title="Application-Layer Constructs" anchor="username-app">
@@ -473,7 +473,7 @@
       <t>Here again, several points are worth noting.  Regarding example 8:
       although this is not a valid userpart, it is a valid username because
       it is a space-separated sequence of userparts.  Regarding example 10:
-      the Unicode character ROMAN NUMERAL FOUR (U+2163) has a compatibility
+      the Unicode code point ROMAN NUMERAL FOUR (U+2163) has a compatibility
       equivalent of the string formed of LATIN CAPITAL LETTER I (U+0049) and
       LATIN CAPITAL LETTER V (U+0056), but code points with compatibility
       equivalents are not allowed in the PRECIS IdentifierClass.  Regarding
@@ -526,7 +526,7 @@
       strength (because a password of only one byte is highly insecure) but is
       meant to prevent applications from mistakenly omitting a password
       entirely; such an outcome is possible when internationalized
-      characters are accepted, because a non-empty sequence of
+      strings are accepted, because a non-empty sequence of
       characters can result in a zero-length password after
       canonicalization.</t></list></t>
 
@@ -579,7 +579,7 @@
             <t>Directionality Rule: There is no directionality rule. The "Bidi
             Rule" (defined in <xref target='RFC5893'/>) and similar rules are
             unnecessary and inapplicable to passwords, because they can reduce
-            the range of characters that are allowed in a string and therefore
+            the repertoire of characters that are allowed in a string and therefore
             reduce the amount of entropy that is possible in a password.  Such
             rules are intended to minimize the possibility that the same
             string will be displayed differently on a layout system set for
@@ -601,7 +601,7 @@
         <xref target="opaquestring-profile-preparation"/> and then MUST
         enforce the rules specified in
         <xref target="opaquestring-profile-enforcement"/>.
-        The two strings are to be considered equivalent if they are an exact
+        The two strings are to be considered equivalent if and only if they are an exact
         octet-for-octet match (sometimes called "bit-string identity").</t> 
 
       </section>

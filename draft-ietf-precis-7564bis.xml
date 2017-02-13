@@ -11,7 +11,7 @@
 <?rfc tocdepth="3"?>
 <?rfc rfcedstyle="yes"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7564bis-04" obsoletes="7564">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7564bis-05" obsoletes="7564">
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -251,7 +251,7 @@
         specified for a particular string class or profile thereof.
         Preparation can be appropriate for constrained devices that can
         to some extent restrict the code points in a string to a limited
-        character repertoire but that do not have the processing power or onboard 
+        repertoire of characters but that do not have the processing power or onboard 
         memory to perform operations such as Unicode normalization. 
         However, preparation does not ensure that an input string conforms
         to all of the rules for a string class or profile thereof.
@@ -316,7 +316,7 @@
             strings, including passwords as well as display elements such as
             human-friendly nicknames for devices or for participants in a
             chatroom; the intent is that this class will allow nearly any
-            Unicode character, with the result that expressiveness has been
+            Unicode code point, with the result that expressiveness has been
             prioritized over safety for this class.  Note well that protocol
             designers, application developers, service providers, and end
             users might not understand or be able to enter all of the
@@ -433,7 +433,8 @@
               <t>Punctuation code points, i.e., the Punctuation ("P") category
               defined under <xref target='P'/>.</t>
 
-              <t>Any character that has a compatibility equivalent, i.e., the
+              <t>Any code point that is decomposed and recomposed into something
+              other than itself under Unicode normalization form KC, i.e., the
               HasCompat ("Q") category defined under <xref target='Q'/>.
               These code points are disallowed even if they would otherwise be
               valid according to the property-based rules specified in the
@@ -448,7 +449,7 @@
         </section>
         <section title='Unassigned' anchor='classes-id-unassigned'>
           <t>Any code points that are not yet designated in the Unicode
-          character set are considered unassigned for purposes of the
+          coded character set are considered unassigned for purposes of the
           IdentifierClass, and such code points are to be treated as
           disallowed.  See <xref target='J'/>.</t>
 
@@ -498,7 +499,8 @@
               (printable) ASCII7 ("K") category defined under <xref
               target='K'/>.</t>
 
-              <t>Any character that has a compatibility equivalent, i.e., the
+              <t>Any code point that is decomposed and recomposed into something
+              other than itself under Unicode normalization form KC, i.e., the
               HasCompat ("Q") category defined under <xref target='Q'/>.</t>
 
               <t>Space code points, i.e., the Spaces ("N") category defined
@@ -543,7 +545,7 @@
         </section>
         <section title='Unassigned' anchor='classes-free-unassigned'>
           <t>Any code points that are not yet designated in the Unicode
-          character set are considered unassigned for purposes of the
+          coded character set are considered unassigned for purposes of the
           FreeformClass, and such code points are to be treated as
           disallowed.</t>
 
@@ -712,6 +714,13 @@
           <t>In accordance with <xref target='RFC5198'/>, normalization form C
           (NFC) is RECOMMENDED.</t>
 
+          <t>Protocol designers and application developers need to understand
+          that use certain Unicode normalization forms, especially NFKC and NFKD,
+          can result in significant loss of information in various circumstances,
+          and that these circumstances can vary depending on the language and script 
+          of the strings to which the normalization forms are applied.  Extreme
+          care should be taken when specifying the use of these normalization forms.</t>
+
         </section>
 
         <section title="Directionality Rule" anchor="profiles-principles-directionality">
@@ -786,7 +795,7 @@
             consider a string containing spaces to be equivalent to the same
             string without spaces.</t>
 
-            <t>In some locales, some devices are known to generate a character
+            <t>In some locales, some devices are known to generate a code point
             other than ASCII space (such as ZERO WIDTH JOINER, U+200D) when a
             user performs an action like hitting the space bar on a
             keyboard.</t>
@@ -815,8 +824,22 @@
       <section title="How to Use PRECIS in Applications" anchor="apps-howto">
         <t>Although PRECIS has been designed with applications in mind,
         internationalization is not suddenly made easy through the use of
-        PRECIS.  Application developers still need to give some thought to how
-        they will use the PRECIS string classes, or profiles thereof, in their
+        PRECIS.  Indeed, because it is extremely difficult for protocol 
+        designers and application developers to do the right thing for all 
+        users when supporting internationalized strings, often the safest 
+        option is to support only the ASCII range <xref target='RFC20'/>
+        in various protocol slots.  This state of affairs is unfortunate
+        but is the direct result of the complexities involved with human
+        languages (e.g., the vast number of code points, scripts, user 
+        communities, and rules with their inevitable exceptions), which
+        kinds of strings application developers and their users wish to 
+        support, the wide range of devices that users employ to access 
+        services enabled by various Internet protocols, and so on.</t>
+        
+        <t>Despite these significant challenges, application and protocol 
+        developers sometimes persevere in attempting to support internationalized
+        strings in their systems.  These developers need to think carefully about
+        how they will use the PRECIS string classes, or profiles thereof, in their
         applications.  This section provides some guidelines to application
         developers (and to expert reviewers of application protocol
         specifications).</t>
@@ -951,7 +974,7 @@
       <t>
         <list style='numbers'>
           <t>Reviews and classifies the collections of code points in the
-          Unicode character set by examining various code point
+          Unicode coded character set by examining various code point
           properties.</t>
 
           <t>Defines an algorithm for determining a derived property value,
@@ -982,18 +1005,21 @@
 
           <t hangText='CONTEXTUAL RULE REQUIRED'>Some characteristics of the
           code point, such as its being invisible in certain contexts or
-          problematic in others, require that it not be used in labels unless
-          specific other code points or properties are present.  As in
+          problematic in others, require that it not be used in a string unless
+          specific other code points or properties are present in the string.  As in
           IDNA2008, there are two subdivisions of CONTEXTUAL RULE REQUIRED --
           the first for Join_controls (called "CONTEXTJ") and the second for
-          other code points (called "CONTEXTO").  A code point with the derived
-          property value CONTEXTJ or CONTEXTO MUST NOT be used unless an
-          appropriate rule has been established and the context of the
-          character is consistent with that rule.  The most notable of the
-          CONTEXTUAL RULE REQUIRED code points are the Join Control code points
-          U+200D ZERO WIDTH JOINER and U+200C ZERO WIDTH NON&nbhy;JOINER, which
-          have a derived property value of CONTEXTJ.  See Appendix A of <xref
-          target='RFC5892'/> for more information.</t>
+          other code points (called "CONTEXTO").  A string MUST NOT contain any 
+          characters whose validity is context-dependent, unless the validity is 
+          positively confirmed by a contextual rule.  To check this, each code 
+          point identified as CONTEXTJ or CONTEXTO in the PRECIS Derived Property 
+          Value registry MUST have a non-null rule.  If such a code point is missing 
+          a rule, the string is invalid.  If the rule exists but the result of applying 
+          the rule is negative or inconclusive, the proposed string is invalid.
+          The most notable of the CONTEXTUAL RULE REQUIRED code points are the Join 
+          Control code points U+200D ZERO WIDTH JOINER and U+200C ZERO WIDTH 
+          NON&nbhy;JOINER, which have a derived property value of CONTEXTJ.  
+          See Appendix A of <xref target='RFC5892'/> for more information.</t>
 
           <t hangText='DISALLOWED'>Those code points that are not permitted in
           any PRECIS string class.</t>
@@ -1057,7 +1083,7 @@ Else DISALLOWED;
       categories mentioned in this document are simply pointers to IDNA2008
       and therefore were defined at the time of Unicode 5.2).  Changes in
       Unicode properties that do not affect the outcome of this process
-      therefore do not affect this framework.  For example, a character can
+      therefore do not affect this framework.  For example, a code point can
       have its Unicode General_Category value change from So to Sm, or
       from Lo to Ll, without affecting the algorithm results.  Moreover, even
       if such changes were to result, the <xref target="G">BackwardCompatible
@@ -1071,7 +1097,7 @@ Else DISALLOWED;
 
       <t>
         <list style='numbers'>
-          <t>Characters are placed in one or more character categories either
+          <t>Code points are placed in one or more character categories either
           (1) based on core properties defined by the Unicode Standard or (2)
           by treating the code point as an exception and addressing the code
           point based on its code point value.  These categories are not
@@ -1090,7 +1116,7 @@ Else DISALLOWED;
       value of the gc property.</t></list></t>
 
      <t>In the following specification of character categories, the operation
-     that returns the value of a particular Unicode character property for a
+     that returns the value of a particular Unicode code point property for a
      code point is designated by using the formal name of that property (from
      the Unicode PropertyAliases.txt file <xref target="PropertyAliases"/>
      followed by "(cp)" for "code point".  For example, the value of the
@@ -1245,14 +1271,20 @@ P: General_Category(cp) is in {Pc, Pd, Ps, Pe, Pi, Pf, Po}
           </figure>
         </section>
         <section anchor="Q" title="HasCompat (Q)">
-          <t>This PRECIS-specific category is used to group code points that
-          have compatibility equivalents as explained in the Unicode Standard.</t>
+          <t>This PRECIS-specific category is used to group any code point that
+          is decomposed and recomposed into something other than itself under 
+          Unicode normalization form KC.</t>
 
           <figure>
             <artwork>
 Q: toNFKC(cp) != cp
             </artwork>
           </figure>
+
+          <t>Typically this category is true of code points that are 
+          "compatibility decomposable characters" as defined in the
+          Unicode Standard.</t>
+
           <t>The toNFKC() operation returns the code point in normalization
           form KC.  For more information, see Section 5 of Unicode Standard
           Annex #15 <xref target='UAX15'/>.</t>
@@ -1527,7 +1559,7 @@ Specification: Section 4.2 of RFC 7564.
       </section>
       <section title="Use of the FreeformClass" anchor='security-freeformclass'>
         <t>Strings that conform to the FreeformClass and many profiles thereof
-        can include virtually any Unicode character.  This makes the
+        can include virtually any Unicode code point.  This makes the
         FreeformClass quite expressive, but also problematic from the
         perspective of possible user confusion.  Protocol designers are hereby
         warned that the FreeformClass contains code points they might not
@@ -1699,36 +1731,52 @@ Specification: Section 4.2 of RFC 7564.
     </section>
 
     <section title="Interoperability Considerations" anchor='interop'>
+      <section title="Coded Character Sets" anchor='interop-characters'>
+        <t>It is known that some existing applications and systems do not support 
+        the full Unicode coded character set, or even any characters outside the ASCII
+        repertoire <xref target='RFC20'/>.  If two (or more) applications or 
+        systems need to interoperate when exchanging data (e.g., for the purpose 
+        of authenticating the combination of a username and password), naturally 
+        they will need to have in common at least one coded character set and the 
+        repertoire of characters being exchanged (see <xref target='RFC6365'/>
+        for definitions of these terms). Establishing such a baseline is a matter 
+        for the application or system that uses PRECIS, not for the PRECIS framework.</t>
+      </section>
+      <section title="Dependency on Unicode" anchor='interop-dep'>
+        <t>The only coded character set supported by PRECIS is Unicode.  
+        If an application or system does not support Unicode or uses a 
+        different coded character set <xref target='RFC6365'/>, then the 
+        PRECIS rules cannot be applied to that application or system.</t>
+      </section>
       <section title="Encoding" anchor='interop-encoding'>
         <t>Although strings that are consumed in PRECIS-based application
         protocols are often encoded using UTF-8 <xref target='RFC3629'/>, the
         exact encoding is a matter for the application protocol that uses
         PRECIS, not for the PRECIS framework or for specifications that
         define PRECIS string classes or profiles thereof.</t>
-
       </section>
-      <section title="Character Sets" anchor='interop-characters'>
-        <t>It is known that some existing systems are unable to support the
-        full Unicode character set, or even any characters outside the ASCII
-        range.  If two (or more) applications need to interoperate when
-        exchanging data (e.g., for the purpose of authenticating a username or
-        password), they will naturally need to have in common at least one
-        coded character set (as defined by <xref target='RFC6365'/>).
-        Establishing such a baseline is a matter for the application protocol
-        that uses PRECIS, not for the PRECIS framework.</t>
-
-      </section>
-      <section title="Unicode Versions" anchor='interop-unicode'>
-        <t>Changes to the properties of Unicode code points can occur as the
-        Unicode Standard is modified from time to time.  For example, three
-        code points underwent changes in their GeneralCategory between Unicode
-        5.2 (current at the time IDNA2008 was originally published) and
-        Unicode 6.0, as described in <xref target='RFC6452'/>.  Implementers
-        might need to be aware that the treatment of these code points differs
-        depending on which version of Unicode is available on the system that
-        is using IDNA2008 or PRECIS.  Other such differences might arise
-        between the version of Unicode current at the time of this writing
-        (7.0) and future versions.</t>
+      <section title="Unicode Versions" anchor='interop-versions'>
+        <t>It is extremely important for protocol designers and application
+        developers to undersatnd that various changes can occur across versions 
+        of the Unicode Standard, and such changes can result in instability of 
+        PRECIS categories.  The following are merely a few examples:</t>
+        <t>
+          <list style='symbols'>
+            <t>As described in <xref target='RFC6452'/>, between Unicode 5.2 
+            (current at the time IDNA2008 was originally published) and Unicode 
+            6.0, three code points underwent changes in their GeneralCategory, 
+            resulting in modified handling depending on which version of Unicode 
+            is available on the underlying system.</t>
+            <t>The HasCompat() categorization of a given input string could 
+            change if, for example, the string includes a precomposed character 
+            that was added in a recent version of Unicode.</t>
+            <t>The East Asian width property, which is used in many PRECIS 
+            width-mapping rules, is not guaranteed to be stable across Unicode
+            versions.</t>
+          </list>
+        </t>
+        <t>Other such differences might arise between the version of Unicode current 
+        at the time of this writing (7.0) and future versions.</t>
 
       </section>
       <section title="Potential Changes to Handling of Certain Unicode Code Points" anchor='interop-handling'>
@@ -1761,13 +1809,19 @@ Specification: Section 4.2 of RFC 7564.
             <t>Alternative normalization methods might be added.</t>
           </list>
         </t>
-        <t>Nevertheless, implementations and deployments that are sensitive to
-        the advice given in this specification are unlikely to encounter
-        significant problems as a consequence of these issues or potential
-        changes -- specifically, the advice to use the more restrictive
-        IdentifierClass whenever possible or, if using the FreeformClass, to
-        allow only a restricted set of code points, particularly avoiding
-        code points whose implications they do not actually understand.</t>
+
+        <t>Until these issues are sorted out, it is reasonable for the IANA to 
+        apply the same precautionary principle described in 
+        <xref target='IAB-Statement'/> to the PRECIS Derived Property Value Registry
+        as is applied to the Internationalized Domain Names for Applications (IDNA) 
+        Parameters registry: that is, to not make further updates to the registry.</t>
+
+        <t>Nevertheless, implementations and deployments are unlikely to encounter
+        significant problems as a consequence of these issues or potential changes
+        if they follow the advice given in this specification to use the more 
+        restrictive IdentifierClass whenever possible or, if using the FreeformClass, 
+        to allow only a restricted set of code points, particularly avoiding code 
+        points whose implications they do not understand.</t>
 
       </section>
     </section>

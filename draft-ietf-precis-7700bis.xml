@@ -8,7 +8,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7700bis-04" obsoletes="7700">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7700bis-05" obsoletes="7700">
 
   <front>
 
@@ -48,7 +48,7 @@
 
     <section title="Overview" anchor="overview">
       <t>A number of technologies and applications provide the ability for a person to choose a memorable, human-friendly name in a communications context, or to set such a name for another entity such as a device, account, contact, or website.  Such names are variously called "nicknames" (e.g., in chat room applications), "display names" (e.g., in Internet mail), or "petnames" (see <xref target='PETNAME-SYSTEMS'/>); for consistency, these are all called "nicknames" in this document.</t>
-      <t>Nicknames are commonly supported in technologies for textual chat rooms, e.g., Internet Relay Chat <xref target='RFC2811'/> and multi-party chat technologies based on the Extensible Messaging and Presence Protocol (XMPP) <xref target='RFC6120'/> <xref target='XEP-0045'/>, the Message Session Relay Protocol (MSRP) <xref target='RFC4975'/> <xref target='RFC7701'/>, and Centralized Conferencing (XCON) <xref target='RFC5239'/> <xref target='XCON-SYSTEM'/>.  Recent chat room technologies also allow internationalized nicknames because they support code points from outside the ASCII range <xref target='RFC20'/>, typically by means of the Unicode character set <xref target='Unicode'/>.  Although such nicknames tend to be used primarily for display purposes, they are sometimes used for programmatic purposes as well (e.g., kicking users or avoiding nickname conflicts).</t>
+      <t>Nicknames are commonly supported in technologies for textual chat rooms, e.g., Internet Relay Chat <xref target='RFC2811'/> and multi-party chat technologies based on the Extensible Messaging and Presence Protocol (XMPP) <xref target='RFC6120'/> <xref target='XEP-0045'/>, the Message Session Relay Protocol (MSRP) <xref target='RFC4975'/> <xref target='RFC7701'/>, and Centralized Conferencing (XCON) <xref target='RFC5239'/> <xref target='XCON-SYSTEM'/>.  Recent chat room technologies also allow internationalized nicknames because they support code points from outside the ASCII range <xref target='RFC20'/>, typically by means of the Unicode coded character set <xref target='Unicode'/>.  Although such nicknames tend to be used primarily for display purposes, they are sometimes used for programmatic purposes as well (e.g., kicking users or avoiding nickname conflicts).</t>
       <t>A similar usage enables a person to set their own preferred display name or to set a preferred display name for another user (e.g., the "display-name" construct in the Internet message format <xref target='RFC5322'/> and <xref target='XEP-0172'/> in XMPP).</t>
       <t>Memorable, human-friendly names are also used in contexts other than personal messaging, such as names for devices (e.g., in a network visualization application), websites (e.g., for bookmarks in a web browser), accounts (e.g., in a web interface for a list of payees in a bank account), people (e.g., in a contact list application), and the like.</t>
       <t>The rules specified in this document can be applied in all of the foregoing contexts.</t>
@@ -101,7 +101,7 @@
   ensure that the nickname is not zero bytes in length (this is done
   after enforcing the rules to prevent applications from mistakenly
   omitting a nickname entirely, because when internationalized
-  characters are accepted, a non-empty sequence of characters can
+  strings are accepted, a non-empty sequence of characters can
   result in a zero-length nickname after canonicalization).</t>
 </section>
 
@@ -117,7 +117,7 @@
 <t>Normalization Rule</t>
 </list></t>
 <?rfc subcompact="no"?>
-<t>The two strings are to be considered equivalent if they are an exact
+<t>The two strings are to be considered equivalent if and only if they are an exact
   octet-for-octet match (sometimes called "bit-string identity").
 </t>
     </section>
@@ -145,7 +145,7 @@
 | 6 | <&#x3C3;>             | GREEK SMALL LETTER SIGMA (U+03C3) |
 +---------------------------+-----------------------------------+
 | 7 | <&#x3C2;>             | GREEK SMALL LETTER FINAL SIGMA    | 
-|   |                       | (U+03C2) |
+|   |                       | (U+03C2)                          |
 +---------------------------+-----------------------------------+
 | 8 | <&#x265A;>            | BLACK CHESS KING (U+265A)         |
 +---------------------------+-----------------------------------+
