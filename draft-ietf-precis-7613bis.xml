@@ -132,16 +132,23 @@
   </section>
 
   <section title="Terminology" anchor="terms">
-    <t>Many important terms used in this document are defined in <xref
-    target='RFC5890'/>, <xref target='RFC6365'/>, <xref target='RFC7564'/>,
-    and <xref target='Unicode'/>.  The term "non-ASCII space" refers to any
-    Unicode code point having a Unicode general category of "Zs", with the
-    exception of U+0020 (here called "ASCII space").</t>
+    <t>A "username" or "user identifier" is a string of characters designating 
+    an account on a computing device or system, often but not necessarily for 
+    use by a person.  Although some devices and system might allow a username 
+    to be part or all of a person's name, and a person might want their account
+    designator to be part or all of their name, because of the complexities
+    involved that outcome is not guaranteed for all human names on all 
+    computing devices or systems that follow the rules defined in this 
+    specification.  Protocol designers and application developers who wish
+    to allow a wider range of characters are encouraged to consider a
+    separation between more restrictive account identifiers and more
+    expressive display names.</t>
 
-    <t>As used here, the term "password" is not literally limited to a word;
-    i.e., a password could be a passphrase consisting of more than one word,
-    perhaps separated by spaces, punctuation, or other non-alphanumeric
-    characters.</t>
+    <t>A "password" is a string of characters that allows access to a computing
+    device or system, often associated with a particular username.  A password 
+    is not literally limited to a word, because a password could be a passphrase 
+    consisting of more than one word, perhaps separated by spaces, punctuation, 
+    or other non-alphanumeric characters.</t>
 
     <t>Some SASL mechanisms (e.g., CRAM-MD5, DIGEST-MD5, and SCRAM) specify
     that the authentication identity used in the context of such mechanisms is
@@ -155,6 +162,12 @@
     application technology is a matter for implementation and deployment, and
     that a username does not necessarily map to any particular application
     identifier.</t>
+
+    <t>Many important terms used in this document are defined in <xref
+    target='RFC5890'/>, <xref target='RFC6365'/>, <xref target='RFC7564'/>,
+    and <xref target='Unicode'/>.  The term "non-ASCII space" refers to any
+    Unicode code point having a Unicode general category of "Zs", with the
+    exception of U+0020 (here called "ASCII space").</t>
 
     <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
     "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
