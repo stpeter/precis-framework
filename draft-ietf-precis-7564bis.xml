@@ -11,7 +11,7 @@
 <?rfc tocdepth="3"?>
 <?rfc rfcedstyle="yes"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7564bis-05" obsoletes="7564">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7564bis-06" obsoletes="7564">
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -963,7 +963,19 @@
       profile, whereas the behavioral rules are specified for each string
       class.  Some of the logic behind this order is provided under <xref
       target='profiles-principles-width'/> (see also the PRECIS mappings
-      document <xref target='RFC7790'/>).</t>
+      document <xref target='RFC7790'/>).  In addition, this order is
+      consistent with IDNA2008, and with both IDNA2003 and Stringprep
+      before then, for the purpose of enabling code reuse and of ensuring 
+      as much continuity as possible with the Stringprep profiles that are 
+      obsoleted by several PRECIS profiles.</t>
+      <t><list style='empty'><t>Note: Because of the order of operations
+      specified here, applying the rules for any given PRECIS profile is
+      not necessarily an idempotent procedure (e.g., under certain
+      circumstances and for certain code points, performing Unicode
+      normalization after case mapping can still yield uppercase 
+      characters); therefore, application developers need to be aware that 
+      their implementations might need to apply the rules more than once 
+      to an internationalized string.</t></list></t>
 
     </section>
 

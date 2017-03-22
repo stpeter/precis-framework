@@ -8,7 +8,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7700bis-05" obsoletes="7700">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7700bis-06" obsoletes="7700">
 
   <front>
 
@@ -182,6 +182,8 @@
         <t>If mapping is not possible (e.g., because a character is disallowed in the FreeformClass), reject the string.</t>
       </list>
     </t>
+    <t>Note that, because applying the rules for any given PRECIS profile is not necessarily an idempotent procedure, implementations might need to apply the rules more than once to an internationalized string.</t>
+
   </section>
 
   <section title="IANA Considerations" anchor="iana">

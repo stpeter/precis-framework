@@ -8,7 +8,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7613bis-05" obsoletes="7613">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7613bis-06" obsoletes="7613">
 
   <front>
 
@@ -693,6 +693,8 @@
     passwords such a policy can be problematic, because it can lead to false
     positives.  An in-depth discussion can be found in
     <xref target='RFC6943'/>.</t>
+
+    <t>Note that, because applying the rules for any given PRECIS profile is not necessarily an idempotent procedure, implementations might need to apply the rules more than once to an internationalized string.</t>
 
   </section>
 
