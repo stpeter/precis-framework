@@ -694,7 +694,9 @@
     positives.  An in-depth discussion can be found in
     <xref target='RFC6943'/>.</t>
 
-    <t>Note that, because applying the rules for any given PRECIS profile is not necessarily an idempotent procedure, implementations might need to apply the rules more than once to an internationalized string.</t>
+    <t>Applying the rules for any given PRECIS profile is not necessarily an 
+    idempotent procedure for all code points. Therefore, implementations might 
+    need to apply the rules more than once to an internationalized string.</t>
 
   </section>
 

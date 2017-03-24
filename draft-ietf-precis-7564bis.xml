@@ -968,14 +968,13 @@
       before then, for the purpose of enabling code reuse and of ensuring 
       as much continuity as possible with the Stringprep profiles that are 
       obsoleted by several PRECIS profiles.</t>
-      <t><list style='empty'><t>Note: Because of the order of operations
-      specified here, applying the rules for any given PRECIS profile is
-      not necessarily an idempotent procedure (e.g., under certain
-      circumstances and for certain code points, performing Unicode
-      normalization after case mapping can still yield uppercase 
-      characters); therefore, application developers need to be aware that 
-      their implementations might need to apply the rules more than once 
-      to an internationalized string.</t></list></t>
+      <t>Because of the order of operations specified here, applying the 
+      rules for any given PRECIS profile is not necessarily an idempotent 
+      procedure (e.g., under certain circumstances, such as when Unicode 
+      normalization form KC is used, performing Unicode normalization after 
+      case mapping can still yield uppercase characters for certain code 
+      points); therefore, implementations might need to apply the rules 
+      more than once to an internationalized string.</t>
 
     </section>
 
@@ -2342,7 +2341,7 @@ integral part of The Unicode Standard'/>
     </section>
 
     <section title="Acknowledgements">
-      <t>Thanks to Martin Duerst, John Klensin, Christian Schudt, and Sam Whited for their feedback.  Thanks to Sam Whited also for submitting <xref target="Err4568"/>.</t>
+      <t>Thanks to Martin Duerst, William Fisher, John Klensin, Christian Schudt, and Sam Whited for their feedback.  Thanks to Sam Whited also for submitting <xref target="Err4568"/>.</t>
       <t>See <xref target='RFC7564'/> for acknowledgements related to the specification that this document supersedes.</t>
 
       <t>Some algorithms and textual descriptions have been borrowed from

@@ -182,7 +182,7 @@
         <t>If mapping is not possible (e.g., because a character is disallowed in the FreeformClass), reject the string.</t>
       </list>
     </t>
-    <t>Note that, because applying the rules for any given PRECIS profile is not necessarily an idempotent procedure, implementations might need to apply the rules more than once to an internationalized string.</t>
+    <t>Implementation experience has shown that applying the rules for the Nickname profile is not an idempotent procedure for all code points. Therefore, implementations might need to apply the rules more than once to a nickname string.</t>
 
   </section>
 
@@ -365,6 +365,7 @@
   </section>
 
   <section title="Acknowledgements" anchor="acks">
+    <t>Thanks to William Fisher for his implementation feedback, especially regarding idempotence.</t>
     <t>Thanks to Sam Whited for his feedback and for submitting <xref target="Err4570"/>.</t>
     <t>See <xref target='RFC7700'/> for acknowledgements related to the specification that this document supersedes.</t>
   </section>
