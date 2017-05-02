@@ -8,7 +8,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7700bis-06" obsoletes="7700">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7700bis-07" obsoletes="7700">
 
   <front>
 
@@ -17,6 +17,14 @@
     <author initials="P." surname="Saint-Andre" fullname="Peter Saint-Andre">
       <organization>Filament</organization>
       <address>
+        <postal>
+          <street>P.O. Box 787</street>
+          <city>Parker</city>
+          <region>CO</region>
+          <code>80134</code>
+          <country>USA</country>
+        </postal>
+        <phone>+1 720 256 6756</phone>
         <email>peter@filament.com</email>
         <uri>https://filament.com/</uri>
       </address>
@@ -71,7 +79,7 @@
           <t>Width Mapping Rule: There is no width-mapping rule (such a rule is not necessary because width mapping is performed as part of normalization using Normalization Form KC (NFKC) as specified below).</t>
           <t>Additional Mapping Rule: The additional mapping rule consists of the following sub-rules.
             <list>
-              <t>Map any instances of non-ASCII space to ASCII space (U+0020); a non-ASCII space is any Unicode code point having a general category of "Zs", naturally with the exception of U+0020.</t>
+              <t>Map any instances of non-ASCII space to ASCII space (U+0020); a non-ASCII space is any Unicode code point having a general category of "Zs", naturally with the exception of U+0020.  (The inclusion of only ASCII space prevents confusion with various non-ASCII space code points, many of which are difficult to reproduce across different input methods.)</t>
               <t>Remove any instances of the ASCII space character at the beginning or end of a nickname (e.g., "stpeter&#160;" is mapped to "stpeter").</t>
               <t>Map interior sequences of more than one ASCII space character to a single ASCII space character (e.g., "St&#160;&#160;Peter" is mapped to "St&#160;Peter").</t>
             </list>

@@ -8,7 +8,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7613bis-06" obsoletes="7613">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7613bis-07" obsoletes="7613">
 
   <front>
 
@@ -17,6 +17,14 @@
     <author initials="P." surname="Saint-Andre" fullname="Peter Saint-Andre">
       <organization>Filament</organization>
       <address>
+        <postal>
+          <street>P.O. Box 787</street>
+          <city>Parker</city>
+          <region>CO</region>
+          <code>80134</code>
+          <country>USA</country>
+        </postal>
+        <phone>+1 720 256 6756</phone>
         <email>peter@filament.com</email>
         <uri>https://filament.com/</uri>
       </address>
@@ -580,7 +588,10 @@
             <t>Additional Mapping Rule: Any instances of non-ASCII space MUST
             be mapped to ASCII space (U+0020); a non-ASCII space is any
             Unicode code point having a Unicode general category of "Zs"
-            (with the exception of U+0020).</t>
+            (with the exception of U+0020).  As was the case in RFC 4013, 
+            the inclusion of only ASCII space prevents confusion with various 
+            non-ASCII space code points, many of which are difficult to 
+            reproduce across different input methods.</t>
 
             <t>Case-Mapping Rule: There is no case mapping rule (because mapping
             uppercase and titlecase code points to their lowercase equivalents

@@ -11,7 +11,7 @@
 <?rfc tocdepth="3"?>
 <?rfc rfcedstyle="yes"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7564bis-06" obsoletes="7564">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7564bis-07" obsoletes="7564">
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -21,6 +21,14 @@
     <author initials="P." surname="Saint-Andre" fullname="Peter Saint-Andre">
       <organization>Filament</organization>
       <address>
+        <postal>
+          <street>P.O. Box 787</street>
+          <city>Parker</city>
+          <region>CO</region>
+          <code>80134</code>
+          <country>USA</country>
+        </postal>
+        <phone>+1 720 256 6756</phone>
         <email>peter@filament.com</email>
         <uri>https://filament.com/</uri>
       </address>
@@ -111,7 +119,9 @@
       <t>
         <list style='numbers'>
           <t>Define a small set of string classes that specify the Unicode
-          code points appropriate for common application protocol constructs.</t>
+          code points appropriate for common application protocol constructs
+          (where possible, maintaining compatibility with IDNA2008 to help
+          ensure a more consistent user experience).</t>
 
           <t>Define each PRECIS string class in terms of Unicode code points
           and their properties so that an algorithm can be used to determine
@@ -346,7 +356,8 @@
 
             <t hangText='Contextual Rule Required:'>Defines which code points
             are treated as allowed only if the requirements of a contextual
-            rule are met (i.e., either CONTEXTJ or CONTEXTO).</t>
+            rule are met (i.e., either CONTEXTJ or CONTEXTO as originally 
+            defined in the IDNA2008 specifications).</t>
 
             <t hangText='Disallowed:'>Defines which code points need to be
             excluded from the string.</t>
@@ -1197,12 +1208,26 @@ Else DISALLOWED;
           <t>This category is defined in Section 2.8 of <xref
           target='RFC5892'/> and is included by reference for use in
           PRECIS.</t>
+          
+          <t>Note: In particular, the code points
+          ZERO WIDTH JOINER (U+200D) and ZERO WIDTH NON-JOINER (U+200C) are
+          necessary to produce certain combinations of characters in certain
+          scripts (e.g., Arabic, Persian, and Indic scripts), but if used in other
+          contexts can have consequences that violate the principle of least user
+          astonishment.  Therefore these code points are allowed only in
+          contexts where they are appropriate, specifically where the relevant
+          rule (CONTEXTJ or CONTEXTO) has been defined.  See <xref target='RFC5892'/>
+          and <xref target='RFC5894'/> for further discussion.</t>
 
         </section>
         <section anchor="I" title="OldHangulJamo (I)">
           <t>This category is defined in Section 2.9 of <xref
           target='RFC5892'/> and is included by reference for use in
           PRECIS.</t>
+
+          <t>Note: Exclusion of these code points results in disallowing certain
+          archaic Korean syllables and of restricting supported Korean syllables to
+          preformed, modern Hangul characters.</t>
 
         </section>
         <section anchor="J" title="Unassigned (J)">
@@ -1249,6 +1274,13 @@ M: Default_Ignorable_Code_Point(cp) = True or
           <t>The definition for Default_Ignorable_Code_Point can be found in
   the DerivedCoreProperties.txt file <xref target="DerivedCoreProperties"/>.
   </t>
+
+          <t>Note: In general, these code points are constructs such as 
+          so-called soft hypens, certain joining code points, various
+          specialized code points for use within Unicode itself (e.g., 
+          language tags and variation selectors), and so on.  Disallowing
+          these code points in PRECIS reduces the potential for unexpected
+          results in the use of internationalized strings.</t>
 
         </section>
         <section anchor="N" title="Spaces (N)">
