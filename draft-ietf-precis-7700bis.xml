@@ -8,7 +8,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7700bis-07" obsoletes="7700">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7700bis-08" obsoletes="7700">
 
   <front>
 
@@ -64,7 +64,7 @@
     </section>
 
     <section title="Terminology" anchor="terms">
-      <t>Many important terms used in this document are defined in <xref target='RFC7564'/>, <xref target='RFC6365'/>, and <xref target='Unicode'/>.</t>
+      <t>Many important terms used in this document are defined in <xref target='I-D.ietf-precis-7564bis'/>, <xref target='RFC6365'/>, and <xref target='Unicode'/>.</t>
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <xref target='RFC2119'/>.</t>
     </section>
 
@@ -73,7 +73,7 @@
   <section title='Nickname Profile' anchor='rules'>
 
     <section title='Rules' anchor='rules-rules'>
-      <t>The following rules apply within the Nickname profile of the PRECIS FreeformClass.</t>
+      <t>The following rules apply within the Nickname profile of the PRECIS FreeformClass defined in the PRECIS framework specification <xref target='I-D.ietf-precis-7564bis'/>.</t>
       <t>
         <list style='numbers'>
           <t>Width Mapping Rule: There is no width-mapping rule (such a rule is not necessary because width mapping is performed as part of normalization using Normalization Form KC (NFKC) as specified below).</t>
@@ -92,7 +92,7 @@
     </section>
 
     <section title='Preparation' anchor='rules-prep'>
-      <t>An entity that prepares a string for subsequent enforcement according to this profile MUST ensure that the string consists only of Unicode code points that conform to the FreeformClass string class defined in <xref target='RFC7564'/>.</t>
+      <t>An entity that prepares a string for subsequent enforcement according to this profile MUST ensure that the string consists only of Unicode code points that conform to the FreeformClass string class defined in <xref target='I-D.ietf-precis-7564bis'/>.</t>
     </section>
 
 
@@ -180,7 +180,7 @@
   </section>
 
   <section title="Use in Application Protocols" anchor="use">
-    <t>This specification defines only the PRECIS-based rules for handling of nickname strings.  It is the responsibility of an application protocol (e.g., MSRP, XCON, or XMPP) or application definition to specify the protocol slots in which nickname strings can appear, the entities that are expected to enforce the rules governing nickname strings, and when in protocol processing or interface handling the rules need to be enforced.  See Section 6 of <xref target='RFC7564'/> for guidelines about using PRECIS profiles in applications.</t>
+    <t>This specification defines only the PRECIS-based rules for handling of nickname strings.  It is the responsibility of an application protocol (e.g., MSRP, XCON, or XMPP) or application definition to specify the protocol slots in which nickname strings can appear, the entities that are expected to enforce the rules governing nickname strings, and when in protocol processing or interface handling the rules need to be enforced.  See Section 6 of <xref target='I-D.ietf-precis-7564bis'/> for guidelines about using PRECIS profiles in applications.</t>
     <t>Above and beyond the PRECIS-based rules specified here, application protocols can also define application-specific rules governing nickname strings (rules regarding the minimum or maximum length of nicknames, further restrictions on allowable code points or character ranges, safeguards to mitigate the effects of visually similar characters, etc.).</t>
     <t>Naturally, application protocols can also specify rules governing the actual use of nicknames in applications (reserved nicknames, authorization requirements for using nicknames, whether certain nicknames can be prohibited, handling of duplicates, the relationship between nicknames and underlying identifiers such as SIP URIs or Jabber IDs, etc.).</t>
     <t>Entities that enforce the rules specified in this document are encouraged to be liberal in what they accept by following this procedure:</t>
@@ -208,7 +208,7 @@
         <t hangText='Normalization Rule:'>NFKC</t>
         <t hangText='Directionality Rule:'>None</t>
         <t hangText='Enforcement:'>To be specified by applications.</t>
-        <t hangText='Specification:'>RFC 7700 (this document)</t>
+        <t hangText='Specification:'>[[this document]]</t>
       </list>
     </t>
   </section>
@@ -221,7 +221,7 @@
       <t>The security considerations described in <xref target='UTS39'/> apply to the use of Unicode code points in nicknames.</t>
     </section>
     <section title="Visually Similar Characters" anchor="security-similar">
-      <t><xref target='RFC7564'/> describes some of the security considerations related to visually similar characters, also called "confusable characters" or "confusables".</t>
+      <t><xref target='I-D.ietf-precis-7564bis'/> describes some of the security considerations related to visually similar characters, also called "confusable characters" or "confusables", and provides some examples of such characters.</t>
       <t>Although the mapping rules defined in <xref target='rules'/> of this document are designed, in part, to reduce the possibility of confusion about nicknames, this document does not provide more-detailed recommendations regarding the handling of visually similar characters, such as those provided in <xref target='UTS39'/>.</t>
     </section>
   </section>
@@ -235,7 +235,23 @@
 <?rfc include="reference.RFC.2119.xml"?>
 <?rfc include="reference.RFC.5893.xml"?>
 <?rfc include="reference.RFC.6365.xml"?>
-<?rfc include="reference.RFC.7564.xml"?>
+
+<reference anchor='I-D.ietf-precis-7564bis'>
+<front>
+<title>PRECIS Framework: Preparation, Enforcement, and Comparison of Internationalized Strings in Application Protocols</title>
+<author initials='P' surname='Saint-Andre' fullname='Peter Saint-Andre'>
+    <organization />
+</author>
+<author initials='M' surname='Blanchet' fullname='Marc Blanchet'>
+    <organization />
+</author>
+<date month='May' day='1' year='2017' />
+<abstract><t>Application protocols using Unicode characters in protocol strings need to properly handle such strings in order to enforce internationalization rules for strings placed in various protocol slots (such as addresses and identifiers) and to perform valid comparison operations (e.g., for purposes of authentication or authorization).  This document defines a framework enabling application protocols to perform the preparation, enforcement, and comparison of internationalized strings ("PRECIS") in a way that depends on the properties of Unicode characters and thus is agile with respect to versions of Unicode.  As a result, this framework provides a more sustainable approach to the handling of internationalized strings than the previous framework, known as Stringprep (RFC 3454).  This document obsoletes RFC 7564.</t></abstract>
+</front>
+<seriesInfo name='Internet-Draft' value='draft-ietf-precis-7564bis-07' />
+<format type='TXT'
+        target='http://www.ietf.org/internet-drafts/draft-ietf-precis-7564bis-07.txt' />
+</reference>
 
 <reference anchor="Unicode" target="http://www.unicode.org/versions/latest/">
   <front>
@@ -365,7 +381,7 @@
     <t>
       <list style='symbols'>
         <t>Addressed <xref target="Err4570"/> by removing the directionality rule and adding the normalization rule to Section 2.3.</t>
-        <t>In accordance with working group discussions and updates to <xref target='RFC7564'/>, removed the use of the Unicode CaseFold() operation in favor of the Unicode toLower() operation.</t>
+        <t>In accordance with working group discussions and updates to <xref target='I-D.ietf-precis-7564bis'/>, removed the use of the Unicode CaseFold() operation in favor of the Unicode toLower() operation.</t>
         <t>Clarified several editorial matters.</t>
         <t>Updated references.</t>
       </list>
