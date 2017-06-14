@@ -118,8 +118,9 @@
     identifiers or secrets are not strings (e.g., keys and
     certificates) or require specialized handling.</t>
 
-    <t>This document obsoletes RFC 4013 (the SASLprep profile of stringprep
-    <xref target='RFC3454'/>) but can be used by technologies other than
+    <t>Although the historical predecessor of this document was the 
+    SASLprep profile of stringprep <xref target='RFC3454'/>), the 
+    approach defined here can be used by technologies other than
     SASL <xref target='RFC4422'/>, such as HTTP authentication as
     specified in <xref target='RFC7617'/> and <xref
     target='RFC7616'/>.</t>
@@ -712,7 +713,9 @@
   <section title="Migration" anchor='migration'>
 
       <t>The rules defined in this specification differ slightly from those
-      defined by the SASLprep specification <xref target='RFC4013'/>.  The
+      defined by the SASLprep specification <xref target='RFC4013'/> (but 
+      not from <xref target='RFC7613'/>).  In order to smooth the process 
+      of migrating from SASLprep to the approach defined herein, the
       following sections describe these differences, along with their
       implications for migration, in more detail.</t>
 
@@ -792,7 +795,7 @@
     </section>
 
     <section title='Passwords' anchor='migration-passwords'>
-      <t>Depending on local service policy, migration from RFC 4013 to this
+      <t>Depending on local service policy, migration from SASLprep to this
       specification might not involve any scrubbing of data (because passwords
       might not be stored in the clear anyway); however, service providers
       need to be aware of possible issues that might arise during migration.
@@ -942,10 +945,12 @@ IANA has added the following entry to the "PRECIS Profiles"
       <t>
       The stringprep specification <xref target="RFC3454"/> did not
       provide for entries in the "Stringprep Profiles" registry to have
-      any state except "Current" or "Not Current".  Because this document
-      obsoletes RFC 4013, which registered the SASLprep profile of
-      stringprep, IANA has marked that profile as "Not Current"
-      and cited this document as an additional reference.
+      any state except "Current" or "Not Current".  Because RFC 7613
+      obsoleted RFC 4013, which registered the SASLprep profile of
+      stringprep, IANA previously marked that profile as "Not Current"
+      and cited RFC 7613 as an additional reference.  IANA is
+      requested to modify the profile so that this document is
+      cited at the additional reference.
       </t>
     </section>
 
