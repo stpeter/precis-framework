@@ -85,7 +85,8 @@
       enabling application protocols to perform the preparation, enforcement,
       and comparison of internationalized strings ("PRECIS") in a way that
       depends on the properties of Unicode code points and thus is more agile with
-      respect to versions of Unicode.</t>
+      respect to versions of Unicode.  (PRECIS is restricted to Unicode and does 
+      not support any other coded character set <xref target='RFC6365'/>.)</t>
 
       <t>As described in the PRECIS problem statement <xref
       target='RFC6885'/>, many IETF protocols have used the Stringprep
@@ -1651,9 +1652,17 @@ Specification: Section 4.2 of [[this document]].
         code points U+13DA U+13A2 U+13B5 U+13AC U+13A2 U+13AC U+13D2 from the
         Cherokee block look similar to the ASCII code points representing 
         "STPETER" as they might appear when presented using a "creative" font 
-        family.</t>
+        family.  Confusion among such characters is perhaps not unexpected,
+        given that the alphabetic writing systems involved all bear a 
+        family resemblance or historical lineage.  Perhaps more surprising is 
+        confusion among characters from disparate writing systems, such as
+        LATIN CAPITAL LETTER O, U+004F; DIGIT ZERO, U+0030; LAO DIGIT ZERO, 
+        U+0ED0; NEW TAI LUE DIGIT ZERO, U+19D0; ETHIOPIC SYLLABLE PHARYNGEAL 
+        A, U+12D0; and other graphemes that have the appearance of open 
+        circles.  And the reader needs to be aware that the foregoing represent 
+        merely a small sample of characters that are confusable in Unicode.</t>
 
-        <t>In some examples of confusable characters, it is unlikely that the
+        <t>In some instances of confusable characters, it is unlikely that the
         average human could tell the difference between the real string and
         the fake string.  (Indeed, there is no programmatic way to distinguish
         with full certainty which is the fake string and which is the real
