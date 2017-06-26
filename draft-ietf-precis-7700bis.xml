@@ -104,7 +104,7 @@
 <t>Normalization Rule</t>
 </list></t>
 <?rfc subcompact="no"?>
-<t>Note: An entity SHOULD NOT apply the Case Mapping Rule during enforcement, because typically it is appropriate only during comparison.</t>
+<t>Note: An entity SHOULD apply the Case Mapping Rule only during comparison.</t>
 <t>After all of the foregoing rules have been enforced, the entity MUST
   ensure that the nickname is not zero bytes in length (this is done
   after enforcing the rules to prevent applications from mistakenly
@@ -215,7 +215,7 @@
 
   <section title="Security Considerations" anchor="security">
     <section title="Reuse of PRECIS" anchor="security-precis">
-      <t>The security considerations described in <xref target="RFC7564"/> apply to the FreeformClass string class used in this document for nicknames.</t>
+      <t>The security considerations described in <xref target="I-D.ietf-precis-7564bis"/> apply to the FreeformClass string class used in this document for nicknames.</t>
     </section>
     <section title="Reuse of Unicode" anchor="security-unicode">
       <t>The security considerations described in <xref target='UTS39'/> apply to the use of Unicode code points in nicknames.</t>
