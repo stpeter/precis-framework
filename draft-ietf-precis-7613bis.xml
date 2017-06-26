@@ -626,6 +626,8 @@
         <xref target="opaquestring-profile-enforcement"/>.
         The two strings are to be considered equivalent if and only if they are an exact
         octet-for-octet match (sometimes called "bit-string identity").</t> 
+        <t>See <xref target='security-password-comparison'/> regarding comparison
+        of passwords and passphrases.</t>
 
       </section>
     </section>
@@ -670,10 +672,14 @@
 +------------------------------------+------------------------------+
 | # | Password                       | Notes                        |
 +------------------------------------+------------------------------+
-| 17| <my cat is a &#x9;by>          | Controls are disallowed      |
+| 17| <>                             | Zero-length passwords are    |
+|   |                                | disallowed                   |
++------------------------------------+------------------------------+
+| 18| <my cat is a &#x9;by>          | Control characters like TAB  |
+|   |                                | are disallowed               |
 +------------------------------------+------------------------------+
         ]]></artwork>
-      <postamble>Table 4: A String That Violates the Password Rules</postamble>
+      <postamble>Table 4: A Sample of Strings That Violate the Password Rules</postamble>
      </figure>
     </section>
 
@@ -957,12 +963,23 @@ IANA has added the following entry to the "PRECIS Profiles"
   </section>
 
   <section title="Security Considerations" anchor="security">
-    <section title="Password/Passphrase Strength" anchor="security-passwords">
+    <section title="Password/Passphrase Strength" anchor="security-password-strength">
       <t>The ability to include a wide range of characters in passwords and
       passphrases can increase the potential for creating a strong password
       with high entropy.  However, in practice, the ability to include such
       characters ought to be weighed against the possible need to reproduce
       them on various devices using various input methods.</t>
+
+    </section>
+    <section title="Password/Passphrase Comparison" anchor="security-password-comparison">
+      <t>In systems that conform to modern best practices for security,
+      verification of passwords during authentication will not use the 
+      comparison defined in <xref target='opaquestring-profile-comparison'/>.
+      Instead, because the system performs cryptographic calculations to verify 
+      the password, it will prepare the password as defined in 
+      <xref target='opaquestring-profile-preparation'/> and enforce the rules 
+      as defined in <xref target='opaquestring-profile-enforcement'/> before 
+      performing the relevant calculations.</t>
 
     </section>
     <section title="Identifier Comparison" anchor="security-id">
