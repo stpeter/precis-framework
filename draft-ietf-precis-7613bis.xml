@@ -265,11 +265,13 @@
         <list style='symbols'>
           <t>SASL mechanisms that follow the recommendations in this document
           MUST specify whether and when case mapping is to be applied to
-          authentication identifiers.  SASL mechanisms SHOULD delay any
-          case mapping to the last possible moment, such as when doing a
+          authentication identifiers.  Because case mapping results in
+          information loss, in order to retain that information for as
+          long as possible during processing, implementations SHOULD delay 
+          any case mapping to the last possible moment, such as when doing a
           lookup by username, performing username comparisons, or generating a
           cryptographic salt from a username (if the last possible moment
-          happens on the server, then decisions about case mapping can be a
+          happens on a server, then decisions about case mapping can be a
           matter of deployment policy).  In keeping with
           <xref target='RFC4422'/>, SASL mechanisms are not to apply this or
           any other profile to authorization identifiers, only to
