@@ -1419,6 +1419,10 @@ R: General_Category(cp) is in {Lt, Nl, No, Me}
         and <xref target="categories" format="counter" />
         require IETF Review.</t>
 
+        <t>Note: IANA is requested to not make further updates to this registry 
+        until the issues described in <xref target='IAB-Statement'/> and
+        <xref target='interop-handling'/> of this document have been settled.</t>
+
       </section>
 
       <section anchor="iana-classes" title="PRECIS Base Classes Registry">
