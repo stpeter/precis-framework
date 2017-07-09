@@ -92,12 +92,12 @@
     </section>
 
     <section title='Preparation' anchor='rules-prep'>
-      <t>An entity that prepares a string for subsequent enforcement according to this profile MUST ensure that the string consists only of Unicode code points that conform to the FreeformClass string class defined in <xref target='I-D.ietf-precis-7564bis'/>.</t>
+      <t>An entity that prepares an input string for subsequent enforcement according to this profile MUST ensure that the string consists only of Unicode code points that conform to the FreeformClass string class defined in <xref target='I-D.ietf-precis-7564bis'/>.</t>
     </section>
 
 
     <section title='Enforcement' anchor='rules-enforce'>
-<t>An entity that performs enforcement according to this profile MUST prepare a string as described in <xref target='rules-prep'/> and MUST also apply the following rules specified in <xref target='rules-rules'/> in the order shown:
+<t>An entity that performs enforcement according to this profile MUST prepare an input string as described in <xref target='rules-prep'/> and MUST also apply the following rules specified in <xref target='rules-rules'/> in the order shown:
 <list style="numbers">
 <?rfc subcompact="yes"?>
 <t>Additional Mapping Rule</t>
@@ -111,11 +111,16 @@
   omitting a nickname entirely, because when internationalized
   strings are accepted, a non-empty sequence of characters can
   result in a zero-length nickname after canonicalization).</t>
+<t>The result of the foregoing operations is an output string that conforms 
+to the Nickname profile.  Until an implementation produces such an output string,
+it MUST NOT treat the string as conforming (in particular, it MUST NOT
+assume that an input string is conforming before the enforcement operation 
+has been completed).</t>
 </section>
 
     <section title="Comparison" anchor="rules-comp">
 <t>  An entity that performs comparison of two strings according to this
-  profile MUST prepare each string as specified in <xref target='rules-prep'/> and
+  profile MUST prepare each input string as specified in <xref target='rules-prep'/> and
   MUST apply the following rules specified in <xref target='rules-rules'/> in the order
   shown:
 <?rfc subcompact="yes"?>
@@ -128,6 +133,9 @@
 <t>The two strings are to be considered equivalent if and only if they are an exact
   octet-for-octet match (sometimes called "bit-string identity").
 </t>
+<t>Until an implementation determines whether two strings are to be considered equivalent,
+it MUST NOT treat them as equivalent (in particular, it MUST NOT assume that an input 
+string conforms to the rules before the comparison operation has been completed).</t>
     </section>
 
   </section>
@@ -190,7 +198,7 @@
         <t>If mapping is not possible (e.g., because a character is disallowed in the FreeformClass), reject the string.</t>
       </list>
     </t>
-    <t>Implementation experience has shown that applying the rules for the Nickname profile is not an idempotent procedure for all code points. Therefore, implementations might need to apply the rules more than once to a nickname string.</t>
+    <t>Implementation experience has shown that applying the rules for the Nickname profile is not an idempotent procedure for all code points. Therefore, an implementation SHOULD apply the rules repeatedly until the output string is stable; if the output string does not stabilize within a reasonable number of iterations, the implementation SHOULD terminate application of the rules and reject the input string as invalid.</t>
 
   </section>
 

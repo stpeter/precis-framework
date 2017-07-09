@@ -131,7 +131,7 @@
     protocol wishes to modernize its handling of internationalized strings to
     use PRECIS instead of stringprep, it needs to explicitly update the
     existing application protocol definition (one example is <xref
-    target='RFC7622'/>.
+    target='RFC7622'/>).
     Non-coordinated updates to protocol implementations are discouraged
     because they can have a negative impact on interoperability and
     security.</t>
@@ -329,7 +329,7 @@
         </t>
       </section>
       <section title="Preparation" anchor="usernamecasemapped-preparation">
-        <t>An entity that prepares a string for subsequent enforcement according to this profile MUST proceed as follows (applying the steps in the order shown).</t>
+        <t>An entity that prepares an input string for subsequent enforcement according to this profile MUST proceed as follows (applying the steps in the order shown).</t>
         <t>
           <list style='numbers'>
             <t>Apply the width-mapping rule specified in <xref target='usernamecasemapped-rules'/>.  It is necessary to apply the rule at this point because otherwise the PRECIS "HasCompat" category specified in Section 9.17 of <xref target='I-D.ietf-precis-7564bis'/> would forbid fullwidth and halfwidth code points.</t>
@@ -338,7 +338,7 @@
         </t>
       </section>
       <section title="Enforcement" anchor="usernamecasemapped-enforcement">
-        <t>An entity that performs enforcement according to this profile MUST prepare a string as described in <xref target='usernamecasemapped-preparation'/> and MUST also apply the following rules specified in <xref target='usernamecasemapped-rules'/> in the order shown:</t>
+        <t>An entity that performs enforcement according to this profile MUST prepare an input string as described in <xref target='usernamecasemapped-preparation'/> and MUST also apply the following rules specified in <xref target='usernamecasemapped-rules'/> in the order shown:</t>
         <t>
           <list style="numbers">
             <t>Case-Mapping Rule</t>
@@ -347,6 +347,7 @@
           </list>
         </t>
         <t>After all of the foregoing rules have been enforced, the entity MUST ensure that the username is not zero bytes in length (this is done after enforcing the rules to prevent applications from mistakenly omitting a username entirely, because when internationalized strings are accepted, a non-empty sequence of characters can result in a zero-length username after canonicalization).</t>
+        <t>The result of the foregoing operations is an output string that conforms to the UsernameCaseMapped profile.  Until an implementation produces such an output string, it MUST NOT treat the string as conforming (in particular, it MUST NOT assume that an input string is conforming before the enforcement operation has been completed).</t>
       </section>
       <section title="Comparison" anchor="usernamecasemapped-comparison">
         <t>An entity that performs comparison of two strings according to this
@@ -356,6 +357,10 @@
         <xref target="usernamecasemapped-enforcement"/>.
         The two strings are to be considered equivalent if and only if they are an exact
         octet-for-octet match (sometimes called "bit-string identity").</t> 
+        <t>Until an implementation determines whether two strings are to be
+        considered equivalent, it MUST NOT treat them as equivalent (in
+        particular, it MUST NOT assume that an input string conforms to the
+        rules before the comparison operation has been completed).</t>
       </section>
     </section>
 
@@ -392,6 +397,7 @@
           </list>
         </t>
         <t>After all of the foregoing rules have been enforced, the entity MUST ensure that the username is not zero bytes in length (this is done after enforcing the rules to prevent applications from mistakenly omitting a username entirely, because when internationalized strings are accepted, a non-empty sequence of characters can result in a zero-length username after canonicalization).</t>
+        <t>The result of the foregoing operations is an output string that conforms to the UsernameCasePreserved profile.  Until an implementation produces such an output string, it MUST NOT treat the string as conforming (in particular, it MUST NOT assume that an input string is conforming before the enforcement operation has been completed).</t>
       </section>
 
       <section title="Comparison" anchor="usernamecasepreserved-comparison">
@@ -402,6 +408,10 @@
         <xref target="usernamecasepreserved-enforcement"/>.
         The two strings are to be considered equivalent if and only if they are an exact
         octet-for-octet match (sometimes called "bit-string identity").</t>
+        <t>Until an implementation determines whether two strings are to be
+        considered equivalent, it MUST NOT treat them as equivalent (in
+        particular, it MUST NOT assume that an input string conforms to the
+        rules before the comparison operation has been completed).</t>
       </section>
     </section>
 
@@ -531,8 +541,8 @@
       <t>All code points and blocks not explicitly allowed in the PRECIS
       FreeformClass are disallowed; this includes private use code points,
       surrogate code points, and the other code points and blocks defined as
-      "Prohibited Output" in Section 2.3 of RFC 4013 (when corrected per
-      <xref target="Err1812" />).</t>
+      "Prohibited Output" in Section 2.3 of <xref target='RFC4013'/> 
+      (when corrected per <xref target="Err1812" />).</t>
 
       <t>A password MUST NOT be zero bytes in length.  This rule is to be
       enforced after any normalization and mapping of code points.</t>
@@ -619,6 +629,7 @@
 
           </list>
         </t>
+        <t>The result of the foregoing operations is an output string that conforms to the OpaqueString profile.  Until an implementation produces such an output string, it MUST NOT treat the string as conforming (in particular, it MUST NOT assume that an input string is conforming before the enforcement operation has been completed).</t>
       </section>
       <section title="Comparison" anchor="opaquestring-profile-comparison">
         <t>An entity that performs comparison of two strings according to this
@@ -628,6 +639,10 @@
         <xref target="opaquestring-profile-enforcement"/>.
         The two strings are to be considered equivalent if and only if they are an exact
         octet-for-octet match (sometimes called "bit-string identity").</t> 
+        <t>Until an implementation determines whether two strings are to be
+        considered equivalent, it MUST NOT treat them as equivalent (in
+        particular, it MUST NOT assume that an input string conforms to the
+        rules before the comparison operation has been completed).</t>
         <t>See <xref target='security-password-comparison'/> regarding comparison
         of passwords and passphrases.</t>
 
@@ -713,8 +728,11 @@
     <xref target='RFC6943'/>.</t>
 
     <t>Applying the rules for any given PRECIS profile is not necessarily an 
-    idempotent procedure for all code points. Therefore, implementations might 
-    need to apply the rules more than once to an internationalized string.</t>
+    idempotent procedure for all code points. Therefore, an implementation 
+    SHOULD apply the rules repeatedly until the output string is stable; 
+    if the output string does not stabilize within a reasonable number of 
+    iterations, the implementation SHOULD terminate application of the rules 
+    and reject the input string as invalid.</t>
 
   </section>
 
