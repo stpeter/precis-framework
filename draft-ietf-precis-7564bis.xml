@@ -2440,7 +2440,7 @@ integral part of The Unicode Standard'/>
           <t>Updated references.</t>
         </list>
       </t>
-      <t>See <xref target='I-D.ietf-precis-7613bis'/> for a description of the differences from <xref target='RFC3454'/>.</t>
+      <t>See <xref target='RFC7564'/> for a description of the differences from <xref target='RFC3454'/>.</t>
     </section>
 
     <section title="Acknowledgements">
