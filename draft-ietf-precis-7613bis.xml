@@ -1048,7 +1048,7 @@ IANA has added the following entry to the "PRECIS Profiles"
 <author initials='M' surname='Blanchet' fullname='Marc Blanchet'>
     <organization />
 </author>
-<date month='June' day='27' year='2017' />
+<date month='July' day='11' year='2017' />
 <abstract><t>Application protocols using Unicode characters in protocol strings need to properly handle such strings in order to enforce internationalization rules for strings placed in various protocol slots (such as addresses and identifiers) and to perform valid comparison operations (e.g., for purposes of authentication or authorization).  This document defines a framework enabling application protocols to perform the preparation, enforcement, and comparison of internationalized strings ("PRECIS") in a way that depends on the properties of Unicode characters and thus is agile with respect to versions of Unicode.  As a result, this framework provides a more sustainable approach to the handling of internationalized strings than the previous framework, known as Stringprep (RFC 3454).  This document obsoletes RFC 7564.</t></abstract>
 </front>
 <seriesInfo name='Internet-Draft' value='draft-ietf-precis-7564bis-09' />

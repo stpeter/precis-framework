@@ -2055,7 +2055,7 @@ Specification: Section 4.2 of [[this document]].
 <author initials='A' surname='Melnikov' fullname='Alexey Melnikov'>
     <organization />
 </author>
-<date month='June' day='27' year='2017' />
+<date month='July' day='11' year='2017' />
 <abstract><t>This document describes updated methods for handling Unicode strings representing usernames and passwords.  The previous approach was known as SASLprep (RFC 4013) and was based on stringprep (RFC 3454). The methods specified in this document provide a more sustainable approach to the handling of internationalized usernames and passwords. This document obsoletes RFC 7613.</t></abstract>
 </front>
 <seriesInfo name='Internet-Draft' value='draft-ietf-precis-7613bis-09' />
@@ -2080,7 +2080,7 @@ Specification: Section 4.2 of [[this document]].
 <author initials='P' surname='Saint-Andre' fullname='Peter Saint-Andre'>
     <organization />
 </author>
-<date month='June' day='27' year='2017' />
+<date month='July' day='11' year='2017' />
 <abstract><t>This document describes methods for handling Unicode strings representing memorable, human-friendly names (called "nicknames", "display names", or "petnames") for people, devices, accounts, websites, and other entities.  This document obsoletes RFC 7700.</t></abstract>
 </front>
 <seriesInfo name='Internet-Draft' value='draft-ietf-precis-7700bis-09' />
