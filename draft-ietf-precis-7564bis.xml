@@ -1041,7 +1041,7 @@
       case mapping can still yield uppercase characters for certain code 
       points).  Therefore, an implementation SHOULD apply the rules repeatedly 
       until the output string is stable; if the output string does not stabilize 
-      after reapplying the rules two (2) additional times, the implementation SHOULD 
+      after reapplying the rules three (3) additional times, the implementation SHOULD 
       terminate application of the rules and reject the input string as 
       invalid.</t>
 

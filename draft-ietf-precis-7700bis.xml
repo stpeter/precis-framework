@@ -198,7 +198,7 @@ string conforms to the rules before the comparison operation has been completed)
         <t>If mapping is not possible (e.g., because a character is disallowed in the FreeformClass), reject the string.</t>
       </list>
     </t>
-    <t>Implementation experience has shown that applying the rules for the Nickname profile is not an idempotent procedure for all code points. Therefore, an implementation SHOULD apply the rules repeatedly until the output string is stable; if the output string does not stabilize after reapplying the rules two (2) additional times, the implementation SHOULD terminate application of the rules and reject the input string as invalid.</t>
+    <t>Implementation experience has shown that applying the rules for the Nickname profile is not an idempotent procedure for all code points. Therefore, an implementation SHOULD apply the rules repeatedly until the output string is stable; if the output string does not stabilize after reapplying the rules three (3) additional times, the implementation SHOULD terminate application of the rules and reject the input string as invalid.</t>
 
   </section>
 
