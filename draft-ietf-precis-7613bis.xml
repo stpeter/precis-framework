@@ -8,7 +8,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7613bis-09" obsoletes="7613">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7613bis-10" obsoletes="7613">
 
   <front>
 
@@ -100,7 +100,7 @@
     supporting the full range of Unicode code points.  For instance, in almost
     all application protocols it would be dangerous to treat the Unicode
     code point SUPERSCRIPT ONE (U+00B9) as equivalent to DIGIT ONE (U+0031),
-    because that would result in false positives during comparison,
+    because that would result in false accepts during comparison,
     authentication, and authorization (e.g., an attacker could easy spoof an
     account "user1@example.com").</t>
 
@@ -253,7 +253,7 @@
       implementation, or end deployment.  In general, this document suggests
       that it is preferable to apply the UsernameCaseMapped profile and
       therefore perform case mapping, because not doing so can lead to false
-      positives during authentication and authorization (as described in <xref
+      accepts during authentication and authorization (as described in <xref
       target='RFC6943'/>) and can result in confusion among end users,
       given the prevalence of case mapping in many existing protocols and
       applications.  However, there can be good reasons to apply the
@@ -606,7 +606,7 @@
 
             <t>Case-Mapping Rule: There is no case mapping rule (because mapping
             uppercase and titlecase code points to their lowercase equivalents
-            would lead to false positives and thus to reduced security).</t>
+            would lead to false accepts and thus to reduced security).</t>
 
             <t>Normalization Rule: Unicode Normalization Form C (NFC) MUST be
             applied to all strings.</t>
@@ -724,7 +724,7 @@
     <t>Some PRECIS profile definitions encourage entities that enforce the
     rules to be liberal in what they accept.  However, for usernames and
     passwords such a policy can be problematic, because it can lead to false
-    positives.  An in-depth discussion can be found in
+    accepts.  An in-depth discussion can be found in
     <xref target='RFC6943'/>.</t>
 
     <t>Applying the rules for any given PRECIS profile is not necessarily an 
@@ -834,7 +834,7 @@
           Normalization Form C (NFC).  Because NFKC is more aggressive about
           finding matches than NFC, in practice this change is unlikely to
           cause significant problems and indeed has the security benefit of
-          probably resulting in fewer false positives when comparing
+          probably resulting in fewer false accepts when comparing
           passwords.  A few examples might suffice to indicate the nature of
           the problem:
 
@@ -1005,7 +1005,7 @@ IANA has added the following entry to the "PRECIS Profiles"
     <section title="Identifier Comparison" anchor="security-id">
       <t>The process of comparing identifiers (such as SASL simple user names,
       authentication identifiers, and authorization identifiers) can lead to
-      either false negatives or false positives, both of which have security
+      either false rejects or false accepts, both of which have security
       implications.  A more detailed discussion can be found in <xref
       target='RFC6943'/>.</t>
 
