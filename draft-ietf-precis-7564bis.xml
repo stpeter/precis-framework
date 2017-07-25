@@ -11,7 +11,7 @@
 <?rfc tocdepth="3"?>
 <?rfc rfcedstyle="yes"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7564bis-09" obsoletes="7564">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-precis-7564bis-10" obsoletes="7564">
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -1041,7 +1041,7 @@
       case mapping can still yield uppercase characters for certain code 
       points).  Therefore, an implementation SHOULD apply the rules repeatedly 
       until the output string is stable; if the output string does not stabilize 
-      within a reasonable number of iterations, the implementation SHOULD 
+      after reapplying the rules two (2) additional times, the implementation SHOULD 
       terminate application of the rules and reject the input string as 
       invalid.</t>
 
