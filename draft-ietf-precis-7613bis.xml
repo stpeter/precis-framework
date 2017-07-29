@@ -976,7 +976,7 @@ IANA has added the following entry to the "PRECIS Profiles"
       stringprep, IANA previously marked that profile as "Not Current"
       and cited RFC 7613 as an additional reference.  IANA is
       requested to modify the profile so that this document is
-      cited at the additional reference.
+      cited as the additional reference.
       </t>
     </section>
 
