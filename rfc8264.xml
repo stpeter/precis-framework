@@ -29,7 +29,7 @@
           <country>USA</country>
         </postal>
         <phone>+1 720 256 6756</phone>
-        <email>peter@jabber.org</email>
+        <email>stpeter@jabber.org</email>
         <uri>https://www.jabber.org/</uri>
       </address>
     </author>
@@ -229,7 +229,7 @@ characters to the edited file as appropriate.  We have changed encoding from
       apply to all Unicode code points.  The code point table that
       results from applying the character categories and calculation
       rules to the latest version of Unicode can be found in an IANA
-      registry.  See <xref target="iana"/>.</t>
+      registry (see <xref target="iana"/>).</t>
 
     </section>
 
@@ -698,7 +698,7 @@ characters to the edited file as appropriate.  We have changed encoding from
           halfwidth code points, i.e., code points with a Decomposition Type
           of Wide or Narrow, to their decomposition mappings; as an
           example, "０" (FULLWIDTH DIGIT ZERO, U+FF10) would be mapped to
-          "0 (DIGIT ZERO U+0030).</t>
+          "0" (DIGIT ZERO U+0030).</t>
 
           <t>The normalization form specified by a profile (see below) has an
           impact on the need for width mapping.  Because width mapping is
@@ -874,7 +874,7 @@ characters to the edited file as appropriate.  We have changed encoding from
             string without spaces.</t>
 
             <t>In some locales, some devices are known to generate a code point
-            other than ASCII space (such as ZERO WIDTH JOINER (U+200D))
+            other than ASCII space, such as ZERO WIDTH JOINER (U+200D),
             when a user performs an action like hitting the space bar on a
             keyboard.</t>
 
@@ -1068,7 +1068,7 @@ characters to the edited file as appropriate.  We have changed encoding from
           properties.</t>
 
           <t>Defines an algorithm for determining a derived property value,
-          which can vary, depending on the string class being used by the
+          which can depend on the string class being used by the
           relevant application protocol.</t>
 
          </list>
@@ -1109,8 +1109,8 @@ characters to the edited file as appropriate.  We have changed encoding from
           point is missing a rule, the string is invalid.  If the rule exists
           but the result of applying the rule is negative or inconclusive, the
           proposed string is invalid.  The most notable of the CONTEXTUAL RULE
-          REQUIRED code points are the Join Control code points U+200D (ZERO
-          WIDTH JOINER) and U+200C (ZERO WIDTH NON&nbhy;JOINER), which have a
+          REQUIRED code points are the Join Control code points ZERO WIDTH JOINER 
+          (U+200D) and ZERO WIDTH NON&nbhy;JOINER (U+200C), which have a
           derived property value of CONTEXTJ.  See Appendix&nbsp;A
           of <xref target='RFC5892'/> for more information.</t>
 
@@ -1686,7 +1686,7 @@ Specification: Section 4.2 of RFC 8264
       <section title="Use of the FreeformClass" anchor='security-freeformclass'>
         <t>Strings that conform to the FreeformClass, and many profiles
         thereof, can include virtually any Unicode code point.  This makes the
-        FreeformClass quite expressive, but also problematic, from the
+        FreeformClass quite expressive, but also problematic from the
         perspective of possible user confusion.  Protocol designers are hereby
         warned that the FreeformClass contains code points they might not
         understand, and they are encouraged to profile the IdentifierClass

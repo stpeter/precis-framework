@@ -26,7 +26,7 @@
           <country>USA</country>
         </postal>
         <phone>+1 720 256 6756</phone>
-        <email>peter@jabber.org</email>
+        <email>stpeter@jabber.org</email>
         <uri>https://www.jabber.org/</uri>
       </address>
     </author>
@@ -763,6 +763,11 @@ characters to the edited file as appropriate.  We have changed encoding from
         ]]></artwork>
       <postamble>Table 4: A Sample of Strings That Violate the Password Rules</postamble>
      </figure>
+
+     <t>Note: Following the "XML Notation" used in <xref target='RFC3987'/>, 
+     in example 18 the character TAB (U+0009) in example 18 is represented 
+     as &amp;#x9 because otherwise it could not be shown in running text.</t>
+
     </section>
 
   </section>
@@ -1155,6 +1160,7 @@ IANA has added the following entry to the "PRECIS Profiles"
 
 <?rfc include="reference.RFC.3454" ?>
 <?rfc include="reference.RFC.3501" ?>
+<?rfc include="reference.RFC.3987" ?>
 <?rfc include="reference.RFC.4013" ?>
 <?rfc include="reference.RFC.4422" ?>
 <?rfc include="reference.RFC.4616" ?>

@@ -26,7 +26,7 @@
           <country>USA</country>
         </postal>
         <phone>+1 720 256 6756</phone>
-        <email>peter@jabber.org</email>
+        <email>stpeter@jabber.org</email>
         <uri>https://www.jabber.org/</uri>
       </address>
     </author>
@@ -272,24 +272,35 @@ operation has been completed).</t>
       <postamble>Table 1: A Sample of Legal Nicknames</postamble>
     </figure>
 
-    <t>Regarding examples 5, 6, and 7: applying the Unicode toLowerCase() operation
+  <t>Regarding examples 5, 6, and 7: applying the Unicode toLowerCase() operation
   to the character "Σ" (GREEK CAPITAL LETTER SIGMA, U+03A3) results in the character
   "σ" (GREEK SMALL LETTER SIGMA, U+03C3); however, the toLowerCase() operation does 
   not modify the character "ς" (GREEK SMALL LETTER FINAL SIGMA, U+03C2).  Therefore, 
   the comparison operation defined in <xref target="rules-comp"/> would result in 
   matching of the nicknames in examples 5 and 6 but not the nicknames in examples 
-  5 and 7 or 6 and 7.  Regarding example 8: this is an instance where applying the
+  5 and 7 or 6 and 7.</t>
+  
+  <t>Regarding example 8: this is an instance where applying the
   rules for the Nickname profile is not an idempotent procedure (see 
-  <xref target='use'/>), because applying 
-  the rules to the character "ϔ" (GREEK UPSILON WITH DIARESIS AND HOOK SYMBOL, 
-  U+03D4) results in the characters "ϒ" (GREEK UPSILON WITH HOOK SYMBOL, U+03D2) and 
-  "¨" (COMBINING DIARESIS, U+308), whereas applying the rules again to "ϒ" (GREEK UPSILON 
-  WITH HOOK SYMBOL, U+03D2) results in a compatibility equivalent to the character "Υ" 
-  (GREEK CAPITAL LETTER UPSILON, U+03A5), which during conversion to lower case results 
-  in the character "υ" (GREEK SMALL LETTER UPSILON, U+03C5).  Regarding example 9: symbol 
-  characters such as "♚" (BLACK CHESS 
+  <xref target='use'/>). In particular:</t>
+  
+  <t>
+    <list style='numbers'>
+      <t>Applying toLowerCase() to the character "ϔ" (GREEK UPSILON WITH DIARESIS AND 
+      HOOK SYMBOL, U+03D4) results in no changes, and applying NFKC to
+      that character results in the character "Ϋ" (GREEK UPSILON WITH HOOK 
+      SYMBOL, U+03D2).</t>
+      <t>Applying toLowerCase() to "Ϋ" (GREEK UPSILON WITH HOOK SYMBOL, U+03D2)
+      results in the character "ϋ" (GREEK SMALL LETTER UPSILON WITH DIALYTIKA,
+      U+03CB), and applying NFKC to that character results in no changes.</t>
+    </list>
+  </t>
+  
+  <t>Regarding example 9: symbol characters such as "♚" (BLACK CHESS 
   KING, U+265A) are allowed by the PRECIS FreeformClass and thus can be
-  used in nicknames.  Regarding example&nbsp;10: applying the Unicode 
+  used in nicknames.</t>
+  
+  <t>Regarding example 10: applying the Unicode 
   toLowerCase() operation to the character "Ⅳ" (ROMAN NUMERAL FOUR, U+2163) 
   results in the character "ⅳ" (SMALL ROMAN NUMERAL FOUR, U+2173), and applying 
   NFKC to the character "ⅳ" (SMALL ROMAN NUMERAL FOUR, U+2173) results in the 
