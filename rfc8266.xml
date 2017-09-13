@@ -16,18 +16,18 @@
     <title abbrev="PRECIS: Nicknames">Preparation, Enforcement, and Comparison of Internationalized Strings Representing Nicknames</title>
 
     <author initials="P." surname="Saint-Andre" fullname="Peter Saint-Andre">
-      <organization>Filament</organization>
+      <organization>Jabber.org</organization>
       <address>
         <postal>
-          <street>18335 E 103rd Ave, Suite 203</street>
-          <city>Commerce City</city>
+          <street>P.O. Box 787</street>
+          <city>Parker</city>
           <region>CO</region>
-          <code>80022</code>
-          <country>United States of America</country>
+          <code>80134</code>
+          <country>USA</country>
         </postal>
         <phone>+1 720 256 6756</phone>
-        <email>peter@filament.com</email>
-        <uri>https://filament.com/</uri>
+        <email>peter@jabber.org</email>
+        <uri>https://www.jabber.org/</uri>
       </address>
     </author>
 
@@ -39,7 +39,7 @@
     <keyword>XMPP</keyword>
     <keyword>MSRP</keyword>
     <keyword>XCON</keyword>
-    <keyword>chatrooms</keyword>
+    <keyword>chat rooms</keyword>
 
 <!-- [rfced] We see that at present this document is pure ASCII. 
 We understand that this document is to include UTF-8; please add UTF-8
@@ -85,25 +85,7 @@ characters to the edited file as appropriate.  We have changed encoding from
       <t>A similar usage enables a person to set their own preferred display
       name or to set a preferred display name for another user (e.g., the
       "display-name" construct in the Internet message format <xref
-      target='RFC5322'/> and <xref target='XEP-0172'/> in XMPP).
-
-<!-- [rfced] Section 1.1:  We found this sentence confusing.  If the
-suggested text is not correct, please clarify "... and [XEP-0172] in
-XMPP)."
-
-Original:
- A similar usage enables a person to set their own preferred display
- name or to set a preferred display name for another user (e.g., the
- "display-name" construct in the Internet message format [RFC5322] and
- [XEP-0172] in XMPP).
-
-Suggested:
- A similar usage enables a person to set their own preferred display
- name or to set a preferred display name for another user (e.g., the
- "display-name" construct in the Internet message format [RFC5322] or
- XMPP [XEP-0172]). -->
-
-</t>
+      target='RFC5322'/> and the &lt;nick/&gt; element in XMPP <xref target='XEP-0172'/>).</t>
       <t>Memorable, human-friendly names are also used in contexts other than
       personal messaging, such as names for devices (e.g., in a network
       visualization application), websites (e.g., for bookmarks in a web
@@ -142,16 +124,16 @@ Suggested:
       <xref target='RFC8264'/>.</t>
       <t>
         <list style='numbers'>
-          <t>Width Mapping Rule: There is no width-mapping rule (such a rule
+          <t>Width Mapping Rule: There is no width mapping rule (such a rule
           is not necessary because width mapping is performed as part of
           normalization using Normalization Form KC (NFKC) as specified
           below).</t>
           <t>Additional Mapping Rule: The additional mapping rule consists of
           the following sub-rules.
             <list style="format %c.">
-              <t>Map any instances of non-ASCII space to ASCII space (U+0020);
+              <t>Map any instances of non-ASCII space to SPACE (U+0020);
               a non-ASCII space is any Unicode code point having a general
-              category of "Zs", naturally with the exception of U+0020.  (The
+              category of "Zs", naturally with the exception of SPACE (U+0020).  (The
               inclusion of only ASCII space prevents confusion with various
               non-ASCII space code points, many of which are difficult to
               reproduce across different input methods.)</t>
@@ -163,7 +145,7 @@ Suggested:
               is mapped to "St&#160;Peter").</t>
             </list>
           </t>
-          <t>Case Mapping Rule: Apply the Unicode toLower() operation, as
+          <t>Case Mapping Rule: Apply the Unicode toLowerCase() operation, as
           defined in the Unicode Standard <xref target='Unicode'/>.  In
           applications that prohibit conflicting nicknames, this rule helps to
           reduce the possibility of confusion by ensuring that nicknames
@@ -176,10 +158,9 @@ Suggested:
           normalization forms (in the terminology of Unicode, it performs both
           canonical and compatibility decomposition before recomposing code
           points), this rule helps to reduce the possibility of confusion by
-          increasing the number of code points that would match (e.g.,
-          ROMAN NUMERAL FOUR (U+2163) would match the combination of
-          LATIN CAPITAL LETTER I (U+0049) and
-          LATIN CAPITAL LETTER V (U+0056)).</t>
+          increasing the number of code points that would match; for example,
+          the character "Ⅳ" (ROMAN NUMERAL FOUR, U+2163) would match the combination of
+          "I" (LATIN CAPITAL LETTER I, U+0049) and "V" (LATIN CAPITAL LETTER V, U+0056).</t>
           <t>Directionality Rule: There is no directionality rule. The "Bidi
           Rule" (defined in <xref target='RFC5893'/>) and similar rules are
           unnecessary and inapplicable to nicknames, because it is perfectly
@@ -259,67 +240,61 @@ operation has been completed).</t>
     part of the nickname strings).</t>
     <figure align="center">
       <artwork align="center"><![CDATA[
-+---------------------------+-----------------------------------+
-| # | Nickname              | Output for Comparison             |
-+---------------------------+-----------------------------------+
-| 1 | <Foo>                 | <foo>                             |
-+---------------------------+-----------------------------------+
-| 2 | <foo>                 | <foo>                             |
-+---------------------------+-----------------------------------+
-| 3 | <Foo Bar>             | <foo bar>                         |
-+---------------------------+-----------------------------------+
-| 4 | <foo bar>             | <foo bar>                         |
-+---------------------------+-----------------------------------+
-| 5 | <&#x3A3;>             | GREEK SMALL LETTER SIGMA (U+03C3) |
-+---------------------------+-----------------------------------+
-| 6 | <&#x3C3;>             | GREEK SMALL LETTER SIGMA (U+03C3) |
-+---------------------------+-----------------------------------+
-| 7 | <&#x3C2;>             | GREEK SMALL LETTER FINAL SIGMA    | 
-|   |                       | (U+03C2)                          |
-+---------------------------+-----------------------------------+
-| 8 | <&#x265A;>            | BLACK CHESS KING (U+265A)         |
-+---------------------------+-----------------------------------+
-| 9 | <Richard &#x2163;>    | <richard iv>                      |
-+---------------------------+-----------------------------------+
++---------------------------+-------------------------------------+
+| #  | Nickname              | Output for Comparison              |
++---------------------------+-------------------------------------+
+| 1  | <Foo>                 | <foo>                              |
++---------------------------+-------------------------------------+
+| 2  | <foo>                 | <foo>                              |
++---------------------------+-------------------------------------+
+| 3  | <Foo Bar>             | <foo bar>                          |
++---------------------------+-------------------------------------+
+| 4  | <foo bar>             | <foo bar>                          |
++---------------------------+-------------------------------------+
+| 5  | <Σ>                   | σ (GREEK SMALL LETTER SIGMA,       |
+|    |                       | U+03C3)                            |
++---------------------------+-------------------------------------+
+| 6  | <σ>                   | σ (GREEK SMALL LETTER SIGMA,       |
+|    |                       | U+03C3)                            |
++---------------------------+-------------------------------------+
+| 7  | <ς>                   | ς (GREEK SMALL LETTER FINAL SIGMA, | 
+|    |                       | U+03C2)                            |
++---------------------------+-------------------------------------+
+| 8  | <ϔ>                   | υ (GREEK SMALL LETTER UPSILON,     | 
+|    |                       | U+03C5) and ¨ (COMBINING DIARESIS, |
+|    |                       | U+0308)                            |
++---------------------------+-------------------------------------+
+| 9  | <♚>                   | ♚ (BLACK CHESS KING, U+265A)       |
++---------------------------+-------------------------------------+
+| 10 | <Richard Ⅳ>           | <richard iv>                       |
++---------------------------+-------------------------------------+
       ]]></artwork>
       <postamble>Table 1: A Sample of Legal Nicknames</postamble>
     </figure>
 
-    <t>Regarding examples 5, 6, and 7: applying the Unicode toLower() operation
-  to GREEK CAPITAL LETTER SIGMA (U+03A3) results in GREEK SMALL LETTER
-  SIGMA (U+03C3); however, the toLower() operation does not modify GREEK SMALL 
-  LETTER FINAL SIGMA (U+03C2).  Therefore, the comparison operation defined in
-  <xref target="rules-comp"/> would result in matching of the nicknames in 
-  examples 5 and 6 but not the nicknames in examples 5 and 7 or 6 and 7.
-  Regarding example 8: symbol characters such as BLACK CHESS KING
-  (U+265A) are allowed by the PRECIS FreeformClass and thus can be
-  used in nicknames.  Regarding example&nbsp;9: applying the Unicode 
-  toLower() operation to ROMAN NUMERAL FOUR (U+2163) results in SMALL ROMAN
-  NUMERAL FOUR (U+2173), and applying NFKC to SMALL ROMAN NUMERAL
-  FOUR (U+2173) results in LATIN SMALL LETTER I (U+0069) LATIN SMALL
-  LETTER V (U+0076).
-
-<!-- [rfced] Section 3: Per our check, we changed "LATIN SMALL LETTER V
-(U+0086)" to "LATIN SMALL LETTER V (U+0076)."  It appears as though U+0086 is
-"<control>" (see
-http://www.fileformat.info/info/unicode/char/0086/index.htm). Please let us
-know any concerns.   
-
-Original:
- Regarding example
- 9: applying the Unicode toLower() operation to ROMAN NUMERAL FOUR
- (U+2163) results in SMALL ROMAN NUMERAL FOUR (U+2173), and applying
- NFKC to SMALL ROMAN NUMERAL FOUR (U+2173) results in LATIN SMALL
- LETTER I (U+0069) LATIN SMALL LETTER V (U+0086).
-
-Currently:
- Regarding
- example 9: applying the Unicode toLower() operation to ROMAN NUMERAL
- FOUR (U+2163) results in SMALL ROMAN NUMERAL FOUR (U+2173), and
- applying NFKC to SMALL ROMAN NUMERAL FOUR (U+2173) results in LATIN
- SMALL LETTER I (U+0069) LATIN SMALL LETTER V (U+0076). -->
-
-</t>
+    <t>Regarding examples 5, 6, and 7: applying the Unicode toLowerCase() operation
+  to the character "Σ" (GREEK CAPITAL LETTER SIGMA, U+03A3) results in the character
+  "σ" (GREEK SMALL LETTER SIGMA, U+03C3); however, the toLowerCase() operation does 
+  not modify the character "ς" (GREEK SMALL LETTER FINAL SIGMA, U+03C2).  Therefore, 
+  the comparison operation defined in <xref target="rules-comp"/> would result in 
+  matching of the nicknames in examples 5 and 6 but not the nicknames in examples 
+  5 and 7 or 6 and 7.  Regarding example 8: this is an instance where applying the
+  rules for the Nickname profile is not an idempotent procedure (see 
+  <xref target='use'/>), because applying 
+  the rules to the character "ϔ" (GREEK UPSILON WITH DIARESIS AND HOOK SYMBOL, 
+  U+03D4) results in the characters "ϒ" (GREEK UPSILON WITH HOOK SYMBOL, U+03D2) and 
+  "¨" (COMBINING DIARESIS, U+308), whereas applying the rules again to "ϒ" (GREEK UPSILON 
+  WITH HOOK SYMBOL, U+03D2) results in a compatibility equivalent to the character "Υ" 
+  (GREEK CAPITAL LETTER UPSILON, U+03A5), which during conversion to lower case results 
+  in the character "υ" (GREEK SMALL LETTER UPSILON, U+03C5).  Regarding example 9: symbol 
+  characters such as "♚" (BLACK CHESS 
+  KING, U+265A) are allowed by the PRECIS FreeformClass and thus can be
+  used in nicknames.  Regarding example&nbsp;10: applying the Unicode 
+  toLowerCase() operation to the character "Ⅳ" (ROMAN NUMERAL FOUR, U+2163) 
+  results in the character "ⅳ" (SMALL ROMAN NUMERAL FOUR, U+2173), and applying 
+  NFKC to the character "ⅳ" (SMALL ROMAN NUMERAL FOUR, U+2173) results in the 
+  characters "i" (LATIN SMALL LETTER I, U+0069) and "v" (LATIN SMALL
+  LETTER V, U+0076).</t>
   </section>
 
   <section title="Use in Application Protocols" anchor="use">
@@ -382,7 +357,7 @@ Currently:
         interior sequences of multiple space characters to a single ASCII
         space.</t>
         <t hangText='Case Mapping Rule:'>Map uppercase and titlecase code
-        points to lowercase using the Unicode toLower() operation.</t>
+        points to lowercase using the Unicode toLowerCase() operation.</t>
         <t hangText='Normalization Rule:'>NFKC</t>
         <t hangText='Directionality Rule:'>None</t>
         <t hangText='Enforcement:'>To be specified by applications.</t>
@@ -514,20 +489,6 @@ Currently:
   <seriesInfo name="XSF XEP" value="0045"/>
 </reference>
 
-<!-- [rfced] [XEP-0045]:  As the provided URL shows
-"Last Updated:2017-05-31," we updated the listing in this document
-accordingly.  Please let us know any objections.
-
-Original:
- [XEP-0045]
-            Saint-Andre, P., "Multi-User Chat", XSF XEP 0045, February
-            2012, <http://xmpp.org/extensions/xep-0045.html>.
-
-Currently:
- [XEP-0045]
-            Saint-Andre, P., "Multi-User Chat", XSF XEP 0045, May
-            2017, <https://xmpp.org/extensions/xep-0045.html>. -->
-
 <reference anchor="XEP-0172" target="https://xmpp.org/extensions/xep-0172.html">
   <front>
     <title>User Nickname</title>
@@ -553,20 +514,8 @@ Currently:
     </author>
     <date month="February" year="2005"/>
   </front>
-  <seriesInfo name="updated June" value="2012"/>
+  <seriesInfo name="updated June" value="2010"/>
 </reference>
-
-<!-- [rfced] [PETNAME-SYSTEMS]:
-<http://www.skyhunter.com/marcs/petnames/IntroPetNames.html> shows
-"updated June 2010."  Should "2012" be "2010," or should a different
-URL be listed here?
-
-Original:
- [PETNAME-SYSTEMS]
-            Stiegler, M., "An Introduction to Petname Systems",
-            updated June 2012, February 2005,
-            <http://www.skyhunter.com/marcs/petnames/
-            IntroPetNames.html>. -->
 
 <reference anchor="Err4570" quote-title="false" target="https://www.rfc-editor.org/errata/eid4570">
      <front>
@@ -586,16 +535,10 @@ Original:
     <t>
       <list style='symbols'>
         <t>Addressed <xref target="Err4570"/> by removing the directionality
-        rule and adding the normalization rule to Section 2.3.
-
-<!-- [rfced] Appendix A:  By comparing RFC 7700 with this document,
-We see that [Err4570] was addressed in Section 2.4 as well.  Should
-Section 2.4 also be mentioned in this text? -->
-
-</t>
+        rule from Section 2.3 and Section 2.4.</t>
         <t>In accordance with working group discussions and updates to <xref
-        target='RFC8264'/>, removed the use of the Unicode CaseFold()
-        operation in favor of the Unicode toLower() operation.</t>
+        target='RFC8264'/>, removed the use of the Unicode toCaseFold()
+        operation in favor of the Unicode toLowerCase() operation.</t>
         <t>Clarified several editorial matters.</t>
         <t>Updated references.</t>
       </list>

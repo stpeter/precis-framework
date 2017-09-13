@@ -19,18 +19,18 @@
     <title abbrev="PRECIS Framework">PRECIS Framework: Preparation, Enforcement, and Comparison of Internationalized Strings in Application Protocols</title>
 
     <author initials="P." surname="Saint-Andre" fullname="Peter Saint-Andre">
-      <organization>Filament</organization>
+      <organization>Jabber.org</organization>
       <address>
         <postal>
-          <street>18335 E 103rd Ave, Suite 203</street>
-          <city>Commerce City</city>
+          <street>P.O. Box 787</street>
+          <city>Parker</city>
           <region>CO</region>
-          <code>80022</code>
-          <country>United States of America</country>
+          <code>80134</code>
+          <country>USA</country>
         </postal>
         <phone>+1 720 256 6756</phone>
-        <email>peter@filament.com</email>
-        <uri>https://filament.com/</uri>
+        <email>peter@jabber.org</email>
+        <uri>https://www.jabber.org/</uri>
       </address>
     </author>
 
@@ -325,7 +325,7 @@ characters to the edited file as appropriate.  We have changed encoding from
           <list style='hanging'>
             <t hangText="IdentifierClass:">a sequence of letters, numbers, and
             some symbols that is used to identify or address a network entity
-            such as a user account, a venue (e.g., a chatroom), an information
+            such as a user account, a venue (e.g., a chat room), an information
             source (e.g., a data feed), or a collection of data (e.g., a
             file); the intent is that this class will minimize user confusion
             in a wide variety of application protocols, with the result that
@@ -336,7 +336,7 @@ characters to the edited file as appropriate.  We have changed encoding from
             symbols, spaces, and other code points that is used for free-form
             strings, including passwords as well as display elements such as
             human-friendly nicknames for devices or for participants in a
-            chatroom; the intent is that this class will allow nearly any
+            chat room; the intent is that this class will allow nearly any
             Unicode code point, with the result that expressiveness has been
             prioritized over safety for this class.  Note well that protocol
             designers, application developers, service providers, and end
@@ -392,7 +392,7 @@ characters to the edited file as appropriate.  We have changed encoding from
       <section title="IdentifierClass" anchor="classes-id">
         <t>Most application technologies need strings that can be used to
         refer to, include, or communicate protocol strings like usernames,
-        filenames, data feed identifiers, and chatroom names.  We group such
+        filenames, data feed identifiers, and chat room names.  We group such
         strings into a class called "IdentifierClass" having the following
         features.</t>
 
@@ -490,7 +490,7 @@ characters to the edited file as appropriate.  We have changed encoding from
         <t>Some application technologies need strings that can be used in a
         free-form way, e.g., as a password in an authentication exchange (see
         <xref target='RFC8265'/>) or a nickname in a
-        chatroom (see <xref target='RFC8266'/>).  We group
+        chat room (see <xref target='RFC8266'/>).  We group
         such things into a class called "FreeformClass" having the following
         features.</t>
 
@@ -668,7 +668,7 @@ characters to the edited file as appropriate.  We have changed encoding from
         <t>Indeed, we already have too many profiles.  Ideally, we would have
         at most two or three profiles.  Unfortunately, numerous application
         protocols exist with their own quirks regarding protocol strings.
-        Domain names, email addresses, instant messaging addresses, chatroom
+        Domain names, email addresses, instant messaging addresses, chat room
         nicknames, filenames, authentication identifiers, passwords, and other
         strings are already out there in the wild and need to be supported in
         existing application protocols such as DNS, SMTP, the
@@ -697,8 +697,8 @@ characters to the edited file as appropriate.  We have changed encoding from
           Typically, such mapping consists of mapping fullwidth and
           halfwidth code points, i.e., code points with a Decomposition Type
           of Wide or Narrow, to their decomposition mappings; as an
-          example, FULLWIDTH DIGIT ZERO (U+FF10) would be mapped to
-          DIGIT ZERO (U+0030).</t>
+          example, "０" (FULLWIDTH DIGIT ZERO, U+FF10) would be mapped to
+          "0 (DIGIT ZERO U+0030).</t>
 
           <t>The normalization form specified by a profile (see below) has an
           impact on the need for width mapping.  Because width mapping is
@@ -867,7 +867,7 @@ characters to the edited file as appropriate.  We have changed encoding from
           <list style='symbols'>
             <t>Many Unicode code points are confusable with ASCII space.</t>
 
-            <t>Even if non-ASCII space code points are mapped to ASCII space
+            <t>Even if non-ASCII space code points are mapped to SPACE
             (U+0020), space code points are often not rendered in user
             interfaces, leading to the possibility that a human user might
             consider a string containing spaces to be equivalent to the same
@@ -1157,7 +1157,7 @@ Else DISALLOWED;
       <t>The value of the derived property calculated can depend on the string
       class; for example, if an identifier used in an application protocol is
       defined as profiling the PRECIS IdentifierClass then a space character
-      such as U+0020 would be assigned to ID_DIS, whereas if an identifier is
+      such as SPACE (U+0020) would be assigned to ID_DIS, whereas if an identifier is
       defined as profiling the PRECIS FreeformClass then the character would
       be assigned to FREE_PVAL.  For the sake of brevity, the designation
       "FREE_PVAL" is used herein, instead of the longer designation "ID_DIS or
@@ -1728,18 +1728,18 @@ Specification: Section 4.2 of RFC 8264
 
         <t>However, the problem is made more serious by introducing the full
         range of Unicode code points into protocol strings.  A well-known
-        example is confusion between CYRILLIC SMALL LETTER A (U+0430) and
-        LATIN SMALL LETTER A (U+0061).  As another example, the
-        code points U+13DA U+13A2 U+13B5 U+13AC U+13A2 U+13AC U+13D2 from the
+        example is confusion between "а" CYRILLIC SMALL LETTER A (U+0430) and
+        "a" LATIN SMALL LETTER A (U+0061).  As another example, the characters
+        "ᏚᎢᎵᏋᎢᏋᏒ" (U+13DA U+13A2 U+13B5 U+13AC U+13A2 U+13AC U+13D2) from the
         Cherokee block look similar to the ASCII code points representing 
         "STPETER" as they might appear when presented using a "creative" font 
         family.  Confusion among such characters is perhaps not unexpected,
         given that the alphabetic writing systems involved all bear a 
         family resemblance or historical lineage.  Perhaps more surprising is 
         confusion among characters from disparate writing systems, such as
-        LATIN CAPITAL LETTER O (U+004F), DIGIT ZERO (U+0030), LAO DIGIT ZERO
-        (U+0ED0), NEW TAI LUE DIGIT ZERO (U+19D0), ETHIOPIC SYLLABLE
-        PHARYNGEAL&nbsp;A (U+12D0), and other graphemes that have the
+        "O" (LATIN CAPITAL LETTER O, U+004F), "0" (DIGIT ZERO, U+0030), "໐" 
+        (LAO DIGIT ZERO, U+0ED0), "᧐" (NEW TAI LUE DIGIT ZERO, U+19D0), "ዐ"
+        (ETHIOPIC SYLLABLE PHARYNGEAL A, U+12D0), and other graphemes that have the
         appearance of open circles.  And the reader needs to be aware that the
         foregoing represent merely a small sample of characters that are
         confusable in Unicode.</t>
@@ -1900,7 +1900,7 @@ Specification: Section 4.2 of RFC 8264
             change if, for example, the string includes a precomposed character 
             that was added in a recent version of Unicode.</t>
             <t>The East Asian width property, which is used in many PRECIS 
-            width-mapping rules, is not guaranteed to be stable across Unicode
+            width mapping rules, is not guaranteed to be stable across Unicode
             versions.</t>
           </list>
         </t>

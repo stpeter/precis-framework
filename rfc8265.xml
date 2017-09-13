@@ -16,18 +16,18 @@
     <title abbrev="PRECIS: Usernames and Passwords">Preparation, Enforcement, and Comparison of Internationalized Strings Representing Usernames and Passwords</title>
 
     <author initials="P." surname="Saint-Andre" fullname="Peter Saint-Andre">
-      <organization>Filament</organization>
+      <organization>Jabber.org</organization>
       <address>
         <postal>
-          <street>18335 E 103rd Ave, Suite 203</street>
-          <city>Commerce City</city>
+          <street>P.O. Box 787</street>
+          <city>Parker</city>
           <region>CO</region>
-          <code>80022</code>
-          <country>United States of America</country>
+          <code>80134</code>
+          <country>USA</country>
         </postal>
         <phone>+1 720 256 6756</phone>
-        <email>peter@filament.com</email>
-        <uri>https://filament.com/</uri>
+        <email>peter@jabber.org</email>
+        <uri>https://www.jabber.org/</uri>
       </address>
     </author>
 
@@ -65,7 +65,7 @@ characters to the edited file as appropriate.  We have changed encoding from
     <abstract>
       <t>This document describes updated methods for handling Unicode strings
       representing usernames and passwords.  The previous approach was known
-      as SASLprep (RFC 4013) and was based on stringprep (RFC 3454).  The
+      as SASLprep (RFC 4013) and was based on Stringprep (RFC 3454).  The
       methods specified in this document provide a more sustainable approach
       to the handling of internationalized usernames and passwords.  This
       document obsoletes RFC 7613.</t>
@@ -106,9 +106,9 @@ characters to the edited file as appropriate.  We have changed encoding from
     application developers from the potentially negative consequences of
     supporting the full range of Unicode code points.  For instance, in almost
     all application protocols it would be dangerous to treat the Unicode
-    code point SUPERSCRIPT ONE (U+00B9) as equivalent to DIGIT ONE (U+0031),
+    code point "¹" (SUPERSCRIPT ONE, U+00B9) as equivalent to "1" (DIGIT ONE, U+0031),
     because that would result in false accepts during comparison,
-    authentication, and authorization (e.g., an attacker could easy spoof an
+    authentication, and authorization (e.g., an attacker could easily spoof an
     account "user1@example.com").</t>
 
     <t>Whereas a naive use of Unicode would make such attacks trivially easy,
@@ -126,7 +126,7 @@ characters to the edited file as appropriate.  We have changed encoding from
     certificates) or require specialized handling.</t>
 
     <t>Although the historical predecessor of this document was the 
-    SASLprep profile of stringprep <xref target='RFC3454'/>), the 
+    SASLprep profile of Stringprep <xref target='RFC3454'/>), the 
     approach defined here can be used by technologies other than
     SASL <xref target='RFC4422'/>, such as HTTP authentication as
     specified in <xref target='RFC7617'/> and <xref
@@ -136,7 +136,7 @@ characters to the edited file as appropriate.  We have changed encoding from
     in usernames and passwords as prescribed by existing application protocols
     that use SASLprep.  If the community that uses such an application
     protocol wishes to modernize its handling of internationalized strings to
-    use PRECIS instead of stringprep, it needs to explicitly update the
+    use PRECIS instead of Stringprep, it needs to explicitly update the
     existing application protocol definition (one example is <xref
     target='RFC7622'/>).
     Non-coordinated updates to protocol implementations are discouraged
@@ -180,8 +180,8 @@ characters to the edited file as appropriate.  We have changed encoding from
     <t>Many important terms used in this document are defined in <xref
     target='RFC5890'/>, <xref target='RFC6365'/>, <xref target='RFC8264'/>,
     and <xref target='Unicode'/>.  The term "non-ASCII space" refers to any
-    Unicode code point having a Unicode general category of "Zs", with the
-    exception of U+0020 (here called "ASCII space").</t>
+    Unicode code point having a Unicode general category of "Zs", naturally with the
+    exception of SPACE (U+0020).</t>
 
     <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
     "SHALL&nbsp;NOT", "SHOULD", "SHOULD&nbsp;NOT", "RECOMMENDED",
@@ -258,7 +258,7 @@ characters to the edited file as appropriate.  We have changed encoding from
       <t>In order to accommodate the widest range of username constructs in
       applications, this document defines two username profiles:
       UsernameCaseMapped and UsernameCasePreserved.  These two profiles differ
-      only in the Case-Mapping Rule and are otherwise identical.</t>
+      only in the Case Mapping Rule and are otherwise identical.</t>
 
       <t>Case mapping is a matter for the application protocol, protocol
       implementation, or end deployment.  In general, this document suggests
@@ -293,7 +293,7 @@ characters to the edited file as appropriate.  We have changed encoding from
           Protocol (XMPP) <xref target='RFC6120'/>) and that
           directly reuse this profile MUST specify whether or not
           case mapping is to be applied to authorization identifiers.
-          Such "SASL application protocols" SHOULD delay any case-mapping
+          Such "SASL application protocols" SHOULD delay any case mapping
           of authorization identifiers to the last possible moment, which
           happens to necessarily be on the server side (this enables
           decisions about case mapping to be a matter of deployment
@@ -332,14 +332,14 @@ characters to the edited file as appropriate.  We have changed encoding from
         UsernameCaseMapped profile of the PRECIS IdentifierClass.</t>
         <t>
           <list style='numbers'>
-            <t>Width-Mapping Rule: Map fullwidth and halfwidth code points to
+            <t>Width Mapping Rule: Map fullwidth and halfwidth code points to
             their decomposition mappings (see Unicode Standard Annex #11 <xref
             target='UAX11'/>).</t>
             <t>Additional Mapping Rule: There is no additional mapping
             rule.</t>
-            <t>Case-Mapping Rule: Map uppercase and titlecase code points to
+            <t>Case Mapping Rule: Map uppercase and titlecase code points to
             their lowercase equivalents, preferably using the Unicode
-            toLower() operation as defined in the Unicode Standard <xref
+            toLowerCase() operation as defined in the Unicode Standard <xref
             target='Unicode'/>; see further discussion in <xref
             target='username-case'/>.</t>
             <t>Normalization Rule: Apply Unicode Normalization Form C (NFC) to
@@ -358,7 +358,7 @@ characters to the edited file as appropriate.  We have changed encoding from
         in the order shown).</t>
         <t>
           <list style='numbers'>
-            <t>Apply the width-mapping rule specified in <xref
+            <t>Apply the width mapping rule specified in <xref
             target='usernamecasemapped-rules'/>.  It is necessary to apply the
             rule at this point because otherwise the PRECIS "HasCompat"
             category specified in Section 9.17 of <xref target='RFC8264'/>
@@ -373,7 +373,7 @@ characters to the edited file as appropriate.  We have changed encoding from
         <t>An entity that performs enforcement according to this profile MUST prepare an input string as described in <xref target='usernamecasemapped-preparation'/> and MUST also apply the following rules specified in <xref target='usernamecasemapped-rules'/> in the order shown:</t>
         <t>
           <list style="numbers">
-            <t>Case-Mapping Rule</t>
+            <t>Case Mapping Rule</t>
             <t>Normalization Rule</t>
             <t>Directionality Rule</t>
           </list>
@@ -402,12 +402,12 @@ characters to the edited file as appropriate.  We have changed encoding from
         UsernameCasePreserved profile of the PRECIS IdentifierClass.</t>
         <t>
           <list style='numbers'>
-            <t>Width-Mapping Rule: Map fullwidth and halfwidth code points to
+            <t>Width Mapping Rule: Map fullwidth and halfwidth code points to
             their decomposition mappings (see Unicode Standard Annex #11 <xref
             target='UAX11'/>).</t>
             <t>Additional Mapping Rule: There is no additional mapping
             rule.</t>
-            <t>Case-Mapping Rule: There is no case-mapping rule.</t>
+            <t>Case Mapping Rule: There is no case mapping rule.</t>
             <t>Normalization Rule: Apply Unicode Normalization Form C (NFC) to
             all strings.</t>
             <t>Directionality Rule: Apply the "Bidi Rule" defined in <xref
@@ -425,20 +425,8 @@ characters to the edited file as appropriate.  We have changed encoding from
         in the order shown).</t>
         <t>
           <list style='numbers'>
-            <t>Apply the width-mapping rule specified in <xref
+            <t>Apply the width mapping rule specified in <xref
             target='usernamecasepreserved-rules'/>.
-
-<!-- [rfced] Section 3.4.2:  Although we see that the width-mapping
-rule in Section 3.3.1 is the same as the width-mapping rule in
-Section 3.4.1, we changed "3.3.1" to "3.4.1" here.  Please let us
-know any objections.
-
-Original:
- 1.  Apply the width-mapping rule specified in Section 3.3.1.
-
-Currently:
- 1.  Apply the width-mapping rule specified in Section 3.4.1. -->
-
   It is necessary to apply
             the rule at this point because otherwise the PRECIS "HasCompat"
             category specified in Section 9.17 of <xref target='RFC8264'/>
@@ -497,9 +485,9 @@ Currently:
       an application protocol, implementation, or deployment to create
       application-layer constructs such as a username that is a
       space-separated set of userparts like "Firstname Middlename Lastname".
-      Although such a construct is not a profile of the PRECIS IdentifierClass
-      (because U+0020 SPACE is not allowed in the IdentifierClass), it can be
-      created at the application layer because U+0020 SPACE can be used as a
+      Such a construct is not a profile of the PRECIS IdentifierClass, 
+      because SPACE (U+0020) is not allowed in the IdentifierClass; however, it can be
+      created at the application layer because SPACE (U+0020) can be used as a
       separator between instances of the PRECIS IdentifierClass (e.g.,
       userparts as defined in this specification).</t>
 
@@ -522,19 +510,19 @@ Currently:
 +--------------------------+---------------------------------+
 | 2 | <fussball>           |                                 |
 +--------------------------+---------------------------------+
-| 3 | <fu&#xDF;ball>       | The third character is LATIN    |
+| 3 | <fußball>            | The third character is LATIN    |
 |   |                      | SMALL LETTER SHARP S (U+00DF)   |
 +--------------------------+---------------------------------+
-| 4 | <&#x3C0;>            | A userpart of GREEK SMALL       |
+| 4 | <π>                  | A userpart of GREEK SMALL       |
 |   |                      | LETTER PI (U+03C0)              |
 +--------------------------+---------------------------------+
-| 5 | <&#x3A3;>            | A userpart of GREEK CAPITAL     |
+| 5 | <Σ>                  | A userpart of GREEK CAPITAL     |
 |   |                      | LETTER SIGMA (U+03A3)           |
 +--------------------------+---------------------------------+
-| 6 | <&#x3C3;>            | A userpart of GREEK SMALL       |
+| 6 | <σ>                  | A userpart of GREEK SMALL       |
 |   |                      | LETTER SIGMA (U+03C3)           |
 +--------------------------+---------------------------------+
-| 7 | <&#x3C2;>            | A userpart of GREEK SMALL       |
+| 7 | <ς>                  | A userpart of GREEK SMALL       |
 |   |                      | LETTER FINAL SIGMA (U+03C2)     |
 +--------------------------+---------------------------------+
         ]]></artwork>
@@ -542,17 +530,17 @@ Currently:
       </figure>
 
       <t>Several points are worth noting.  Regarding examples 2 and 3:
-      although in German the character eszett (LATIN SMALL LETTER SHARP S
-      (U+00DF)) can mostly be used interchangeably with the two characters
+      although in German writing the character eszett "ß" (LATIN SMALL LETTER SHARP S,
+      U+00DF) can mostly be used interchangeably with the two characters
       "ss", the userparts in these examples are different and (if desired) a
       server would need to enforce a registration policy that disallows one
       of them if the other is registered.  Regarding examples 5, 6, and 7:
-      optional case-mapping of GREEK CAPITAL LETTER SIGMA (U+03A3) to
-      lowercase (i.e., to GREEK SMALL LETTER SIGMA (U+03C3)) during
+      optional case mapping of "Σ" (GREEK CAPITAL LETTER SIGMA, U+03A3) to
+      the lowercase character "σ" (GREEK SMALL LETTER SIGMA, U+03C3) during
       comparison would result in matching the userparts in examples 5
       and 6; however, because the PRECIS mapping rules do not account for
-      the special status of GREEK SMALL LETTER FINAL SIGMA (U+03C2), the
-      userparts in examples 5 and 7 or examples 6 and 7 would not be
+      the special status of the character "ς" (GREEK SMALL LETTER FINAL SIGMA, 
+      U+03C2), the userparts in examples 5 and 7 or examples 6 and 7 would not be
       matched during comparison.</t>
 
       <t>The following examples illustrate strings that are not valid
@@ -564,35 +552,29 @@ Currently:
 +--------------------------+---------------------------------+
 | # | Non-Userpart String  | Notes                           |
 +--------------------------+---------------------------------+
-| 8 | <foo bar>            | Space (U+0020) is disallowed in |
+| 8 | <foo bar>            | SPACE (U+0020) is disallowed in |
 |   |                      | the userpart                    |
 +--------------------------+---------------------------------+
 | 9 | <>                   | Zero-length userpart            |
 +--------------------------+---------------------------------+
-| 10| <henry&#x2163;>      | The sixth character is ROMAN    |
+| 10| <henryⅣ>             | The sixth character is ROMAN    |
 |   |                      | NUMERAL FOUR (U+2163)           |
 +--------------------------+---------------------------------+
-| 11| <&#x265A;>           | A userpart of BLACK CHESS KING  | 
+| 11| <♚>                  | A userpart of BLACK CHESS KING  | 
 |   |                      | (U+265A)                        |
 +--------------------------+---------------------------------+
         ]]></artwork>
-        <postamble>Table 2: A Sample of Strings That Violate the Userpart Rule</postamble>
+        <postamble>Table 2: A Sample of Strings That Violate the Userpart Rules</postamble>
       </figure>
-
-<!-- [rfced] Table 2:  Should "Rule" be "Rules" in the title?  (We ask
-because Table 4 uses the plural "Password Rules.")
-
-Original:
- Table 2: A Sample of Strings That Violate the Userpart Rule -->
 
       <t>Here again, several points are worth noting.  Regarding example 8:
       although this is not a valid userpart, it is a valid username because
       it is a space-separated sequence of userparts.  Regarding example 10:
-      the Unicode code point ROMAN NUMERAL FOUR (U+2163) has a compatibility
-      equivalent of the string formed of LATIN CAPITAL LETTER I (U+0049) and
-      LATIN CAPITAL LETTER V (U+0056), but code points with compatibility
+      the character "Ⅳ" (ROMAN NUMERAL FOUR, U+2163) has a compatibility
+      equivalent of the characters "I" (LATIN CAPITAL LETTER I, U+0049) and
+      "V" (LATIN CAPITAL LETTER V, U+0056), but code points with compatibility
       equivalents are not allowed in the PRECIS IdentifierClass.  Regarding
-      example 11: symbol characters such as BLACK CHESS KING (U+265A) are not
+      example 11: symbol characters such as "♚" (BLACK CHESS KING, U+265A) are not
       allowed in the PRECIS IdentifierClass.</t>
 
     </section>
@@ -675,19 +657,19 @@ Original:
 
         <t>
           <list style='numbers'>
-            <t>Width-Mapping Rule: Fullwidth and halfwidth code points MUST NOT
+            <t>Width Mapping Rule: Fullwidth and halfwidth code points MUST NOT
             be mapped to their decomposition mappings (see Unicode Standard
             Annex #11 <xref target='UAX11'/>).</t>
 
             <t>Additional Mapping Rule: Any instances of non-ASCII space MUST
-            be mapped to ASCII space (U+0020); a non-ASCII space is any
-            Unicode code point having a Unicode general category of "Zs"
-            (with the exception of U+0020).  As was the case in RFC 4013, 
+            be mapped to SPACE (U+0020); a non-ASCII space is any
+            Unicode code point having a Unicode general category of "Zs",
+            with the exception of SPACE (U+0020).  As was the case in RFC 4013, 
             the inclusion of only ASCII space prevents confusion with various 
             non-ASCII space code points, many of which are difficult to 
             reproduce across different input methods.</t>
 
-            <t>Case-Mapping Rule: There is no case mapping rule (because mapping
+            <t>Case Mapping Rule: There is no case mapping rule (because mapping
             uppercase and titlecase code points to their lowercase equivalents
             would lead to false accepts and thus to reduced security).</t>
 
@@ -743,22 +725,22 @@ Original:
 +------------------------------------+------------------------------+
 | # | Password                       | Notes                        |
 +------------------------------------+------------------------------+
-| 12| <correct horse battery staple> | ASCII space is allowed       |
+| 12| <correct horse battery staple> | SPACE (U+0020) is allowed    |
 +------------------------------------+------------------------------+
 | 13| <Correct Horse Battery Staple> | Differs by case from         |
 |   |                                | example 12                   |
 +------------------------------------+------------------------------+
-| 14| <&#x3C0;&#xDF;&#xE5;>          | Non-ASCII letters are OK     |
+| 14| <πßå>                          | Non-ASCII letters are OK     |
 |   |                                | (e.g., GREEK SMALL LETTER    |
 |   |                                | PI (U+03C0))                 |
 +------------------------------------+------------------------------+
-| 15| <Jack of &#x2666;s>            | Symbols are OK (e.g., BLACK  |
+| 15| <Jack of ♦s>                   | Symbols are OK (e.g., BLACK  |
 |   |                                | DIAMOND SUIT (U+2666))       |
 +------------------------------------+------------------------------+
-| 16| <foo&#x1680;bar>               | OGHAM SPACE MARK (U+1680) is |
-|   |                                | mapped to U+0020, and thus   |
-|   |                                | the full string is mapped to |
-|   |                                | <foo bar>                    |
+| 16| <foo bar>                      | OGHAM SPACE MARK (U+1680) is |
+|   |                                | mapped to SPACE (U+0020);    |
+|   |                                | thus the full string is      |
+|   |                                | mapped to <foo bar>          |
 +------------------------------------+------------------------------+
         ]]></artwork>
         <postamble>Table 3: A Sample of Legal Passwords</postamble>
@@ -776,7 +758,7 @@ Original:
 |   |                                | disallowed                   |
 +------------------------------------+------------------------------+
 | 18| <my cat is a &#x9;by>          | Control characters like TAB  |
-|   |                                | are disallowed               |
+|   |                                | (U+0009) are disallowed      |
 +------------------------------------+------------------------------+
         ]]></artwork>
       <postamble>Table 4: A Sample of Strings That Violate the Password Rules</postamble>
@@ -847,16 +829,16 @@ Original:
           the nature of the problem:
 
           <list style='numbers'>
-            <t>LATIN SMALL LETTER LONG S (U+017F) is compatibility equivalent
-            to LATIN SMALL LETTER S (U+0073).</t>
+            <t>"ſ" (LATIN SMALL LETTER LONG S, U+017F) is compatibility equivalent
+            to "s" (LATIN SMALL LETTER S, U+0073).</t>
 
-            <t>ROMAN NUMERAL FOUR (U+2163) is compatibility equivalent
-            to LATIN CAPITAL LETTER I (U+0049) and LATIN CAPITAL LETTER V
-            (U+0056).</t>
+            <t>"Ⅳ" (ROMAN NUMERAL FOUR, U+2163) is compatibility equivalent
+            to "I" (LATIN CAPITAL LETTER I, U+0049) and "V" (LATIN CAPITAL LETTER V,
+            U+0056).</t>
 
-            <t>LATIN SMALL LIGATURE FI (U+FB01) is compatibility equivalent
-            to LATIN SMALL LETTER F (U+0066) and LATIN SMALL LETTER I
-            (U+0069).</t>
+            <t>"ﬁ" (LATIN SMALL LIGATURE FI, U+FB01) is compatibility equivalent
+            to "f" (LATIN SMALL LETTER F, U+0066) and "i" (LATIN SMALL LETTER I,
+            U+0069).</t>
 
           </list>
           Under SASLprep, the use of NFKC also handled the mapping of
@@ -867,12 +849,12 @@ Original:
           of usernames for names containing Unicode code points with
           compatibility equivalents and, where there is no conflict, map those
           code points to their equivalents.  Naturally, it is possible that
-          during this process the operator will discover conflicting usernames
-          (e.g., HENRYIV with the last two code points being LATIN CAPITAL
-          LETTER I (U+0049) and LATIN CAPITAL LETTER V (U+0056)
-          vs.&nbsp;"HENRYIV" with the last character being ROMAN NUMERAL FOUR
-          (U+2163), which is compatibility equivalent to U+0049 and U+0056);
-          in these cases, the operator will need to determine how to proceed --
+          during this process the operator will discover conflicting usernames;
+          for instance, "HENRYIV" with the last two code points being LATIN CAPITAL
+          LETTER I (U+0049) and LATIN CAPITAL LETTER V (U+0056) as opposed to
+          "HENRYⅣ" with the last character being "Ⅳ" (ROMAN NUMERAL FOUR,
+          U+2163), which is compatibility equivalent to U+0049 and U+0056).
+          In these cases, the operator will need to determine how to proceed,
           for instance, by disabling the account whose name contains a
           Unicode code point with a compatibility equivalent.  Such cases
           are probably rare, but it is important for operators to be aware
@@ -886,7 +868,7 @@ Original:
           target='RFC8264'/>. For migration purposes, the operator might want
           to remove from usernames any code points contained in the PRECIS "M"
           category (e.g., SOFT HYPHEN (U+00AD)).  Because these code points
-          would have been "mapped to nothing" in stringprep, in practice a
+          would have been "mapped to nothing" in Stringprep, in practice a
           user would not notice the difference if, upon migration to PRECIS,
           the code points are removed.</t>
 
@@ -922,16 +904,16 @@ Original:
           the problem:
 
           <list style='numbers'>
-            <t>LATIN SMALL LETTER LONG S (U+017F) is compatibility equivalent
-            to LATIN SMALL LETTER S (U+0073).</t>
+            <t>"ſ" (LATIN SMALL LETTER LONG S, U+017F) is compatibility equivalent
+            to "s" (LATIN SMALL LETTER S, U+0073).</t>
 
-            <t>ROMAN NUMERAL FOUR (U+2163) is compatibility equivalent to
-            LATIN CAPITAL LETTER I (U+0049) and LATIN CAPITAL LETTER V
-            (U+0056).</t>
+            <t>"Ⅳ" (ROMAN NUMERAL FOUR, U+2163) is compatibility equivalent
+            to "I" (LATIN CAPITAL LETTER I, U+0049) and "V" (LATIN CAPITAL LETTER V,
+            U+0056).</t>
 
-            <t>LATIN SMALL LIGATURE FI (U+FB01) is compatibility equivalent
-            to LATIN SMALL LETTER F (U+0066) and LATIN SMALL LETTER I
-            (U+0069).</t>
+            <t>"ﬁ" (LATIN SMALL LIGATURE FI, U+FB01) is compatibility equivalent
+            to "f" (LATIN SMALL LETTER F, U+0066) and "i" (LATIN SMALL LETTER I,
+            U+0069).</t>
 
           </list>
           Under SASLprep, the use of NFKC also handled the mapping of
@@ -958,11 +940,6 @@ Original:
 
   <section title="IANA Considerations" anchor="iana">
 
-<!-- [rfced] Section 7: Note that we have removed periods where the entries
-were single words (and from the reference).  Please let us know if you have
-any concern.  If none, we will ask IANA to update the templates on their site.  
--->
-
     <t>IANA has made the updates described below. </t>
 
     <section title="UsernameCaseMapped Profile" anchor="iana-usernamecasemapped">
@@ -975,12 +952,12 @@ IANA has added the following entry to the "PRECIS Profiles"
           <t hangText='Applicability:'>Usernames in security and application
           protocols.</t>
 
-          <t hangText='Replaces:'>The SASLprep profile of stringprep.</t>
-          <t hangText='Width-Mapping Rule:'>Map fullwidth and halfwidth
+          <t hangText='Replaces:'>The SASLprep profile of Stringprep.</t>
+          <t hangText='Width Mapping Rule:'>Map fullwidth and halfwidth
           code points to their decomposition mappings.</t>
 
           <t hangText='Additional Mapping Rule:'>None</t>
-          <t hangText='Case-Mapping Rule:'>Map uppercase and titlecase
+          <t hangText='Case Mapping Rule:'>Map uppercase and titlecase
           code points to lowercase.</t>
 
           <t hangText='Normalization Rule:'>NFC</t>
@@ -990,30 +967,7 @@ IANA has added the following entry to the "PRECIS Profiles"
           <t hangText='Enforcement:'>To be defined by security or application
           protocols that use this profile.</t>
 
-          <t hangText='Specification:'>Section 3.3 of RFC 8265
-
-<!-- [rfced] Sections 7.1 ("UsernameCaseMapped Profile") and
-7.2 ("UsernameCasePreserved Profile"):  We changed "Section 3.2"
-("Case Mapping vs. Case Preservation") and "Section 3.3"
-("UsernameCaseMapped Profile") to "Section 3.3" ("UsernameCaseMapped
-Profile") and "Section 3.4" ("UsernameCasePreserved Profile"),
-respectively, as follows.  Please let us know if this is incorrect.
-
-If these updates are OK, we will ask IANA to update the appropriate
-entries on https://www.iana.org/assignments/precis-parameters/
-accordingly.
-
-Original:
- Specification:  [[this document]], Section 3.2.
-...
- Specification:  [[this document]], Section 3.3.
-
-Currently: 
- Specification:  Section 3.3 of RFC 8265
-...
- Specification:  Section 3.4 of RFC 8265 -->
-
-</t>
+          <t hangText='Specification:'>Section 3.3 of RFC 8265</t>
 
         </list>
       </t>
@@ -1030,12 +984,12 @@ IANA has added the following entry to the "PRECIS Profiles"
           <t hangText='Applicability:'>Usernames in security and application
           protocols.</t>
 
-          <t hangText='Replaces:'>The SASLprep profile of stringprep.</t>
-          <t hangText='Width-Mapping Rule:'>Map fullwidth and halfwidth
+          <t hangText='Replaces:'>The SASLprep profile of Stringprep.</t>
+          <t hangText='Width Mapping Rule:'>Map fullwidth and halfwidth
           code points to their decomposition mappings.</t>
 
           <t hangText='Additional Mapping Rule:'>None</t>
-          <t hangText='Case-Mapping Rule:'>None</t>
+          <t hangText='Case Mapping Rule:'>None</t>
           <t hangText='Normalization Rule:'>NFC</t>
           <t hangText='Directionality Rule:'>The "Bidi Rule" defined in RFC
           5893 applies.</t>
@@ -1061,12 +1015,12 @@ IANA has added the following entry to the "PRECIS Profiles"
           <t hangText='Applicability:'>Passwords and other opaque strings in
           security and application protocols.</t>
 
-          <t hangText='Replaces:'>The SASLprep profile of stringprep.</t>
-          <t hangText='Width-Mapping Rule:'>None</t>
+          <t hangText='Replaces:'>The SASLprep profile of Stringprep.</t>
+          <t hangText='Width Mapping Rule:'>None</t>
           <t hangText='Additional Mapping Rule:'>Map non-ASCII space
           code points to ASCII space.</t>
 
-          <t hangText='Case-Mapping Rule:'>None</t>
+          <t hangText='Case Mapping Rule:'>None</t>
           <t hangText='Normalization Rule:'>NFC</t>
           <t hangText='Directionality Rule:'>None</t>
           <t hangText='Enforcement:'>To be defined by security or application
@@ -1080,11 +1034,11 @@ IANA has added the following entry to the "PRECIS Profiles"
 
     <section title="Stringprep Profile">
       <t>
-      The stringprep specification <xref target="RFC3454"/> did not
+      The Stringprep specification <xref target="RFC3454"/> did not
       provide for entries in the "Stringprep Profiles" registry to have
       any state except "Current" or "Not Current".  Because RFC 7613
       obsoleted RFC 4013, which registered the SASLprep profile of
-      stringprep, IANA previously marked that profile as "Not Current"
+      Stringprep, IANA previously marked that profile as "Not Current"
       and cited RFC 7613 as an additional reference.  IANA has modified
       the profile so that this document is cited as the additional reference.
       </t>
@@ -1243,21 +1197,10 @@ IANA has added the following entry to the "PRECIS Profiles"
       <t>
         <list style='symbols'>
           <t>Corrected the order of operations for the UsernameCaseMapped
-          profile to ensure consistency with <xref target='RFC8264'/>.
-
-<!-- [rfced] Appendix A:  Because RFC 7564 will be obsoleted when this 
-cluster is published, we replaced "7564" with the new number
-assigned to draft-ietf-precis-7564bis.  Please let us know any
-objections.
-
-Original:
- o  Corrected the order of operations for the UsernameCaseMapped
-    profile to ensure consistency with RFC 7564. -->
-
-</t>
+          profile to ensure consistency with <xref target='RFC8264'/>.</t>
           <t>In accordance with working group discussions and updates to <xref
-          target='RFC8264'/>, removed the use of the Unicode CaseFold()
-          operation in favor of the Unicode toLower() operation.</t>
+          target='RFC8264'/>, removed the use of the Unicode toCaseFold()
+          operation in favor of the Unicode toLowerCase() operation.</t>
           <t>Modified the presentation (but not the content) of the rules.</t>
           <t>Removed UTF-8 as a mandatory encoding, because that is a matter
           for the application.</t>
