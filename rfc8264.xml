@@ -55,12 +55,6 @@
     <keyword>i18n</keyword>
     <keyword>Stringprep</keyword>
 
-<!-- [rfced] We see that at present this document is pure ASCII.
-We understand that this document is to include UTF-8; please add UTF-8
-characters to the edited file as appropriate.  We have changed encoding from
-"US-ASCII" to "utf-8" in the XML file. 
--->
-
     <abstract>
       <t>Application protocols using Unicode code points in protocol strings
       need to properly handle such strings in order to enforce
@@ -91,7 +85,7 @@ characters to the edited file as appropriate.  We have changed encoding from
       enabling application protocols to perform the preparation, enforcement,
       and comparison of internationalized strings ("PRECIS") in a way that
       depends on the properties of Unicode code points and thus is more agile
-      with respect to versions of Unicode.  (PRECIS is restricted to Unicode
+      with respect to versions of Unicode.  (Note: PRECIS is restricted to Unicode
       and does not support any other coded character set
       <xref target='RFC6365'/>.)</t>
 
@@ -192,10 +186,10 @@ characters to the edited file as appropriate.  We have changed encoding from
       <t>
         <list style='letters'>
           <t>Enforcing all the rules of a profile for a single output
-          string (to determine if a string can be included in a protocol
-          slot, communicated to another entity within a protocol, stored in a
-          retrieval system, etc.) to check whether the output string conforms
-          to the rules of the profile.</t>
+          string to check whether the output string conforms to the rules 
+          of the profile and thus determine if a string can be included in a 
+          protocol slot, communicated to another entity within a protocol, 
+          stored in a retrieval system, etc.</t>
 
           <t>Comparing two output strings to determine if they are equivalent,
           typically through octet-for-octet matching to test for
@@ -214,8 +208,8 @@ characters to the edited file as appropriate.  We have changed encoding from
       application developers to understand that the transformation of an input
       string to an output string is rarely reversible.  As one relatively
       simple example, case mapping would transform an input string of
-      "StPeter" to "stpeter", and information about the capitalization of the
-      first and third characters would be lost.  Similar considerations apply
+      "StPeter" to an output string of "stpeter", thus leading to a loss of information 
+      about the capitalization of the first and third characters.  Similar considerations apply
       to other forms of mapping and normalization.</t>
 
       <t>Although this framework is similar to IDNA2008 and includes by
@@ -341,8 +335,8 @@ characters to the edited file as appropriate.  We have changed encoding from
             prioritized over safety for this class.  Note well that protocol
             designers, application developers, service providers, and end
             users might not understand or be able to enter all of the
-            code points that can be included in the FreeformClass -- see <xref
-            target='security-freeformclass'/> for details.</t>
+            code points that can be included in the FreeformClass (see <xref
+            target='security-freeformclass'/> for details).</t>
 
           </list>
         </t>
@@ -384,7 +378,7 @@ characters to the edited file as appropriate.  We have changed encoding from
         disallowed, and unassigned rules for the IdentifierClass and
         FreeformClass.  As described under <xref target='profiles'/>, profiles
         of these string classes are responsible for defining the width
-        mapping, additional mappings, case mapping, normalization, and
+        mapping, additional mapping, case mapping, normalization, and
         directionality rules.</t>
 
       </section>
@@ -608,7 +602,7 @@ characters to the edited file as appropriate.  We have changed encoding from
 | (G) BackwardCompatible        |      [Handled by IDNA Rules]    |
 +-------------------------------+-----------------+---------------+
 | (H) JoinControl               | Contextual      | Contextual    |
-|                               | Rule Required   | Required      |
+|                               | Rule Required   | Rule Required |
 +-------------------------------+-----------------+---------------+
 | (I) OldHangulJamo             | Disallowed      | Disallowed    |
 +-------------------------------+-----------------+---------------+
@@ -642,7 +636,7 @@ characters to the edited file as appropriate.  We have changed encoding from
         <t>This framework document defines the valid,
         contextual rule required, disallowed, and unassigned rules for the
         IdentifierClass and the FreeformClass.  A profile of a PRECIS string
-        class MUST define the width mapping, additional mappings (if any),
+        class MUST define the width mapping, additional mapping (if any),
         case mapping, normalization, and directionality rules.  A profile MAY
         also restrict the allowable code points above and beyond the definition
         of the relevant PRECIS string class (but MUST NOT add as valid any
@@ -654,10 +648,8 @@ characters to the edited file as appropriate.  We have changed encoding from
         the following convention: they are of the form "Profilename of
         BaseClass", where the "Profilename" string is a differentiator and
         "BaseClass" is the name of the PRECIS string class being profiled; for
-        example, the profile of the FreeformClass used for opaque strings
-        such as passwords is the OpaqueString profile <xref
-        target='RFC8265'/>.</t>
-
+        example, the profile used for opaque strings such as passwords is the 
+        OpaqueString profile of the FreeformClass <xref target='RFC8265'/>.</t>
 
       <section title="Profiles Must Not Be Multiplied beyond Necessity" anchor="profiles-proliferation">
         <t>The risk of profile proliferation is significant because having too
@@ -669,8 +661,9 @@ characters to the edited file as appropriate.  We have changed encoding from
         at most two or three profiles.  Unfortunately, numerous application
         protocols exist with their own quirks regarding protocol strings.
         Domain names, email addresses, instant messaging addresses, chat room
-        nicknames, filenames, authentication identifiers, passwords, and other
-        strings are already out there in the wild and need to be supported in
+        names, user nicknames or display names, filenames, authentication 
+        identifiers, passwords, and other
+        strings already exist in the wild and need to be supported in
         existing application protocols such as DNS, SMTP, the
         Extensible Messaging and Presence Protocol (XMPP),
         Internet Relay Chat (IRC), NFS, the Internet Small Computer System
@@ -733,7 +726,7 @@ characters to the edited file as appropriate.  We have changed encoding from
               and&nbsp;'-').</t>
 
               <t>Mapping of special code points (e.g., non-ASCII space
-              code points to ASCII space or control code points to nothing).</t>
+              code points to SPACE (U+0020) or control code points to nothing).</t>
 
             </list>
           </t>
@@ -763,8 +756,9 @@ characters to the edited file as appropriate.  We have changed encoding from
           implications, so toLowerCase() is almost always the safer choice.</t>
 
           <t><list style='empty'><t>Note: Neither toLowerCase() nor
-          toCaseFold() is designed to handle various language-specific issues
-          (such as so-called "dotless i" in several Turkic languages).  The
+          toCaseFold() is designed to handle various language-specific issues,
+          such as the character "ı" (LATIN SMALL LETTER DOTLESS I, U+0131)
+          in several Turkic languages.  The
           reader is referred to the PRECIS mappings document <xref
           target='RFC7790'/>, which describes these issues in greater
           detail.</t></list></t>
@@ -776,7 +770,7 @@ characters to the edited file as appropriate.  We have changed encoding from
           are used in passwords; instead, it is RECOMMENDED to preserve the
           case of all code points contained in such strings and then perform
           case-sensitive comparison.  See also the related discussion
-          in <xref target="security-passwords"/> and
+          in <xref target="security-passwords"/> of this document and
           in <xref target='RFC8265'/>.</t>
 
         </section>
@@ -829,8 +823,8 @@ characters to the edited file as appropriate.  We have changed encoding from
           directionality rule is needed.</t> 
 
           <t>The PRECIS framework does not directly address how to deal with
-          bidirectional strings across all string classes and profiles and
-          does not define any new directionality rules, because at present
+          bidirectional strings across all string classes and profiles nor
+          does it define any new directionality rules, because at present
           there is no widely accepted and implemented solution for the safe
           display of arbitrary bidirectional strings beyond the Unicode
           bidirectional algorithm <xref target='UAX9'/>.  Although rules for
@@ -847,7 +841,7 @@ characters to the edited file as appropriate.  We have changed encoding from
           misguided, even if the authors have done a great deal of careful
           research into the challenges of displaying bidirectional strings.
           This document strongly suggests that profile authors who are
-          thinking about defining a new directionality rule think again and
+          thinking about defining a new directionality rule should think again and
           instead consider using the "Bidi Rule" <xref target='RFC5893'/> (for
           profiles based on the IdentifierClass) or following the Unicode
           bidirectional algorithm <xref target='UAX9'/> (for profiles based on
@@ -865,7 +859,7 @@ characters to the edited file as appropriate.  We have changed encoding from
 
         <t>
           <list style='symbols'>
-            <t>Many Unicode code points are confusable with ASCII space.</t>
+            <t>Many Unicode code points are confusable with SPACE (U+0020).</t>
 
             <t>Even if non-ASCII space code points are mapped to SPACE
             (U+0020), space code points are often not rendered in user
@@ -874,8 +868,8 @@ characters to the edited file as appropriate.  We have changed encoding from
             string without spaces.</t>
 
             <t>In some locales, some devices are known to generate a code point
-            other than ASCII space, such as ZERO WIDTH JOINER (U+200D),
-            when a user performs an action like hitting the space bar on a
+            other than SPACE (U+0020), such as ZERO WIDTH JOINER (U+200D),
+            when a user performs an action like pressing the space bar on a
             keyboard.</t>
 
           </list>
@@ -989,7 +983,7 @@ characters to the edited file as appropriate.  We have changed encoding from
 
       <section title="Building Application-Layer Constructs" anchor="apps-constructs">
         <t>Sometimes, an application-layer construct does not map in a
-        straightforward manner to one of the base string classes or a profile
+        straightforward manner to one of the PRECIS string classes or a profile
         thereof.  Consider, for example, the "simple user name" construct in
         SASL <xref target='RFC4422'/>.  Depending on the deployment, a simple
         user name might take the form of a user's full name (e.g., the user's
@@ -1051,7 +1045,7 @@ characters to the edited file as appropriate.  We have changed encoding from
       case mapping can still yield uppercase characters for certain code 
       points).  Therefore, an implementation SHOULD apply the rules repeatedly 
       until the output string is stable; if the output string does not
-      stabilize after reapplying the rules three (3) additional times, the
+      stabilize after reapplying the rules three (3) additional times after the first application, the
       implementation SHOULD terminate application of the rules and reject the
       input string as invalid.</t>
 
@@ -1089,7 +1083,8 @@ characters to the edited file as appropriate.  We have changed encoding from
           <t hangText='SPECIFIC CLASS PROTOCOL VALID'>Those code points that
           are allowed to be used in specific string classes.  In the remainder
           of this document, the abbreviated term *_PVAL is used, where * = (ID
-          | FREE), i.e., either "FREE_PVAL" or "ID_PVAL".  In practice, the
+          | FREE), i.e., either "FREE_PVAL" for the FreeformClass or "ID_PVAL"
+          for the IdentifierClass.  In practice, the
           derived property ID_PVAL is not used in this specification, because
           every ID_PVAL code point is PVALID.</t>
 
@@ -1098,7 +1093,7 @@ characters to the edited file as appropriate.  We have changed encoding from
           problematic in others, require that it not be used in a string unless
           specific other code points or properties are present in the string.
           As in IDNA2008, there are two subdivisions of
-          CONTEXTUAL RULE REQUIRED -- the first for Join_controls
+          CONTEXTUAL RULE REQUIRED: the first for Join_controls
           (called "CONTEXTJ") and the second for other code points
           (called "CONTEXTO").  A string MUST NOT contain any 
           characters whose validity is context-dependent, unless the
@@ -1121,7 +1116,8 @@ characters to the edited file as appropriate.  We have changed encoding from
           not to be included in one of the string classes but that might be
           permitted in others.  In the remainder of this document, the
           abbreviated term *_DIS is used, where * = (ID | FREE), i.e., either
-          "FREE_DIS" or "ID_DIS".  In practice, the derived property FREE_DIS
+          "FREE_DIS" for the FreeformClass or "ID_DIS" for the IdentifierClass.  
+          In practice, the derived property FREE_DIS
           is not used in this specification, because every FREE_DIS code point
           is DISALLOWED.</t>
 
@@ -1325,7 +1321,7 @@ K: cp is in {0021..007E}
         </section>
         <section anchor="L" title="Controls (L)">
           <t>This PRECIS-specific category consists of all control
-          code points.</t>
+          code points, such as LINE FEED (U+000A).</t>
 
           <figure>
             <artwork>
@@ -1357,7 +1353,7 @@ M: Default_Ignorable_Code_Point(cp) = True or
         </section>
         <section anchor="N" title="Spaces (N)">
           <t>This PRECIS-specific category is used to group code points that
-          are space code points.</t>
+          are spaces.</t>
 
           <figure>
             <artwork>
@@ -1377,7 +1373,7 @@ O: General_Category(cp) is in {Sm, Sc, Sk, So}
         </section>
         <section anchor="P" title="Punctuation (P)">
           <t>This PRECIS-specific category is used to group code points that
-          are punctuation code points.</t>
+          are punctuation.</t>
 
           <figure>
             <artwork>
@@ -1554,8 +1550,8 @@ Specification: Section 4.2 of RFC 8264
             profiled]</t>
 
             <t hangText='Applicability:'>[the specific protocol elements to
-            which this profile applies, e.g., "Localparts in XMPP
-            addresses."]</t>
+            which this profile applies, e.g., "Usernames in security and 
+            application protocols."]</t>
 
             <t hangText='Replaces:'>[the Stringprep profile that this PRECIS
             profile replaces, if any]</t>
@@ -1566,7 +1562,7 @@ Specification: Section 4.2 of RFC 8264
 
             <t hangText='Additional Mapping Rule:'>[any additional mappings
             that are required or recommended, e.g., "Map non-ASCII space
-            code points to ASCII space."]</t>
+            code points to SPACE (U+0020)."]</t>
 
             <t hangText='Case Mapping Rule:'>[the behavioral rule for handling
             of case, e.g., "Apply the Unicode toLowerCase() operation."]</t>
@@ -1610,7 +1606,7 @@ Specification: Section 4.2 of RFC 8264
             limitations, etc.) and the use of conformant strings in protocol
             elements?</t>
 
-            <t>Are the width mapping, case mapping, additional mappings,
+            <t>Are the width mapping, case mapping, additional mapping,
             normalization, and directionality rules appropriate for the
             intended use?</t>
 

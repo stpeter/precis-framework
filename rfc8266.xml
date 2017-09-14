@@ -41,12 +41,6 @@
     <keyword>XCON</keyword>
     <keyword>chat rooms</keyword>
 
-<!-- [rfced] We see that at present this document is pure ASCII. 
-We understand that this document is to include UTF-8; please add UTF-8
-characters to the edited file as appropriate.  We have changed encoding from 
-"US-ASCII" to "utf-8" in the XML file.
--->
-
     <abstract>
       <t>This document describes methods for handling Unicode strings
       representing memorable, human-friendly names (called "nicknames",
@@ -80,8 +74,8 @@ characters to the edited file as appropriate.  We have changed encoding from
       outside the ASCII range <xref target='RFC20'/>, typically by means of
       the Unicode coded character set <xref target='Unicode'/>.  Although such
       nicknames tend to be used primarily for display purposes, they are
-      sometimes used for programmatic purposes as well (e.g., kicking users or
-      avoiding nickname conflicts).</t>
+      sometimes used for programmatic purposes as well (e.g., kicking users 
+      out of a chat room or avoiding nickname conflicts).</t>
       <t>A similar usage enables a person to set their own preferred display
       name or to set a preferred display name for another user (e.g., the
       "display-name" construct in the Internet message format <xref
@@ -92,12 +86,13 @@ characters to the edited file as appropriate.  We have changed encoding from
       browser), accounts (e.g., in a web interface for a list of payees in a
       bank account), people (e.g., in a contact list application), and the
       like.</t>
-      <t>The rules specified in this document can be applied in all of the
+      <t>The rules specified in this document, can be applied in all of the 
       foregoing contexts.</t>
       <t>To increase the likelihood that memorable, human-friendly names will
       work in ways that make sense for typical users throughout the world,
-      this document defines rules for preparing, enforcing, and comparing
-      internationalized nicknames.</t>
+      this document defines rules for handling nicknames in terms of the 
+      preparation, enforcement, and comparison of internationalized 
+      strings (PRECIS) framework specification <xref target='RFC8264'/>.</t>
     </section>
 
     <section title="Terminology" anchor="terms">
@@ -119,8 +114,7 @@ characters to the edited file as appropriate.  We have changed encoding from
 
     <section title='Rules' anchor='rules-rules'>
       <t>The following rules apply within the Nickname profile of the
-      PRECIS (preparation, enforcement, and comparison of internationalized
-      strings) FreeformClass defined in the PRECIS framework specification
+      PRECIS FreeformClass defined in the PRECIS framework specification
       <xref target='RFC8264'/>.</t>
       <t>
         <list style='numbers'>
@@ -198,7 +192,7 @@ comparison.</t>
   ensure that the nickname is not zero bytes in length (this is done
   after enforcing the rules to prevent applications from mistakenly
   omitting a nickname entirely, because when internationalized
-  strings are accepted, a non-empty sequence of characters can
+  strings are accepted a non-empty sequence of characters can
   result in a zero-length nickname after canonicalization).</t>
 <t>The result of the foregoing operations is an output string that conforms 
 to the Nickname profile.  Until an implementation produces such an output
@@ -226,7 +220,7 @@ exact octet-for-octet match (sometimes called "bit-string identity").
 </t>
 <t>Until an implementation determines whether two strings are to be considered
 equivalent, it MUST NOT treat them as equivalent (in particular, it MUST NOT
-assume that an input string conforms to the rules before the comparison
+assume that two input strings are equivalent before the comparison
 operation has been completed).</t>
     </section>
 
@@ -235,7 +229,7 @@ operation has been completed).</t>
   <section title="Examples" anchor="examples">
     <t>The following examples illustrate a small number of nicknames that are
     consistent with the format defined above, along with the output string
-    resulting from application of the PRECIS rules (note that the characters
+    resulting from application of the PRECIS rules for comparison purposes (note that the characters
     "&lt;" and "&gt;" are used to delineate the actual nickname and are not
     part of the nickname strings).</t>
     <figure align="center">
@@ -313,8 +307,8 @@ operation has been completed).</t>
     nickname strings.  It is the responsibility of an application protocol
     (e.g., MSRP, XCON, or XMPP) or application definition to specify the
     protocol slots in which nickname strings can appear, the entities that are
-    expected to enforce the rules governing nickname strings, and when in
-    protocol processing or interface handling the rules need to be enforced.
+    expected to enforce the rules governing nickname strings, and the point during
+    protocol processing or interface handling when the rules need to be enforced.
     See Section 6 of <xref target='RFC8264'/> for guidelines about using
     PRECIS profiles in applications.</t>
     <t>Above and beyond the PRECIS-based rules specified here, application
@@ -344,7 +338,7 @@ operation has been completed).</t>
     Nickname profile is not an idempotent procedure for all code
     points. Therefore, an implementation SHOULD apply the rules repeatedly
     until the output string is stable; if the output string does not stabilize
-    after reapplying the rules three (3) additional times, the implementation
+    after reapplying the rules three (3) additional times after the first application, the implementation
     SHOULD terminate application of the rules and reject the input string as
     invalid.</t>
 
@@ -358,15 +352,15 @@ operation has been completed).</t>
       <list style='hanging'>
         <t hangText='Name:'>Nickname</t>
         <t hangText='Base Class:'>FreeformClass</t>
-        <t hangText='Applicability:'>Nicknames in messaging and text
+        <t hangText='Applicability:'>Nicknames or display names in messaging and text
         conferencing technologies; petnames for devices, accounts, and people;
-        and other uses of nicknames or petnames.</t>
+        and other uses of nicknames, dsiplay names, or petnames.</t>
         <t hangText='Replaces:'>None</t>
         <t hangText='Width Mapping Rule:'>None (handled via NFKC)</t>
         <t hangText='Additional Mapping Rule:'>Map non-ASCII space characters
-        to ASCII space, strip leading and trailing space characters, and map
-        interior sequences of multiple space characters to a single ASCII
-        space.</t>
+        to SPACE (U+0020), strip leading and trailing space characters, and map
+        interior sequences of multiple space characters to a since instance of
+        SPACE (U+0020).</t>
         <t hangText='Case Mapping Rule:'>Map uppercase and titlecase code
         points to lowercase using the Unicode toLowerCase() operation.</t>
         <t hangText='Normalization Rule:'>NFKC</t>
